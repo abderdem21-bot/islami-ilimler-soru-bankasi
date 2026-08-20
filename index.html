@@ -116,8 +116,6 @@
                 <div style="display:flex; align-items:center; gap:12px;">
                     <span id="streak-display" style="font-weight:700; color:var(--accent);">🔥 0</span>
                     <span id="leaderboard-badge" style="cursor:pointer; font-size:1.2rem;" onclick="navigateToTab('leaderboard')">🏆</span>
-                    <!-- Admin butonu (sadece admin görecek) -->
-                    <button id="admin-panel-btn" class="btn-primary muted" style="display:none; padding:4px 12px; font-size:0.8rem; width:auto;" onclick="navigateToTab('admin')">🛠️ Admin</button>
                 </div>
             </div>
             <div class="center">
@@ -634,7 +632,6 @@
             <button class="drawer-item" onclick="navigateToDrawer('terms')">📜 Kullanım Koşulları</button>
             <button class="drawer-item" onclick="navigateToDrawer('about')">ℹ️ Hakkında</button>
             <button class="drawer-item" onclick="navigateToDrawer('contact')">📧 Bize Ulaşın</button>
-            <button class="drawer-item" onclick="navigateToDrawer('admin')" style="color:#fcd34d;">🛠️ Admin Panel</button>
             <button class="drawer-item" onclick="navigateToDrawer('logout')" style="color:#fca5a5; margin-top:auto;">🚪 Çıkış</button>
         </div>
     </div>
@@ -644,7 +641,7 @@
 <canvas id="confetti-canvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; display:none;"></canvas>
 
 <!-- ===== FIREBASE AUTHENTICATION MODÜLLERİ ===== -->
-<!-- YEREL GİRİŞ SİSTEMİ (647-716 Satırlar Arası Bütün Yapı) -->
+<!-- YEREL GİRİŞ SİSTEMİ -->
 <script>
     // Kullanıcı Durum Takibi
     window.userState = {
