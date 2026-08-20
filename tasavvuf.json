@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "soru": "Tasavvuf kelimesinin en çok kabul gören etimolojik kökeni nedir?",
+    "secenekler": [
+      "A) Yün giymek (sûf)",
+      "B) Sofa (sıra)",
+      "C) Safa (saflık)",
+      "D) Sofistike"
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 2,
+    "soru": "Tasavvuf ilmi genel olarak neyi hedefler?",
+    "secenekler": [
+      "A) Nefsi terbiye ve ahlakı güzelleştirme",
+      "B) Fıkhi hükümleri ezberleme",
+      "C) Kelami tartışmaları çözme",
+      "D) Siyasi iktidar kurma"
+    ],
+    "dogruCevap": "A"
+  }
+  ]

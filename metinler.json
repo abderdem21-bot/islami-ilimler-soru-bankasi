@@ -1,0 +1,112 @@
+{
+  "kullanımRehberi": {
+    "baslik": "📖 Kullanım Rehberi",
+    "icerik": [
+      {
+        "baslik": "🚀 Başlangıç (Giriş & Kayıt)",
+        "metin": "• Giriş Yap: Kayıtlı e-posta ve şifre ile giriş yapabilirsiniz.\n• Yeni Kayıt: Kullanıcı adı, e-posta ve şifre (iki kez) girerek kayıt olun.\n• Şifremi Unuttum: E-posta adresinize şifre sıfırlama bağlantısı gönderilir (simülasyon)."
+      },
+      {
+        "baslik": "🏠 Ana Sayfa & Kategori Seçimi",
+        "metin": "TEFSİR, HADİS, KELAM, TASAVVUF, FIKIH, MEZHEPLER TARİHİ, KURAN VE TECVİT, SİYER, DİNLER TARİHİ, GENEL TEKRAR.\n• Genel Tekrar: Açtığınız tüm ünitelerden karışık 20 soru."
+      },
+      {
+        "baslik": "📚 Ünite Sistemi (50 Ünite / Kategori)",
+        "metin": "Her kategoride 50 ünite vardır. Başlangıçta 1. ünite açıktır. Ünite tamamlayınca reklam izleyerek bir sonraki üniteyi açın. Her ünite 20 sorudan oluşur."
+      },
+      {
+        "baslik": "❤️ Can Sistemi & Oyun Mekaniği",
+        "metin": "3 can ile başlanır, her yanlış cevap 1 can götürür. Canlar gece yarısı yenilenir. Can bitince reklam izleyerek +1 can alıp kaldığınız yerden devam edebilirsiniz."
+      },
+      {
+        "baslik": "📝 Test Modu (Karışık 20 Soru)",
+        "metin": "TEST butonundan 5-20 dk arası süre seçerek test çözün. Günde 1 ücretsiz test hakkı, reklam ile ekstra hak kazanabilirsiniz. Sonuçta yanlış analiz ve tekrar yapabilirsiniz."
+      },
+      {
+        "baslik": "🤔 Yanlışlarım",
+        "metin": "Daha önce yanlış cevapladığınız sorulardan 5’lik mini test oluşturur. Reklam izleyerek başlatılır."
+      },
+      {
+        "baslik": "🧠 Bilgiç (Özel İçerikler)",
+        "metin": "Reklam izleyerek 'Zor Sorular' veya 'Bilgi Kartları'na erişin. Zor sorular zorsorular.json, bilgi kartları bilgikartları.json dosyasından gelir."
+      },
+      {
+        "baslik": "💰 Ödül Sistemi",
+        "metin": "Reklam izleyerek +1 can veya +1 ipucu alın. 5 test tamamlayınca sandık açın (1-5 can/ipucu). Paylaş butonu ile 5 can kazanın (bir kez)."
+      },
+      {
+        "baslik": "⭐ Favoriler",
+        "metin": "Soru çözerken favorilere ekleyin. 'Favori Sorularım' bölümünden kategorilere göre gruplanmış şekilde görüntüleyip çıkarabilirsiniz."
+      },
+      {
+        "baslik": "📊 İstatistikler",
+        "metin": "Menüden erişin. Toplam çözülen soru, test sayısı ve kategori bazında doğru/yanlış/başarı yüzdesi gösterilir. (Günlük 1 reklam izlenmesi gerekebilir.)"
+      },
+      {
+        "baslik": "⚙️ Gelişmiş Ayarlar",
+        "metin": "7 tema rengi, karanlık mod, bildirimler, şifre değiştirme, favorileri temizleme, hesap silme işlemlerini içerir."
+      },
+      {
+        "baslik": "📂 Drawer Menü",
+        "metin": "Sol üstteki ☰ menüden Ana Sayfa, İstatistikler, Ayarlar, Kullanım Rehberi, Gizlilik Politikası, Kullanım Koşulları, Hakkında, Bize Ulaşın ve Çıkış sayfalarına erişilir."
+      },
+      {
+        "baslik": "📧 Bize Ulaşın",
+        "metin": "500 karaktere kadar mesaj gönderebilirsiniz. Gönder butonu e-posta istemcinizi açar."
+      },
+      {
+        "baslik": "💡 Sıkça Sorulan Sorular (SSS)",
+        "metin": "Canlar ne zaman yenilenir? Gece yarısı.\nTest sırasında can bitip reklam izlenirse süre kaldığı yerden devam eder.\nİpucu doğru cevabı gösterir ve seçeneği ışıltılı yapar.\nReklamlar simülasyondur (3 saniye).\nGenel Tekrar sadece açılan ünitelerden, Test tüm havuzdan soru seçer."
+      }
+    ]
+  },
+  "gizlilikPolitikasi": {
+    "baslik": "🔒 Gizlilik Politikası",
+    "altBaslik": "Son Güncelleme: 4 Ağustos 2026",
+    "paragraflar": [
+      "İslami İlimler Soru Bankası olarak kullanıcılarımızın gizliliğine büyük önem veriyoruz. Bu politika, hangi verilerin toplandığını, nasıl kullanıldığını ve korunduğunu açıklar.",
+      "1. Toplanan Veriler: Kullanıcı adı, e-posta, şifre (yerel), ilerleme (açılan üniteler, tamamlananlar, doğru/yanlış sayıları), favoriler, yanlış sorular, ipucu sayısı, can, test sayısı, tema tercihleri. Hepsi localStorage'da saklanır, sunucuya gönderilmez.",
+      "2. Verilerin Kullanımı: Oturum açmak, ilerlemeyi kaydetmek, kişiselleştirilmiş deneyim sunmak, oyun mekaniklerini yönetmek için kullanılır. Üçüncü taraflarla paylaşılmaz.",
+      "3. Veri Güvenliği: localStorage kullanılır, harici sunucu yoktur. Cihazınızın güvenliğinden siz sorumlusunuz.",
+      "4. Çerezler: Kullanılmaz.",
+      "5. Üçüncü Taraf Hizmetler: Kullanılmaz.",
+      "6. Kullanıcı Hakları: Verilerinize erişim, düzeltme, silme (hesap silme) ve taşınabilirlik haklarınız vardır.",
+      "7. Veri Saklama: Uygulamayı kullandığınız sürece saklanır, hesap silinirse kalıcı olarak silinir.",
+      "8. Çocukların Gizliliği: 13 yaş altı bilerek veri toplanmaz.",
+      "9. Politika Değişiklikleri: Güncellemeler uygulama içinde duyurulur.",
+      "10. İletişim: destek@islamisoru.com veya 'Bize Ulaşın' bölümü."
+    ]
+  },
+  "hakkimizda": {
+    "baslik":"ℹ️ Hakkında",
+    "altBaslik": "İslami İlimler Soru Bankası - Sürüm v2.0.0",
+    "paragraflar": [
+      "Bu uygulama, İlahiyat ve İslami İlimler alanında eğitim gören öğrenciler ve kendini geliştirmek isteyen herkes için hazırlanmış kapsamlı bir soru bankası ve öğrenme platformudur.",
+      "Misyonumuz: İslami ilimleri modern ve etkileşimli bir öğrenme deneyimiyle sunarak, oyunlaştırılmış unsurlarla motivasyonu artırmak.",
+      "Vizyonumuz: Türkiye’nin ve dünyanın en kapsamlı, güvenilir ve kullanıcı dostu İslami ilimler soru bankası olmak.",
+      "Teknik Özellikler: Web tabanlı, localStorage ile veri saklama, Türkçe, vanilla JS, mobil uyumlu.",
+      "Geliştirici Ekibi: İslami ilimlere gönül vermiş yazılım ve eğitim teknolojileri uzmanları.",
+      "İçerik Kaynakları: Temel kaynaklar, ders notları, uzman eğitmen katkıları.",
+      "Teşekkürler: Tüm kullanıcılarımıza teşekkür ederiz. Görüşlerinizi 'Bize Ulaşın' ile paylaşabilirsiniz.",
+      "Lisans: Bireysel kullanım için ücretsiz, ticari kullanım yasaktır. Tüm hakları saklıdır.",
+      "İletişim: destek@islamisoru.com"
+    ]
+  },
+  "kullanimKosullari": {
+    "baslik": "📜 Kullanım Koşulları",
+    "altBaslik": "Son Güncelleme: 4 Ağustos 2026",
+    "paragraflar": [
+      "Bu Kullanım Koşulları, İslami İlimler Soru Bankası uygulamasını kullanırken uymanız gereken kuralları belirler. Uygulamayı kullanarak bu koşulları kabul etmiş sayılırsınız.",
+      "1. Kullanım Amacı: Uygulama yalnızca kişisel eğitim ve öğrenme amacıyla kullanılabilir. Ticari veya yasa dışı amaçlarla kullanılamaz.",
+      "2. Fikri Mülkiyet: Uygulama içindeki tüm sorular, metinler, tasarımlar ve kodlar telif hakkı ile korunmaktadır. İzinsiz kopyalanamaz, dağıtılamaz veya türetilemez.",
+      "3. Kullanıcı Sorumlulukları: Kullanıcı, uygulamayı kullanırken tüm yerel ve uluslararası yasalara uymayı kabul eder. Uygulamayı başkalarını rahatsız etmek veya zarar vermek için kullanmayacaktır.",
+      "4. Veri Gizliliği: Uygulama, kullanıcı verilerini yalnızca cihazınızda (localStorage) saklar. Bu veriler geliştiriciler tarafından erişilemez veya paylaşılamaz.",
+      "5. Garanti Reddi: Uygulama 'olduğu gibi' sunulur ve herhangi bir garanti verilmez. Geliştiriciler, uygulamanın kullanımından kaynaklanan doğrudan veya dolaylı zararlardan sorumlu değildir.",
+      "6. Hizmet Kesintileri: Uygulama, bakım veya teknik sorunlar nedeniyle geçici olarak hizmet veremeyebilir. Geliştiriciler bu durumdan sorumlu değildir.",
+      "7. Yaş Sınırı: Uygulama 13 yaş ve üzeri kullanıcılar içindir. 13 yaşından küçükler ebeveyn gözetimi olmadan kullanmamalıdır.",
+      "8. Koşulların Değişikliği: Geliştiriciler, bu koşulları herhangi bir zamanda değiştirme hakkını saklı tutar. Değişiklikler uygulama içinde duyurulur ve yürürlüğe girer.",
+      "9. Yürürlük: Bu koşullar, uygulamanın ilk kullanımından itibaren geçerlidir. Kullanıcı, uygulamayı kullanmaya devam ederek değişiklikleri kabul etmiş sayılır.",
+      "10. İletişim: Koşullarla ilgili sorularınız için destek@islamisoru.com adresinden veya 'Bize Ulaşın' bölümünden iletişime geçebilirsiniz."
+    ]
+  }
+}

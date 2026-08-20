@@ -1,0 +1,134 @@
+[
+  {
+    "id": 1,
+    "soru": "Dinler tarihi ile teoloji arasındaki temel fark nedir?",
+    "secenekler": [
+      "A) Dinler tarihi inancı nesnel bir olgu olarak inceler, teoloji ise inancı savunur.",
+      "B) Dinler tarihi inançlıları yargılar, teoloji ise tarafsızdır.",
+      "C) Dinler tarihi sadece İslam'ı inceler.",
+      "D) Dinler tarihi teolojinin bir alt dalıdır."
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 2,
+    "soru": "Max Müller'e göre mitolojiler nasıl ortaya çıkmıştır?",
+    "secenekler": [
+      "A) Doğa olaylarının adlandırılmasındaki dilsel yanlış anlamalardan.",
+      "B) İlkel insanların korkularından.",
+      "C) Tanrıların doğrudan vahyinden.",
+      "D) Tarihsel olayların abartılmasından."
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 3,
+    "soru": "Animizm ile Manevizm arasındaki temel fark nedir?",
+    "secenekler": [
+      "A) Animizm kişisel ruhlara, Manevizm ise kişiselleşmemiş güce inanır.",
+      "B) Animizm gayrişahsi güce, Manevizm kişisel ruhlara inanır.",
+      "C) İkisi de aynıdır.",
+      "D) Manevizm tek tanrılıdır."
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 4,
+    "soru": "Sümer inancına göre insanlar neden yaratılmıştır?",
+    "secenekler": [
+      "A) Tanrılara hizmet etmek için.",
+      "B) Dünyayı yönetmek için.",
+      "C) Tanrılarla savaşmak için.",
+      "D) Ölümsüzlüğe ulaşmak için."
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 5,
+    "soru": "Eski Mısır'da mumyalama hangi amaçla yapılırdı?",
+    "secenekler": [
+      "A) Ruhsal unsurların yeniden birleşmesi için bedeni korumak.",
+      "B) Tanrılara kurban sunmak.",
+      "C) Firavunun gücünü göstermek.",
+      "D) Ölümden sonra dirilmeyi sağlamak."
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 6,
+    "soru": "Eski Yunan dininde kurban ritüellerinin temel amacı neydi?",
+    "secenekler": [
+      "A) Kozmik düzeni ve tanrıların lütfunu sürdürmek.",
+      "B) Etik arınma sağlamak.",
+      "C) Siyasi otoriteyi meşrulaştırmak.",
+      "D) Ölüleri anmak."
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 7,
+    "soru": "Maniheizm'e göre maddenin kökeni nedir?",
+    "secenekler": [
+      "A) Mutlak karanlığın ürünüdür.",
+      "B) Mutlak ışığın ürünüdür.",
+      "C) Nötr bir maddedir.",
+      "D) Tanrı tarafından yaratılmıştır."
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 8,
+    "soru": "Uzak Doğu dinlerinin Batı dinlerinden farkı nedir?",
+    "secenekler": [
+      "A) Yoktan yaratılış inancı yoktur, evren döngüseldir.",
+      "B) Tek tanrıya inanırlar.",
+      "C) Peygamberleri vardır.",
+      "D) Kutsal kitapları yoktur."
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 9,
+    "soru": "Sami dinlerin karakteristik özelliği nedir?",
+    "secenekler": [
+      "A) Ahit (ilahi-insan sözleşmesi) kavramı.",
+      "B) Reenkarnasyon inancı.",
+      "C) Putperestlik.",
+      "D) Tanrıça kültü."
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 10,
+    "soru": "Karşılaştırmalı dinler tarihinde benzer motifler incelenirken neye dikkat edilir?",
+    "secenekler": [
+      "A) Kültürel yayılma ve bağımsız icat ihtimallerini ayırt etmeye.",
+      "B) Sadece kültürel yayılmaya.",
+      "C) Sadece bağımsız icada.",
+      "D) Motiflerin doğruluğuna."
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 11,
+    "soru": "Hinduizm'de Vedalar hangi kategoriye girer?",
+    "secenekler": [
+      "A) Shruti (duyulan/vahiy olunan).",
+      "B) Smriti (hatırlanan/beşeri).",
+      "C) Sutralar.",
+      "D) Puranalar."
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 12,
+    "soru": "Hinduizm'deki çok sayıda tanrı nasıl yorumlanır?",
+    "secenekler": [
+      "A) Tek mutlak Brahman'ın farklı tezahürleri.",
+      "B) Bağımsız tanrıların panteonu.",
+      "C) Şeytanların tezahürü.",
+      "D) İnsanların uydurması."
+    ],
+    "dogruCevap": "A"
+  }
+]

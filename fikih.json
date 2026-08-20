@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "soru": "Taharet kelimesi sözlükte ne anlama gelir?",
+    "secenekler": [
+      "A) Temizlenmek",
+      "B) Pislikten arınmak",
+      "C) Abdest almak",
+      "D) Gusletmek"
+    ],
+    "dogruCevap": "B"
+  },
+  {
+    "id": 2,
+    "soru": "İslam'da temizliğin temel amacı nedir?",
+    "secenekler": [
+      "A) Sağlığı korumak",
+      "B) İbadete hazırlanmak",
+      "C) Maddi kirliliği gidermek",
+      "D) Hem maddi hem manevi arınmak"
+    ],
+    "dogruCevap": "D"
+  }
+  ]

@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#0f2c59" />
+    
+    <!-- ===== SEO META ETİKETLERİ ===== -->
+    <meta name="description" content="İslami İlimler Soru Bankası ile Tefsir, Hadis, Fıkıh, Kelam ve daha birçok dersten online test çöz, bilgini ölç, öğren. Ücretsiz ve interaktif." />
+    <meta name="keywords" content="islami ilimler, soru bankası, tefsir, hadis, fıkıh, kelam, dinler tarihi, siyer, kuran tecviti, mezhepler tarihi, online test, ilahiyat, din kültürü" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://islamisoru.vercel.app/" />
+
+    <!-- ===== OPEN GRAPH (Sosyal Medya) ===== -->
+    <meta property="og:title" content="İslami İlimler Soru Bankası - Online Test Çöz" />
+    <meta property="og:description" content="Tefsir, Hadis, Fıkıh, Kelam ve daha fazlası. Ücretsiz interaktif soru bankası ile öğrenmeye hemen başla." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://islamisoru.vercel.app/" />
+    <meta property="og:image" content="https://islamisoru.vercel.app/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- ===== TWITTER CARD ===== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="İslami İlimler Soru Bankası" />
+    <meta name="twitter:description" content="Ücretsiz online testlerle İslami ilimlerde kendini geliştir." />
+    <meta name="twitter:image" content="https://islamisoru.vercel.app/og-image.jpg" />
+
+    <!-- ===== JSON-LD (Yapılandırılmış Veri) ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "İslami İlimler Soru Bankası",
+      "description": "İslami ilimler alanında online test ve soru bankası.",
+      "url": "https://islamisoru.vercel.app/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://islamisoru.vercel.app/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <title>İslami İlimler Soru Bankası - Online Test Çöz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="container" id="app">
+    <div class="scrollable-content" id="scroll-area">
+
+        <!-- ===== GİRİŞ ===== -->
+        <div id="screen-login" class="center screen">
+            <div class="hero-banner">
+                <div class="title">İSLAMİ İLİMLER</div>
+                <div class="subtitle">SORU BANKASI</div>
+            </div>
+            <h2 style="margin-bottom:20px;">Giriş Yap</h2>
+            <div class="form-group">
+                <label for="login-email" class="form-label">E-posta Adresi</label>
+                <input type="email" id="login-email" class="form-input" placeholder="ornek@email.com" autocomplete="email" />
+            </div>
+            <div class="form-group">
+                <label for="login-password" class="form-label">Şifre</label>
+                <input type="password" id="login-password" class="form-input" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+            <button class="btn-primary" onclick="performLogin()">Giriş Yap</button>
+            <div class="auth-links">
+                <button class="auth-link-btn" onclick="openRegister()">Yeni Kayıt</button>
+                <button class="auth-link-btn forgot" onclick="openForgotPasswordModal()">Şifremi Unuttum</button>
+            </div>
+        </div>
+
+        <!-- ===== KAYIT ===== -->
+        <div id="screen-register" class="hidden center screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="closeRegister()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">Yeni Kayıt</h2>
+            </div>
+            <div class="form-group">
+                <label for="reg-nick" class="form-label">Kullanıcı Adı (Nick)</label>
+                <input type="text" id="reg-nick" class="form-input" placeholder="örnek_kullanici" autocomplete="nickname" />
+            </div>
+            <div class="form-group">
+                <label for="reg-email" class="form-label">E-posta Adresi</label>
+                <input type="email" id="reg-email" class="form-input" placeholder="ornek@email.com" autocomplete="email" />
+            </div>
+            <div class="form-group">
+                <label for="reg-password" class="form-label">Şifre</label>
+                <input type="password" id="reg-password" class="form-input" placeholder="••••••••" autocomplete="new-password" />
+            </div>
+            <div class="form-group">
+                <label for="reg-password-confirm" class="form-label">Şifre (Tekrar)</label>
+                <input type="password" id="reg-password-confirm" class="form-input" placeholder="••••••••" autocomplete="new-password" />
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:10px; margin-top:10px; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid var(--border);">
+                <input type="checkbox" id="terms-checkbox" style="width:20px; height:20px; cursor:pointer; flex-shrink:0;" />
+                <label for="terms-checkbox" style="font-size:0.9rem; color:var(--text-muted); cursor:pointer; user-select:none;">
+                    <a href="#" onclick="navigateToTab('terms'); return false;" style="color:var(--accent);">Kullanım Şartları</a> ve 
+                    <a href="#" onclick="navigateToTab('privacy'); return false;" style="color:var(--accent);">Gizlilik Politikası</a>'nı okudum, kabul ediyorum.
+                </label>
+            </div>
+            <button class="btn-primary" onclick="performRegister()">Kaydol</button>
+        </div>
+
+        <!-- ===== ANA SAYFA (KATEGORİLER) ===== -->
+        <div id="screen-categories" class="hidden screen">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <button class="menu-burger-btn" onclick="openDrawerMenu()" title="Menüyü Aç" aria-label="Menüyü Aç">☰</button>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span id="streak-display" style="font-weight:700; color:var(--accent);">🔥 0</span>
+                    <span id="leaderboard-badge" style="cursor:pointer; font-size:1.2rem;" onclick="navigateToTab('leaderboard')">🏆</span>
+                    <!-- Admin butonu (sadece admin görecek) -->
+                    <button id="admin-panel-btn" class="btn-primary muted" style="display:none; padding:4px 12px; font-size:0.8rem; width:auto;" onclick="navigateToTab('admin')">🛠️ Admin</button>
+                </div>
+            </div>
+            <div class="center">
+                <h2>KATEGORİ SEÇİMİ</h2>
+                <p>Çalışmak istediğin ilim dalını seç.</p>
+            </div>
+            <div class="category-grid" id="category-grid"></div>
+            <button class="btn-primary" style="margin-top:20px; background:var(--accent);" onclick="navigateToTab('favorites')">⭐ Favori Sorularım</button>
+        </div>
+
+        <!-- ===== FIKIH ALT MENÜ ===== -->
+        <div id="screen-fiqh-submenu" class="hidden center screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="goBackFromFiqhSubmenu()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">FIKIH</h2>
+            </div>
+            <p>Lütfen bir seçenek belirleyin:</p>
+            <div style="display:flex; flex-direction:column; gap:16px; margin-top:20px;">
+                <button class="btn-primary" onclick="openFiqhUnits()">📚 Ünite Soruları</button>
+                <button class="btn-primary" onclick="openMecelle()">📜 Mecelle Kaideleri</button>
+            </div>
+        </div>
+
+        <!-- ===== ÜNİTE SEÇİMİ ===== -->
+        <div id="screen-units" class="hidden center screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="goBackFromUnits()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">Ünite Seçimi</h2>
+            </div>
+            <p id="unit-info-text">Toplam ünite: 0</p>
+            <div class="unit-grid" id="unit-grid-container"></div>
+        </div>
+
+        <!-- ===== MECELLE KART EKRANI ===== -->
+        <div id="screen-mecelle" class="hidden center screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="goBackFromMecelle()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">Mecelle Kaideleri</h2>
+            </div>
+            <p id="mecelle-info-text">Toplam kaide: 0</p>
+            <div class="unit-grid" id="mecelle-grid-container"></div>
+        </div>
+
+        <!-- ===== MECELLE KART GÖSTERİMİ ===== -->
+        <div id="screen-mecelle-card" class="hidden center screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="goBackFromMecelleCard()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title" id="mecelle-card-title">Kaide #1</h2>
+            </div>
+            <div class="flip-card" id="mecelle-flip-card" onclick="flipMecelleCard()">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <p id="mecelle-card-front-arapca" style="font-size:1.2rem; font-weight:700; direction:rtl;"></p>
+                        <p id="mecelle-card-front-turkiye" style="font-size:1rem; margin-top:10px;"></p>
+                    </div>
+                    <div class="flip-card-back">
+                        <p id="mecelle-card-back-ornek" style="font-size:1rem; font-style:italic;"></p>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="btn-primary" id="mecelle-prev-btn" onclick="prevMecelleCard()">⏪ Önceki</button>
+                <button class="btn-primary" id="mecelle-next-btn" onclick="nextMecelleCard()">Sonraki ⏩</button>
+            </div>
+            <p style="margin-top:10px;" id="mecelle-card-progress">1 / 100</p>
+        </div>
+
+        <!-- ===== SORU ÇÖZÜM ===== -->
+        <div id="screen-game" class="hidden screen">
+            <div class="header">
+                <div class="header-left">
+                    <button class="back-btn" onclick="goBackFromGame()">
+                        <svg width="40" height="40" viewBox="0 0 100 100">
+                            <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                        </svg>
+                    </button>
+                    <div class="hearts" id="hearts-display">❤️ 3</div>
+                </div>
+                <div class="score" id="progress-display">Soru: 1 / 20</div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="timer-display" id="timer-display"></div>
+                    <button id="hint-btn-header" style="background:none; border:none; font-size:1.2rem; cursor:pointer; font-weight:700; color:var(--accent);" onclick="useHint()" title="İpucu kullan">💡 0</button>
+                </div>
+            </div>
+            <h2 id="unit-title" style="font-size:0.95rem; color:var(--text-muted); margin-bottom:8px;">Ünite Adı</h2>
+            <div class="question" id="question-text">Soru metni yükleniyor...</div>
+            <div class="options" id="options-container"></div>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+                <button id="favorite-btn" class="btn-primary muted" style="flex:1;">⭐ Favorilere Ekle</button>
+                <button id="prev-question-btn" class="btn-primary muted" style="flex:1;">⏪ Önceki Soru</button>
+            </div>
+            <div style="margin-top:12px; display:flex; gap:8px;">
+                <button class="btn-primary muted" style="flex:1; background:#475569;" onclick="reportQuestion()">🚨 Soru Bildir</button>
+            </div>
+        </div>
+
+        <!-- ===== CAN BİTTİ ===== -->
+        <div id="screen-gameover" class="hidden center screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="navigateToTab('home')">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">Canların Bitti!</h2>
+            </div>
+            <span class="big-emoji">💔</span>
+            <p>Yanlış cevaplar nedeniyle kalplerini kaybettin. Reklam izleyerek 1 can kazanıp kaldığın yerden devam edebilirsin.</p>
+            <button class="btn-primary accent-gradient" onclick="watchAdForHeart()">📺 Reklam İzle & Can Kazan (+1 ❤️)</button>
+            <button class="btn-primary muted" onclick="navigateToTab('home')">Ana Sayfaya Dön</button>
+        </div>
+
+        <!-- ===== ÜNİTE TAMAMLAMA / REKLAM ===== -->
+        <div id="screen-victory" class="hidden center screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="navigateToTab('home')">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">Tebrikler!</h2>
+            </div>
+            <span class="big-emoji">🎉</span>
+            <p id="victory-text">Üniteyi başarıyla tamamladınız!</p>
+            <p class="subtitle-text">Bir sonraki üniteye geçmek için reklam izlemelisiniz.</p>
+            <button class="btn-primary success-gradient" id="victory-ad-btn">📺 Reklam İzle & Üniteyi Aç</button>
+            <button class="btn-primary muted" onclick="navigateToTab('home')">Ana Sayfaya Dön</button>
+        </div>
+
+        <!-- ===== TEST SONUÇ ===== -->
+        <div id="screen-test-result" class="hidden center screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="navigateToTab('home')">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">📊 Sonuç</h2>
+            </div>
+            <div id="test-result-text" class="profile-card" style="font-size:1.2rem;"></div>
+        </div>
+
+        <!-- ===== İSTATİSTİKLER ===== -->
+        <div id="screen-results" class="hidden screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="goBackToDrawer()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">📊 İstatistikler</h2>
+            </div>
+            <div class="profile-card">
+                <h3>Genel Başarı</h3>
+                <p>🌟 Toplam Çözülen Soru: <span id="stat-solved">0</span></p>
+                <p>📦 Tamamlanan Test: <span id="stat-tests">0</span></p>
+                <p>🔥 Günlük Streak: <span id="stat-streak">0</span></p>
+            </div>
+            <div id="stats-container"></div>
+        </div>
+
+        <!-- ===== FAVORİLER ===== -->
+        <div id="screen-favorites" class="hidden screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="navigateToTab('home')">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">⭐ Favorilerim</h2>
+            </div>
+            <div id="favorites-list"></div>
+        </div>
+
+        <!-- ===== LİDERLİK TABLOSU ===== -->
+        <div id="screen-leaderboard" class="hidden screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="navigateToTab('home')">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">🏆 Liderlik Tablosu</h2>
+            </div>
+            <div id="leaderboard-container"></div>
+        </div>
+
+        <!-- ===== AYARLAR ===== -->
+        <div id="screen-settings" class="hidden screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="goBackToDrawer()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">⚙️ Gelişmiş Ayarlar</h2>
+            </div>
+            <p style="margin-bottom:20px;">Göz zevkine göre uygulamayı kişiselleştir.</p>
+            
+            <div class="setting-group">
+                <span class="setting-label">🔊 Ses / Titreşim Modu</span>
+                <select id="sound-mode-select" class="form-input" style="width:auto; flex:1; margin-left:10px;" onchange="changeSoundMode(this.value)">
+                    <option value="sound">🔊 Sesli</option>
+                    <option value="vibration">📳 Titreşim</option>
+                    <option value="silent">🔇 Sessiz</option>
+                </select>
+            </div>
+
+            <div class="setting-group">
+                <span class="setting-label">Uygulama Teması</span>
+                <div class="theme-circles">
+                    <button class="circle-btn" style="background:#0f2c59;" onclick="changeTheme('#0f2c59','#1b3b75','#3b82f6')" title="Klasik Mavi"></button>
+                    <button class="circle-btn" style="background:#065f46;" onclick="changeTheme('#065f46','#047857','#10b981')" title="Zümrüt Yeşil"></button>
+                    <button class="circle-btn" style="background:#ea580c;" onclick="changeTheme('#ea580c','#c2410c','#f97316')" title="Turuncu"></button>
+                    <button class="circle-btn" style="background:#6b21a8;" onclick="changeTheme('#6b21a8','#581c87','#a855f7')" title="Mor"></button>
+                    <button class="circle-btn" style="background:#b91c1c;" onclick="changeTheme('#b91c1c','#991b1b','#ef4444')" title="Kırmızı"></button>
+                    <button class="circle-btn" style="background:#db2777;" onclick="changeTheme('#db2777','#be185d','#f472b6')" title="Pembe"></button>
+                    <button class="circle-btn" style="background:#0d9488;" onclick="changeTheme('#0d9488','#0f766e','#14b8a6')" title="Turkuaz"></button>
+                </div>
+            </div>
+            <div class="setting-group">
+                <div>
+                    <div class="setting-label">Karanlık Mod</div>
+                    <div class="setting-desc">Göz yorgunluğunu azaltmak için koyu renkler</div>
+                </div>
+                <input type="checkbox" id="dark-mode-toggle" class="toggle-switch" onchange="toggleDarkMode(this)" />
+            </div>
+            <div class="setting-group">
+                <div>
+                    <div class="setting-label">Bildirimler</div>
+                    <div class="setting-desc">Sınav hatırlatmaları ve günlük sorular</div>
+                </div>
+                <input type="checkbox" id="notifications-toggle" class="toggle-switch" checked onchange="toggleNotifications(this)" />
+            </div>
+            <div class="profile-card">
+                <h3>🔑 Şifre Değiştir</h3>
+                <div class="form-group">
+                    <input type="password" id="old-pass" class="form-input" placeholder="Mevcut Şifre" style="margin-bottom:10px;" />
+                </div>
+                <div class="form-group">
+                    <input type="password" id="new-pass" class="form-input" placeholder="Yeni Şifre" style="margin-bottom:10px;" />
+                </div>
+                <div class="form-group">
+                    <input type="password" id="new-pass-confirm" class="form-input" placeholder="Yeni Şifre (Tekrar)" style="margin-bottom:10px;" />
+                </div>
+                <button class="btn-primary" onclick="changePassword()" style="margin-top:0; padding:10px;">Şifreyi Güncelle</button>
+            </div>
+            <div class="profile-card">
+                <h3>⭐ Favoriler</h3>
+                <button class="btn-danger" onclick="clearFavorites()">Tüm Favorileri Temizle</button>
+            </div>
+            <div class="profile-card danger-zone">
+                <h3 style="color:var(--danger);">⚠️ Hesap Sil</h3>
+                <p>Hesabını kalıcı olarak silmek istiyorsan aşağıdaki butona basabilirsin.</p>
+                <button class="btn-danger" onclick="deleteAccount()">Hesabımı Kalıcı Olarak Sil</button>
+            </div>
+        </div>
+
+        <!-- ===== GİZLİLİK POLİTİKASI ===== -->
+        <div id="screen-privacy" class="hidden centered-page screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="goBackToDrawer()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">🔒 Gizlilik Politikası</h2>
+            </div>
+            <div class="content-container"></div>
+        </div>
+
+        <!-- ===== KULLANIM KOŞULLARI ===== -->
+        <div id="screen-terms" class="hidden centered-page screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="goBackToDrawer()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">📜 Kullanım Koşulları</h2>
+            </div>
+            <div class="content-container"></div>
+        </div>
+
+        <!-- ===== KULLANIM REHBERİ ===== -->
+        <div id="screen-user-guide" class="hidden centered-page screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="goBackToDrawer()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">📖 Kullanım Rehberi</h2>
+            </div>
+            <div class="content-container"></div>
+        </div>
+
+        <!-- ===== HAKKINDA ===== -->
+        <div id="screen-about" class="hidden centered-page screen">
+            <div class="header-row" style="display:flex; align-items:flex-start;">
+                <button class="back-btn" onclick="goBackToDrawer()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title" style="flex:1; text-align:center; margin-top:1cm;">ℹ️ Hakkında</h2>
+            </div>
+            <div class="content-container"></div>
+        </div>
+
+        <!-- ===== BİZE ULAŞIN ===== -->
+        <div id="screen-contact" class="hidden centered-page screen">
+            <div class="header-row" style="display:flex; align-items:flex-start;">
+                <button class="back-btn" onclick="goBackToDrawer()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title" style="flex:1; text-align:center; margin-top:1cm;">📧 Bize Ulaşın</h2>
+            </div>
+            <div class="profile-card">
+                <p>Herhangi bir sorunuz, öneriniz veya geri bildiriminiz varsa lütfen aşağıdaki formu doldurun.</p>
+                <div class="form-group">
+                    <label for="contact-message" class="form-label">Mesajınız (en fazla 500 karakter)</label>
+                    <textarea id="contact-message" class="form-input" rows="5" maxlength="500" placeholder="Mesajınızı buraya yazın..."></textarea>
+                    <div style="text-align:right; font-size:0.8rem; color:var(--text-muted);"><span id="contact-char-count">0</span>/500</div>
+                </div>
+                <button class="btn-primary" onclick="sendContactMessage()">📤 Gönder</button>
+            </div>
+        </div>
+
+        <!-- ===== BİLGİÇ ===== -->
+        <div id="screen-bilgic" class="hidden center screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="closeBilgic()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">🧠 Bilgiç</h2>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:16px; margin-top:20px;">
+                <button class="btn-primary" style="background:var(--accent);" onclick="openBilgicCategory('zor')">⚡ Zor Sorular (1 Can)</button>
+                <button class="btn-primary" style="background:var(--accent);" onclick="openBilgicCategory('kart')">📇 Bilgi Kartları (1 Can)</button>
+            </div>
+            <div id="bilgic-content" style="margin-top:24px;"></div>
+        </div>
+
+        <!-- ===== ÖDÜL EKRANI ===== -->
+        <div id="screen-rewards" class="hidden screen center">
+            <div class="header-row">
+                <button class="back-btn" onclick="closeRewardScreen()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">💰 Ödül Kazan</h2>
+            </div>
+            <div id="reward-progress-container" style="margin-top:20px;"></div>
+            <div class="reward-cards" style="margin-top:20px;">
+                <div class="reward-card">
+                    <span class="reward-icon">❤️</span>
+                    <p>Mevcut Can: <strong id="reward-heart-count">0</strong></p>
+                    <button class="btn-primary" onclick="watchAdForHeart()">📺 Can Doldur</button>
+                </div>
+                <div class="reward-card">
+                    <span class="reward-icon">💡</span>
+                    <p>Mevcut İpucu: <strong id="reward-hint-count">0</strong></p>
+                    <button class="btn-primary" onclick="watchAdForHint()">📺 İpucu Doldur</button>
+                </div>
+                <div class="reward-card">
+                    <span class="reward-icon">📤</span>
+                    <p>Uygulamayı Paylaş, 5 Can Kazan!</p>
+                    <button class="btn-primary" onclick="shareApp()">📲 Paylaş</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TEST MODAL ===== -->
+        <div id="test-modal" class="modal-overlay hidden" onclick="closeTestModalOutside(event)">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📝 Test</h2>
+                    <button class="modal-close-btn" onclick="closeTestModal()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <p>Tüm kategorilerden karışık 20 soru.</p>
+                    <div class="form-group">
+                        <label for="test-time-select-modal" class="form-label">⏱ Süre Seçin</label>
+                        <select id="test-time-select-modal" class="form-input">
+                            <option value="5">5 dakika</option>
+                            <option value="10" selected>10 dakika</option>
+                            <option value="15">15 dakika</option>
+                            <option value="20">20 dakika</option>
+                        </select>
+                    </div>
+                    <div id="test-modal-info" class="test-info"></div>
+                    <button class="btn-primary" id="test-start-btn" onclick="startTestFromModal()">🚀 Teste Başla</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ŞİFRE SIFIRLAMA MODAL ===== -->
+        <div id="forgot-password-modal" class="modal-overlay hidden" onclick="closeForgotPasswordModalOutside(event)">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🔑 Şifre Sıfırlama</h2>
+                    <button class="modal-close-btn" onclick="closeForgotPasswordModal()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <p>Kayıtlı e-posta adresinize şifre sıfırlama bağlantısı göndereceğiz.</p>
+                    <div class="form-group">
+                        <label for="reset-email" class="form-label">E-posta Adresi</label>
+                        <input type="email" id="reset-email" class="form-input" placeholder="ornek@email.com" />
+                    </div>
+                    <button class="btn-primary" onclick="sendResetLink()">📤 Bağlantı Gönder</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ÖZEL MODAL ===== -->
+        <div id="custom-modal" class="modal-overlay hidden" onclick="closeCustomModalOutside(event)">
+            <div class="modal-content custom-modal-box">
+                <div class="modal-header">
+                    <h2 id="custom-modal-title">Başlık</h2>
+                    <button class="modal-close-btn" onclick="closeCustomModal()">✕</button>
+                </div>
+                <div id="custom-modal-body" class="modal-body"></div>
+            </div>
+        </div>
+
+        <!-- ===== BİLGİ KARTI MODAL ===== -->
+        <div id="bilgi-karti-modal" class="modal-overlay hidden" onclick="closeBilgiKartiModalOutside(event)">
+            <div class="modal-content bilgi-karti-box">
+                <div class="modal-header">
+                    <h2 id="bilgi-karti-title">📇 Bilgi Kartı</h2>
+                    <button class="modal-close-btn" onclick="closeBilgiKartiModal()">✕</button>
+                </div>
+                <div id="bilgi-karti-body" class="modal-body">
+                    <button class="btn-primary" id="bilgi-karti-tamam-btn" onclick="handleBilgiKartiTamam()">✅ Tamam</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== HEDİYE KAZANMA MODAL ===== -->
+        <div id="reward-claim-modal" class="modal-overlay hidden" onclick="closeRewardClaimModalOutside(event)">
+            <div class="modal-content custom-modal-box" style="border: 4px solid #fbbf24; box-shadow: 0 0 40px rgba(251,191,36,0.3);">
+                <div class="modal-header">
+                    <h2>🎁 Tebrikler!</h2>
+                    <button class="modal-close-btn" onclick="closeRewardClaimModal()">✕</button>
+                </div>
+                <div id="reward-claim-body" class="modal-body" style="font-size:1.2rem;"></div>
+            </div>
+        </div>
+
+        <!-- ===== BANNER REKLAM ===== -->
+        <div id="banner-ad" style="background:#f1f5f9; text-align:center; padding:8px; border-radius:8px; margin-top:8px;">
+            <p id="banner-ad-text" style="font-size:0.8rem; color:#64748b; margin:0;">📢 Yükleniyor...</p>
+        </div>
+
+    </div>
+
+    <!-- ===== ALT MENÜ ===== -->
+    <div id="bottom-nav-bar" class="bottom-nav hidden">
+        <button class="nav-item" id="nav-home" onclick="navigateToTab('home')" aria-label="Ana Sayfa">
+            <span class="icon">🏠</span>
+            <span>Ana Sayfa</span>
+        </button>
+        <button class="nav-item" id="nav-bilgic" onclick="navigateToTab('bilgic')" aria-label="Bilgiç">
+            <span class="icon">🧠</span>
+            <span>Bilgiç</span>
+        </button>
+        <button class="nav-item test-nav-btn" id="nav-test" onclick="openTestModal()" aria-label="Test">
+            <span class="icon">📝</span>
+            <span>TEST</span>
+        </button>
+        <button class="nav-item" id="nav-yanlislarim" onclick="startYanlislarim()" aria-label="Yanlışlarım">
+            <span class="icon">🤔</span>
+            <span>Yanlışlarım</span>
+        </button>
+        <button class="nav-item" id="nav-rewards" onclick="openRewardScreen()" aria-label="Ödül Kazan">
+            <span class="icon">💰</span>
+            <span>Ödül</span>
+        </button>
+    </div>
+
+    <!-- ===== DRAWER MENÜ ===== -->
+    <div id="drawer-menu" class="drawer-overlay hidden" onclick="closeDrawerOutside(event)">
+        <div class="drawer-content" id="drawer-box">
+            <div class="drawer-logo-area">
+                <div style="font-size:1.0rem; font-weight:800;">İslami İlimler Soru Bankası</div>
+            </div>
+            <button class="drawer-item" onclick="navigateToDrawer('home')">🏠 Ana Sayfa</button>
+            <button class="drawer-item" onclick="navigateToDrawer('results')">📊 İstatistikler</button>
+            <button class="drawer-item" onclick="navigateToDrawer('settings')">⚙️ Gelişmiş Ayarlar</button>
+            <button class="drawer-item" onclick="navigateToDrawer('user-guide')">📖 Kullanım Rehberi</button>
+            <button class="drawer-item" onclick="navigateToDrawer('privacy')">🔒 Gizlilik Politikası</button>
+            <button class="drawer-item" onclick="navigateToDrawer('terms')">📜 Kullanım Koşulları</button>
+            <button class="drawer-item" onclick="navigateToDrawer('about')">ℹ️ Hakkında</button>
+            <button class="drawer-item" onclick="navigateToDrawer('contact')">📧 Bize Ulaşın</button>
+            <button class="drawer-item" onclick="navigateToDrawer('admin')" style="color:#fcd34d;">🛠️ Admin Panel</button>
+            <button class="drawer-item" onclick="navigateToDrawer('logout')" style="color:#fca5a5; margin-top:auto;">🚪 Çıkış</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== KONFETİ ===== -->
+<canvas id="confetti-canvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; display:none;"></canvas>
+
+<!-- ===== FIREBASE AUTHENTICATION MODÜLLERİ ===== -->
+<!-- YEREL GİRİŞ SİSTEMİ (647-716 Satırlar Arası Bütün Yapı) -->
+<script>
+    // Kullanıcı Durum Takibi
+    window.userState = {
+        uid: "c6HreG568dennHzBCXwpUs6QvM23",
+        isAdmin: true
+    };
+
+    // Yerel Giriş Fonksiyonu
+    window.firebaseLogin = function(email, password) {
+        return new Promise((resolve, reject) => {
+            if (email === "abderdem21@gmail.com" && password === "123456") {
+                const user = {
+                    uid: "c6HreG568dennHzBCXwpUs6QvM23",
+                    email: email
+                };
+                
+                // Admin butonunu göster
+                const adminBtn = document.getElementById('admin-panel-btn');
+                if (adminBtn) adminBtn.style.display = 'block';
+
+                resolve({ user: user });
+            } else {
+                reject(new Error("E-posta veya şifre hatalı!"));
+            }
+        });
+    };
+
+    // Yerel Kayıt Fonksiyonu
+    window.firebaseRegister = function(email, password) {
+        return new Promise((resolve) => {
+            resolve({
+                user: {
+                    uid: "user_" + Date.now(),
+                    email: email
+                }
+            });
+        });
+    };
+
+    // Yerel Çıkış Fonksiyonu
+    window.firebaseLogout = function() {
+        const adminBtn = document.getElementById('admin-panel-btn');
+        if (adminBtn) adminBtn.style.display = 'none';
+        
+        if (typeof navigateToTab === 'function') {
+            navigateToTab('logout');
+        }
+    };
+</script>
+
+<script src="state.js"></script>
+<script src="data.js"></script>
+<script src="game.js"></script>
+<script src="ui.js"></script>
+<script src="settings.js"></script>
+<script>
+    // Admin panelinden dönüş kontrolü
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.location.search.includes('from=admin')) {
+            loadUserState();
+            if (userState && userState.email) {
+                hideAllScreens();
+                document.getElementById("screen-categories").classList.remove("hidden");
+                document.getElementById("bottom-nav-bar").classList.remove("hidden");
+                setActiveNav('home');
+                initCategoryButtons();
+                updateStreakDisplay();
+                showBannerAd();
+            } else {
+                document.getElementById("screen-login").classList.remove("hidden");
+            }
+        }
+    });
+</script>
+</body>
+</html>

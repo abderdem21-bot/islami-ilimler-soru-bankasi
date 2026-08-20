@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "soru": "Tefsir ilminin sözlük anlamı aşağıdakilerden hangisidir?",
+    "secenekler": [
+      "A) Açıklamak, beyan etmek",
+      "B) Yorumlamak, tevil etmek",
+      "C) Okumak, tilavet etmek",
+      "D) Ezberlemek, hıfzetmek"
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 2,
+    "soru": "Kur'an-ı Kerim'in en bilinen ismi aşağıdakilerden hangisidir?",
+    "secenekler": [
+      "A) Furkan",
+      "B) Zikir",
+      "C) Kur'an",
+      "D) Kitab"
+    ],
+    "dogruCevap": "C"
+  }
+  ]

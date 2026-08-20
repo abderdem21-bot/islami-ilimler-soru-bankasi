@@ -1,0 +1,602 @@
+[
+  {
+    "id": 1,
+    "arapca": " اَلْفِقْهُ : عِلْمٌ بِالْمَسَائِلِ الشَّرْعِيَّةِ الْعَمَلِيَّةِ الْمُكْتَسَبَةِ مِنْ اَدِلَّتِهَا التَّفْصِيلِيَّةِ",
+    "turkiye": "Fıkıh, şeriatın ameli meselelerini tafsili delillerinden bilmektir.",
+    "ornek": "Namazın kaç rekât olduğunu ve nasıl kılınacağını Kur'an ve Sünnet'ten öğrenmek."
+  },
+  {
+    "id": 2,
+    "arapca": " اْلاُمُورُ بِمَقَاصِدِهَا",
+    "turkiye": "İşler maksatlarına göredir.",
+    "ornek": "Bir kimse abdest alırken sadece serinlemek niyetiyle alırsa abdesti sahih olmaz; ibadet niyetiyle almalıdır."
+  },
+  {
+    "id": 3,
+    "arapca": " اَلْعِبْرَةُ فِى الْعُقُودِ لِلْمَقَاصِدِ وَ الْمَعَانِى لا لِْلاَلْفَاظِ وَ الْمَبَانِى",
+    "turkiye": "Akitlerde itibar maksatlara ve manalaradır; lafızlara ve açıklamalara değildir.",
+    "ornek": "Bir kimse 'Şu malımı oğlum Ahmet'e hibe ediyorum' dese ancak sağlığında tasarruf hakkını saklı tutsa, bu vasiyet olarak değerlendirilir."
+  },
+  {
+    "id": 4,
+    "arapca": " اَلْيَقِينُ لا يَزُولُ بِالشَّكِّ",
+    "turkiye": "Şüphe, yakîni (kesin bilgiyi) ortadan kaldırmaz.",
+    "ornek": "Abdestli olduğundan emin olan kişi, abdestinin bozulduğundan şüphe ederse abdesti bozulmamış kabul edilir."
+  },
+  {
+    "id": 5,
+    "arapca": " اَلاَصْلُ بَقَاءُ مَا كَانَ عَلَى مَا كَانَ",
+    "turkiye": "Bir şeyin bulunduğu hâl üzere kalması asıldır.",
+    "ornek": "Kayıp bir kişinin hayatta olduğu geçmişte biliniyorsa, öldüğüne dair kesin delil olmadıkça hayatta kabul edilir."
+  },
+  {
+    "id": 6,
+    "arapca": " اَلْقَدِيمُ يُتْرَكُ عَلَى قِدَمِهِ",
+    "turkiye": "Kadim, kıdemi üzerine terk olunur.",
+    "ornek": "Bir evin yağmur suları eskiden beri komşunun bahçesine akıyorsa, komşu buna engel olamaz."
+  },
+  {
+    "id": 7,
+    "arapca": " اَلضَّرَرُ لاَ يَكُونُ قَديِمًا",
+    "turkiye": "Zarar kadim olmaz.",
+    "ornek": "Ne kadar eski olursa olsun, kamu sağlığını tehdit eden bir çöplük veya kanalizasyon kaldırılır."
+  },
+  {
+    "id": 8,
+    "arapca": " اَلاَصْلُ بَرَائَةُ الذِّمَّةِ",
+    "turkiye": "Beraat-ı zimmet asıldır (kişi borçtan uzak kabul edilir).",
+    "ornek": "Bir kimse başkasına borçlu olduğunu iddia ediyorsa, bunu ispat etmesi gerekir."
+  },
+  {
+    "id": 9,
+    "arapca": " اَلاَصْلُ فِى الصِّفَاتِ الْعَارِضَةِ الْعَدَمُ",
+    "turkiye": "Ârızî sıfatlarda asıl olan yokluktur.",
+    "ornek": "Bir malın ayıplı olduğu iddia ediliyorsa, ayıbın varlığını iddia eden ispatlamalıdır."
+  },
+  {
+    "id": 10,
+    "arapca": " مَا ثَبَتَ بِزَمَانٍ يُحْكَمُ بِبَقَائِهِ مَا لَمْ يُوجَدِ الْمُزِيلُ",
+    "turkiye": "Bir vakitte sabit olan şey, izale eden (ortadan kaldıran) bulunmadıkça bekasıyla hükmolunur.",
+    "ornek": "Bir kişinin bir mala sahip olduğu sabitse, satmadıkça veya hibe etmedikçe mülkiyeti devam eder."
+  },
+  {
+    "id": 11,
+    "arapca": " اَلْحَادِثُ يُضَافُ إِلَى أَقْرَبِ الزَّمَانِ",
+    "turkiye": "Sonradan meydana gelen iş, en yakın zamana izafe edilir.",
+    "ornek": "Kadın, kocasının ölüm hastalığında kendini boşadığını iddia ederse; varisler aksini iddia etmedikçe kadının sözü geçerlidir."
+  },
+  {
+    "id": 12,
+    "arapca": " اْلاَصْلُ فِى الْكَلاَمِ اَلْحَقِيقَةُ",
+    "turkiye": "Kelamda aslolan hakikat (gerçek anlam)dır.",
+    "ornek": "Bir kimse 'Bu ev Ahmet'indir' dese, bu mülkiyet anlamına gelir; sonradan 'kira ile oturuyor' demesi kabul edilmez."
+  },
+  {
+    "id": 13,
+    "arapca": " لاَ عِبْرَةَ لِلدَّلاَلَةِ فِى مُقَابَلَةِ التَّصْرِيحِ",
+    "turkiye": "Açık ifade (sarih) karşısında delalete itibar edilmez.",
+    "ornek": "Bir kimse, bir işe açıkça izin vermişken sonra açıkça men etse, artık delalete (hâlin işaretine) itibar edilmez."
+  },
+  {
+    "id": 14,
+    "arapca": " لاَ مَسَاغَ ِللاِجْتِهَادِ فِى مَوْرِدِ النَّصِّ",
+    "turkiye": "Nassın (açık hükmün) bulunduğu yerde ictihada yer yoktur.",
+    "ornek": "Kur'an'da 'Allah alışverişi helal kıldı' buyrulduktan sonra, bunun helal olup olmadığı konusunda ictihad yapılamaz."
+  },
+  {
+    "id": 15,
+    "arapca": " مَا ثَبَتَ عَلَى خِلاَفِ الْقِيَاسِ فَغَيْرُهُ لاَ يُقَاسُ عَلَيْه",
+    "turkiye": "Kıyasa aykırı olarak sabit olan şey, başkasına kıyas edilemez.",
+    "ornek": "Sabah namazının sünnetinin özel bir sebeple kaza edilmesi, başka vakitlere kıyas edilemez."
+  },
+  {
+    "id": 16,
+    "arapca": " اْلاِجْتِهَادُ لاَ يُنْقَضُ بِمِثْلِهِ",
+    "turkiye": "İctihad ile diğer ictihad nakz (bozulmuş) olunmaz.",
+    "ornek": "Bir âlimin ictihadı, başka bir âlimin ictihadı ile geçersiz kılınamaz."
+  },
+  {
+    "id": 17,
+    "arapca": " اَلْمَشَقَّةُ تَجْلِبُ التَّيْسِيرَ",
+    "turkiye": "Meşakkat (zorluk), teysîri (kolaylığı) getirir.",
+    "ornek": "Yolculuk halinde oruç tutmamak veya namazları kısaltmak bu kaideye dayanır."
+  },
+  {
+    "id": 18,
+    "arapca": " اْلاَمْرُ اِذَا ضَاقَ اِتَّسَعَ",
+    "turkiye": "Bir iş daraldığında genişler.",
+    "ornek": "Borcunu ödeyemeyen kişiye ödeme gücü elde edene kadar süre tanınması."
+  },
+  {
+    "id": 19,
+    "arapca": " لاَ ضَرَرَ وَ لاَ ضِرَارَ",
+    "turkiye": "Zarar vermek ve zarara zararla karşılık vermek yoktur.",
+    "ornek": "Alacaklı, borçluyu döverek veya hapsederek borcunu tahsil edemez."
+  },
+  {
+    "id": 20,
+    "arapca": " اَلضَّرَرُ يُزَالُ",
+    "turkiye": "Zarar izale olunur (giderilir).",
+    "ornek": "Komşunun arsasındaki ağacın dalları komşuya zarar veriyorsa, dallar kesilir."
+  },
+  {
+    "id": 21,
+    "arapca": " اَلضَّرُورَاتُ تُبِيحُ الْمَحْظُورَاتِ",
+    "turkiye": "Zaruretler, yasaklanmış şeyleri mübah kılar.",
+    "ornek": "Açlıktan ölme tehlikesi yaşayan kişi, mecbur kalırsa domuz eti yiyebilir."
+  },
+  {
+    "id": 22,
+    "arapca": " ماَ اُبِيحَ لِلضَّرُورَةِ يُتَقَدَّرُ بِقَدَرِهَا",
+    "turkiye": "Zaruretle mübah kılınan şey, zaruret miktarınca takdir olunur.",
+    "ornek": "Açlıktan ölme tehlikesi olan kişi, sadece hayatta kalacak kadar yer, fazlası haramdır."
+  },
+  {
+    "id": 23,
+    "arapca": " مَا جَازَ لِعُذْرٍ بَطَلَ بِزَوَالِهِ",
+    "turkiye": "Bir özür için caiz olan şey, özrün kalkmasıyla batıl olur.",
+    "ornek": "Su bulunduğunda teyemmüm batıl olur."
+  },
+  {
+    "id": 24,
+    "arapca": " اِذَا زَالَ الْمَانِعُ عَادَ الْمَمْنُوعُ",
+    "turkiye": "Mâni (engel) ortadan kalkınca yasaklanan şey eski hâline döner.",
+    "ornek": "Küçükken şahitliği kabul edilmeyen kimse, ergin olunca şahitliği geçerli olur."
+  },
+  {
+    "id": 25,
+    "arapca": " اَلضَّرَرُ لاَ يُزَالُ بِمِثْلِهِ",
+    "turkiye": "Zarar, kendi misli ile giderilemez.",
+    "ornek": "Zarar gören kimse, karşı tarafa aynı şekilde zarar veremez."
+  },
+  {
+    "id": 26,
+    "arapca": " يُتَحَمَّلُ اَلضَّرَرُ الْخَاصُّ لِدَفْعِ ضَرَرٍ عَامٍّ",
+    "turkiye": "Genel bir zararı def etmek için özel bir zarara katlanılır.",
+    "ornek": "Yangının yayılmasını önlemek için birkaç evin yıkılması."
+  },
+  {
+    "id": 27,
+    "arapca": " اَلضَّرَرُ اْلاَشَدُّ يُزَالُ بِالضَّرَرِ اْلاَخَفِّ",
+    "turkiye": "Şiddetli zarar, daha hafif bir zararla giderilir.",
+    "ornek": "Ölü hamile kadının karnından sağ çocuğu çıkarmak için kadına verilecek zarar, çocuğa gelecek zarardan hafif olduğu için caizdir."
+  },
+  {
+    "id": 28,
+    "arapca": " اِذَا تَعَارَضَ مَفْسَدَتَانِ رُوعِىَ اَعْظَمُهُمَا ضَّرَرًا بِارْتِكَابِ اَخَفِّهِمَا",
+    "turkiye": "İki fesat çatıştığında, hafif olanı işleyerek büyük olanın zararı önlenir.",
+    "ornek": "Zalim yöneticiye başkaldırmak daha büyük kaosa yol açacaksa, ona itaat edilerek büyük zarardan kaçınılır."
+  },
+  {
+    "id": 29,
+    "arapca": " يُخْتَارُ اَهْوَنُ الشَّرَّيْنِ",
+    "turkiye": "İki şerden ehveni (daha hafifi) tercih edilir.",
+    "ornek": "Kangren olan parmak, kolu kurtarmak için kesilir."
+  },
+  {
+    "id": 30,
+    "arapca": " دَرْءُ الْمَفَاسِدِ اَوْلَى مِنْ جَلْبِ الْمَنَافِعِ",
+    "turkiye": "Mefsedetleri (kötülükleri) def etmek, menfaatleri celp etmekten önce gelir.",
+    "ornek": "Kişi, kendi mülkünde komşusuna zarar verecek bir iş yapamaz."
+  },
+  {
+    "id": 31,
+    "arapca": " اَلضَّرَرُ يُدْفَعُ بِقَدَرِ اْلاِمْكَانِ",
+    "turkiye": "Zarar, imkân nispetinde def olunur.",
+    "ornek": "Zarar veren kişi ölmüşse, bıraktığı miras kadar tazmin edilir, fazlası istenemez."
+  },
+  {
+    "id": 32,
+    "arapca": " اَلْحَاجَةُ تُنَزَّلُ مَنْزِلَةَ الضَّرُورَةِ عَامَّةً اَوْ خَاصَّةً",
+    "turkiye": "İhtiyaç, umumi veya hususi olsun, zaruret mertebesine indirilir.",
+    "ornek": "Hamamlarda ücret karşılığı yıkanmaya cevaz verilmesi, kıyasa aykırı olsa da ihtiyaç sebebiyle caiz görülmüştür."
+  },
+  {
+    "id": 33,
+    "arapca": " اْلاِضْطِرَارُ لاَ يُبْطِلُ حَقَّ الْغَيْرِ",
+    "turkiye": "Iztırar (zorunluluk) başkasının hakkını iptal etmez.",
+    "ornek": "Açlıktan ölme tehlikesiyle başkasının malını alan kişi, bedelini ödemek zorundadır."
+  },
+  {
+    "id": 34,
+    "arapca": " مَا حَرُمَ اَخْذُهُ حَرُمَ اِعْطَاؤُهُ",
+    "turkiye": "Alınması haram olan şeyin verilmesi de haramdır.",
+    "ornek": "Rüşvet almak da vermek de haramdır."
+  },
+  {
+    "id": 35,
+    "arapca": " مَا حَرُمَ فِعْلُهُ حَرُمَ طَلَبُهُ",
+    "turkiye": "Fiili haram olan şeyi istemek de haramdır.",
+    "ornek": "Yalan yere şahitlik yapmayı başkasından talep etmek haramdır."
+  },
+  {
+    "id": 36,
+    "arapca": " اَلْعَادَةُ مُحَكِّمَةٌ",
+    "turkiye": "Örf ve âdet hüküm verirken delil kabul edilir.",
+    "ornek": "Bir yerde 'ekmek' denildiğinde buğday ekmeği kastediliyorsa, hüküm buna göre verilir."
+  },
+  {
+    "id": 37,
+    "arapca": " اِسْتِعْمَالُ النَّاسِ حُجَّةٌ تَجِبُ الْعَمَلُ بِهَا",
+    "turkiye": "Halkın uygulaması, üzerine amel etmek vacip olan bir delildir.",
+    "ornek": "Bir işçinin çalışma süresi, özel bir düzenleme yoksa örf ile belirlenir."
+  },
+  {
+    "id": 38,
+    "arapca": " اَلْمُمْتَنِعُ عَادَةً كَالْمُمْتَنِعِ حَقِيقَةً",
+    "turkiye": "Âdeten imkânsız olan, hakikaten imkânsız gibidir.",
+    "ornek": "Bir kadının karnındaki çocuğun mal sattığını iddia etmesi dinlenmez."
+  },
+  {
+    "id": 39,
+    "arapca": " لاَ يُنْكَرُ تَغَيُّرُ اْلاَحْكَامِ بِتَغَيُّرِ الْأَزْمَانِ",
+    "turkiye": "Zamanların değişmesiyle hükümlerin değişmesi inkar olunamaz.",
+    "ornek": "Örf ve şartlar değiştiğinde, buna göre hükümler yeniden yorumlanabilir."
+  },
+  {
+    "id": 40,
+    "arapca": " اَلْيَقِينُ لاَ يَزُولُ بِالشَّكِّ",
+    "turkiye": "Şüphe, yakîni (kesin bilgiyi) ortadan kaldırmaz.",
+    "ornek": "Malın mülkiyeti sabit olan kişi, aksi ispatlanmadıkça mal sahibi sayılır."
+  },
+  {
+    "id": 41,
+    "arapca": " اَلْأَصْلُ فِي الْأَشْيَاءِ الْإِبَاحَةُ",
+    "turkiye": "Eşyada aslolan ibahadır (serbestliktir).",
+    "ornek": "Bir yiyecek veya içecek, haram olduğuna dair delil olmadıkça helal kabul edilir."
+  },
+  {
+    "id": 42,
+    "arapca": " اَلْأَصْلُ فِي الْأَوَامِرِ لِلْوُجُوبِ",
+    "turkiye": "Emirlerde aslolan vücûbtur (zorunluluktur).",
+    "ornek": "Kur'an'da 'Namazı kılın' emri farziyet ifade eder."
+  },
+  {
+    "id": 43,
+    "arapca": " اَلْأَصْلُ فِي النَّوَاهِي لِلتَّحْرِيمِ",
+    "turkiye": "Nehiylerde (yasaklarda) aslolan haramlıktır.",
+    "ornek": "'Zinaya yaklaşmayın' emri haramlık ifade eder."
+  },
+  {
+    "id": 44,
+    "arapca": " اَلْمَشْقَةُ تَجْلِبُ التَّيْسِيرَ",
+    "turkiye": "Zorluk, kolaylığı getirir.",
+    "ornek": "Hastalık veya yolculuk gibi zor durumlarda ibadetlerde kolaylık sağlanır."
+  },
+  {
+    "id": 45,
+    "arapca": " اَلضَّرُورَةُ تُقَدَّرُ بِقَدْرِهَا",
+    "turkiye": "Zaruret kendi miktarınca takdir edilir.",
+    "ornek": "Zaruret halinde, sadece zarureti giderecek kadar hareket edilir."
+  },
+  {
+    "id": 46,
+    "arapca": " اَلْعَادَةُ مُحَكِّمَةٌ",
+    "turkiye": "Örf ve âdet hüküm verirken delil kabul edilir.",
+    "ornek": "Bir malın değeri, o bölgedeki örfi fiyata göre belirlenir."
+  },
+  {
+    "id": 47,
+    "arapca": " اَلْيَقِينُ لَا يُزَالُ بِالشَّكِّ",
+    "turkiye": "Şüphe, yakîni ortadan kaldırmaz.",
+    "ornek": "Bir kimse, eşini boşadığından şüphe ediyorsa, boşama gerçekleşmemiş kabul edilir."
+  },
+  {
+    "id": 48,
+    "arapca": " اَلْأَصْلُ بَقَاءُ مَا كَانَ عَلَى مَا كَانَ",
+    "turkiye": "Bir şeyin bulunduğu hâl üzere kalması asıldır.",
+    "ornek": "Bir malın mülkiyeti sabitse, aksi ispatlanana kadar mülkiyet devam eder."
+  },
+  {
+    "id": 49,
+    "arapca": " اَلضَّرَرُ يُزَالُ",
+    "turkiye": "Zarar giderilir.",
+    "ornek": "Zarar veren bir yapı, zararı giderilinceye kadar müdahale edilir."
+  },
+  {
+    "id": 50,
+    "arapca": " اَلضَّرَرُ لَا يَكُونُ قَدِيمًا",
+    "turkiye": "Zarar kadim olmaz.",
+    "ornek": "Eskiden beri devam eden bir zarar bile olsa, giderilmesi gerekir."
+  },
+  {
+    "id": 51,
+    "arapca": " اَلْأَصْلُ فِي الصِّفَاتِ الْعَارِضَةِ الْعَدَمُ",
+    "turkiye": "Ârızî sıfatlarda asıl olan yokluktur.",
+    "ornek": "Bir malda ayıp olduğu iddia ediliyorsa, bunu ispat etmek gerekir."
+  },
+  {
+    "id": 52,
+    "arapca": " مَا ثَبَتَ بِزَمَانٍ يُحْكَمُ بِبَقَائِهِ مَا لَمْ يُوجَدِ الْمُزِيلُ",
+    "turkiye": "Bir vakitte sabit olan şey, izale eden bulunmadıkça bekasıyla hükmolunur.",
+    "ornek": "Bir kişinin bir mala sahip olduğu sabitse, satmadıkça mülkiyeti devam eder."
+  },
+  {
+    "id": 53,
+    "arapca": " اَلْحَادِثُ يُضَافُ إِلَى أَقْرَبِ الزَّمَانِ",
+    "turkiye": "Sonradan meydana gelen iş, en yakın zamana izafe edilir.",
+    "ornek": "Bir kişinin ölümüyle ilgili ihtilafta, ölüm en yakın zamana nispet edilir."
+  },
+  {
+    "id": 54,
+    "arapca": " اَلْأَصْلُ فِي الْكَلَامِ الْحَقِيقَةُ",
+    "turkiye": "Kelamda aslolan hakikattir.",
+    "ornek": "Bir söz, mecaz olarak yorumlanamaz; hakiki anlamı esas alınır."
+  },
+  {
+    "id": 55,
+    "arapca": " لَا عِبْرَةَ لِلدَّلَالَةِ فِي مُقَابَلَةِ التَّصْرِيحِ",
+    "turkiye": "Açık ifade karşısında delalete itibar edilmez.",
+    "ornek": "Açıkça men edilen bir iş, hâlin delaletiyle mübah olmaz."
+  },
+  {
+    "id": 56,
+    "arapca": " لَا مَسَاغَ لِلِاجْتِهَادِ فِي مَوْرِدِ النَّصِّ",
+    "turkiye": "Nassın bulunduğu yerde ictihada yer yoktur.",
+    "ornek": "Kur'an'da açıkça haram kılınan bir şeyde ictihad yapılamaz."
+  },
+  {
+    "id": 57,
+    "arapca": " مَا ثَبَتَ عَلَى خِلَافِ الْقِيَاسِ فَغَيْرُهُ لَا يُقَاسُ عَلَيْهِ",
+    "turkiye": "Kıyasa aykırı sabit olan şey, başkasına kıyas edilemez.",
+    "ornek": "Özel bir sebeple verilen bir ruhsat, başka durumlara kıyas edilemez."
+  },
+  {
+    "id": 58,
+    "arapca": " اَلِاجْتِهَادُ لَا يُنْقَضُ بِمِثْلِهِ",
+    "turkiye": "İctihad, benzeri ile bozulamaz.",
+    "ornek": "Bir âlimin ictihadı, başka bir âlimin ictihadı ile geçersiz kılınamaz."
+  },
+  {
+    "id": 59,
+    "arapca": " اَلْمَشَقَّةُ تَجْلِبُ التَّيْسِيرَ",
+    "turkiye": "Zorluk, kolaylığı getirir.",
+    "ornek": "Yolculuk halinde oruç tutmamak bu kaideye dayanır."
+  },
+  {
+    "id": 60,
+    "arapca": " اَلْأَمْرُ إِذَا ضَاقَ اتَّسَعَ",
+    "turkiye": "Bir iş daraldığında genişler.",
+    "ornek": "Borçluya ödeme gücü elde edene kadar süre tanınması."
+  },
+  {
+    "id": 61,
+    "arapca": " لَا ضَرَرَ وَلَا ضِرَارَ",
+    "turkiye": "Zarar vermek ve zarara zararla karşılık vermek yoktur.",
+    "ornek": "Alacaklı, borçluyu zorla borcunu ödemeye zorlayamaz."
+  },
+  {
+    "id": 62,
+    "arapca": " اَلضَّرَرُ يُزَالُ",
+    "turkiye": "Zarar giderilir.",
+    "ornek": "Bir komşunun duvarı diğerine zarar veriyorsa, duvar düzeltilir."
+  },
+  {
+    "id": 63,
+    "arapca": "63. اَلضَّرُورَاتُ تُبِيحُ الْمَحْظُورَاتِ",
+    "turkiye": "Zaruretler, yasaklanmış şeyleri mübah kılar.",
+    "ornek": "Açlıktan ölme tehlikesi yaşayan kişi, mecbur kalırsa domuz eti yiyebilir."
+  },
+  {
+    "id": 64,
+    "arapca": "64. مَا أُبِيحَ لِلضَّرُورَةِ يُتَقَدَّرُ بِقَدَرِهَا",
+    "turkiye": "Zaruretle mübah kılınan şey, zaruret miktarınca takdir olunur.",
+    "ornek": "Açlıktan ölme tehlikesi olan kişi, sadece hayatta kalacak kadar yer."
+  },
+  {
+    "id": 65,
+    "arapca": " مَا جَازَ لِعُذْرٍ بَطَلَ بِزَوَالِهِ",
+    "turkiye": "Bir özür için caiz olan şey, özrün kalkmasıyla batıl olur.",
+    "ornek": "Su bulunduğunda teyemmüm batıl olur."
+  },
+  {
+    "id": 66,
+    "arapca": " إِذَا زَالَ الْمَانِعُ عَادَ الْمَمْنُوعُ",
+    "turkiye": "Mâni ortadan kalkınca yasaklanan şey eski hâline döner.",
+    "ornek": "Çocuk ergin olunca, daha önce yasak olan tasarrufları serbest olur."
+  },
+  {
+    "id": 67,
+    "arapca": " اَلضَّرَرُ لَا يُزَالُ بِمِثْلِهِ",
+    "turkiye": "Zarar, kendi misli ile giderilemez.",
+    "ornek": "Zarar gören kimse, aynı şekilde karşı tarafa zarar veremez."
+  },
+  {
+    "id": 68,
+    "arapca": " يُتَحَمَّلُ الضَّرَرُ الْخَاصُّ لِدَفْعِ ضَرَرٍ عَامٍّ",
+    "turkiye": "Genel zararı def etmek için özel zarara katlanılır.",
+    "ornek": "Yangını durdurmak için birkaç evin yıkılması."
+  },
+  {
+    "id": 69,
+    "arapca": " اَلضَّرَرُ الْأَشَدُّ يُزَالُ بِالضَّرَرِ الْأَخَفِّ",
+    "turkiye": "Şiddetli zarar, daha hafif bir zararla giderilir.",
+    "ornek": "Ölü hamile kadından sağ çocuğu çıkarmak."
+  },
+  {
+    "id": 70,
+    "arapca": " إِذَا تَعَارَضَ مَفْسَدَتَانِ رُوعِيَ أَعْظَمُهُمَا ضَرَرًا بِارْتِكَابِ أَخَفِّهِمَا",
+    "turkiye": "İki fesat çatıştığında, hafif olanı işleyerek büyük olanın zararı önlenir.",
+    "ornek": "Zalim yöneticiye başkaldırmak daha büyük kaosa yol açacaksa, ona itaat edilir."
+  },
+  {
+    "id": 71,
+    "arapca": " يُخْتَارُ أَهْوَنُ الشَّرَّيْنِ",
+    "turkiye": "İki şerden ehveni tercih edilir.",
+    "ornek": "Kangren olan parmak, kolu kurtarmak için kesilir."
+  },
+  {
+    "id": 72,
+    "arapca": " دَرْءُ الْمَفَاسِدِ أَوْلَى مِنْ جَلْبِ الْمَنَافِعِ",
+    "turkiye": "Mefsedetleri def etmek, menfaatleri celp etmekten önce gelir.",
+    "ornek": "Kişi, kendi mülkünde komşusuna zarar verecek bir iş yapamaz."
+  },
+  {
+    "id": 73,
+    "arapca": " اَلضَّرَرُ يُدْفَعُ بِقَدَرِ الْإِمْكَانِ",
+    "turkiye": "Zarar, imkân nispetinde def olunur.",
+    "ornek": "Zarar veren kişi ölmüşse, bıraktığı miras kadar tazmin edilir."
+  },
+  {
+    "id": 74,
+    "arapca": " اَلْحَاجَةُ تُنَزَّلُ مَنْزِلَةَ الضَّرُورَةِ عَامَّةً أَوْ خَاصَّةً",
+    "turkiye": "İhtiyaç, umumi veya hususi olsun, zaruret mertebesine indirilir.",
+    "ornek": "Hamamlarda ücret karşılığı yıkanmaya cevaz verilmesi."
+  },
+  {
+    "id": 75,
+    "arapca": " اَلِاضْطِرَارُ لَا يُبْطِلُ حَقَّ الْغَيْرِ",
+    "turkiye": "Iztırar (zorunluluk) başkasının hakkını iptal etmez.",
+    "ornek": "Açlıktan ölme tehlikesiyle başkasının malını alan kişi, bedelini ödemek zorundadır."
+  },
+  {
+    "id": 76,
+    "arapca": " مَا حَرُمَ أَخْذُهُ حَرُمَ إِعْطَاؤُهُ",
+    "turkiye": "Alınması haram olan şeyin verilmesi de haramdır.",
+    "ornek": "Rüşvet almak da vermek de haramdır."
+  },
+  {
+    "id": 77,
+    "arapca": " مَا حَرُمَ فِعْلُهُ حَرُمَ طَلَبُهُ",
+    "turkiye": "Fiili haram olan şeyi istemek de haramdır.",
+    "ornek": "Yalan yere şahitlik yapmayı başkasından talep etmek haramdır."
+  },
+  {
+    "id": 78,
+    "arapca": " اَلْعَادَةُ مُحَكِّمَةٌ",
+    "turkiye": "Örf ve âdet hüküm verirken delil kabul edilir.",
+    "ornek": "Bir malın değeri, o bölgedeki örfi fiyata göre belirlenir."
+  },
+  {
+    "id": 79,
+    "arapca": " اسْتِعْمَالُ النَّاسِ حُجَّةٌ تَجِبُ الْعَمَلُ بِهَا",
+    "turkiye": "Halkın uygulaması, üzerine amel etmek vacip olan bir delildir.",
+    "ornek": "Bir işçinin çalışma süresi, özel bir düzenleme yoksa örf ile belirlenir."
+  },
+  {
+    "id": 80,
+    "arapca": " اَلْمُمْتَنِعُ عَادَةً كَالْمُمْتَنِعِ حَقِيقَةً",
+    "turkiye": "Âdeten imkânsız olan, hakikaten imkânsız gibidir.",
+    "ornek": "Bir kadının karnındaki çocuğun mal sattığını iddia etmesi dinlenmez."
+  },
+  {
+    "id": 81,
+    "arapca": " لَا يُنْكَرُ تَغَيُّرُ الْأَحْكَامِ بِتَغَيُّرِ الْأَزْمَانِ",
+    "turkiye": "Zamanların değişmesiyle hükümlerin değişmesi inkar olunamaz.",
+    "ornek": "Örf ve şartlar değiştiğinde, buna göre hükümler yeniden yorumlanabilir."
+  },
+  {
+    "id": 82,
+    "arapca": " اَلْيَقِينُ لَا يُزَالُ بِالشَّكِّ",
+    "turkiye": "Şüphe, yakîni ortadan kaldırmaz.",
+    "ornek": "Bir kimse, eşini boşadığından şüphe ediyorsa, boşama gerçekleşmemiş kabul edilir."
+  },
+  {
+    "id": 83,
+    "arapca": " اَلْأَصْلُ بَقَاءُ مَا كَانَ عَلَى مَا كَانَ",
+    "turkiye": "Bir şeyin bulunduğu hâl üzere kalması asıldır.",
+    "ornek": "Bir malın mülkiyeti sabitse, aksi ispatlanana kadar mülkiyet devam eder."
+  },
+  {
+    "id": 84,
+    "arapca": " اَلضَّرَرُ يُزَالُ",
+    "turkiye": "Zarar giderilir.",
+    "ornek": "Zarar veren bir yapı, zararı giderilinceye kadar müdahale edilir."
+  },
+  {
+    "id": 85,
+    "arapca": " اَلضَّرَرُ لَا يَكُونُ قَدِيمًا",
+    "turkiye": "Zarar kadim olmaz.",
+    "ornek": "Eskiden beri devam eden bir zarar bile olsa, giderilmesi gerekir."
+  },
+  {
+    "id": 86,
+    "arapca": " اَلْأَصْلُ فِي الصِّفَاتِ الْعَارِضَةِ الْعَدَمُ",
+    "turkiye": "Ârızî sıfatlarda asıl olan yokluktur.",
+    "ornek": "Bir malda ayıp olduğu iddia ediliyorsa, bunu ispat etmek gerekir."
+  },
+  {
+    "id": 87,
+    "arapca": " مَا ثَبَتَ بِزَمَانٍ يُحْكَمُ بِبَقَائِهِ مَا لَمْ يُوجَدِ الْمُزِيلُ",
+    "turkiye": "Bir vakitte sabit olan şey, izale eden bulunmadıkça bekasıyla hükmolunur.",
+    "ornek": "Bir kişinin bir mala sahip olduğu sabitse, satmadıkça mülkiyeti devam eder."
+  },
+  {
+    "id": 88,
+    "arapca": " اَلْحَادِثُ يُضَافُ إِلَى أَقْرَبِ الزَّمَانِ",
+    "turkiye": "Sonradan meydana gelen iş, en yakın zamana izafe edilir.",
+    "ornek": "Bir kişinin ölümüyle ilgili ihtilafta, ölüm en yakın zamana nispet edilir."
+  },
+  {
+    "id": 89,
+    "arapca": " اَلْأَصْلُ فِي الْكَلَامِ الْحَقِيقَةُ",
+    "turkiye": "Kelamda aslolan hakikattir.",
+    "ornek": "Bir söz, mecaz olarak yorumlanamaz; hakiki anlamı esas alınır."
+  },
+  {
+    "id": 90,
+    "arapca": " لَا عِبْرَةَ لِلدَّلَالَةِ فِي مُقَابَلَةِ التَّصْرِيحِ",
+    "turkiye": "Açık ifade karşısında delalete itibar edilmez.",
+    "ornek": "Açıkça men edilen bir iş, hâlin delaletiyle mübah olmaz."
+  },
+  {
+    "id": 91,
+    "arapca": " لَا مَسَاغَ لِلِاجْتِهَادِ فِي مَوْرِدِ النَّصِّ",
+    "turkiye": "Nassın bulunduğu yerde ictihada yer yoktur.",
+    "ornek": "Kur'an'da açıkça haram kılınan bir şeyde ictihad yapılamaz."
+  },
+  {
+    "id": 92,
+    "arapca": " مَا ثَبَتَ عَلَى خِلَافِ الْقِيَاسِ فَغَيْرُهُ لَا يُقَاسُ عَلَيْهِ",
+    "turkiye": "Kıyasa aykırı sabit olan şey, başkasına kıyas edilemez.",
+    "ornek": "Özel bir sebeple verilen bir ruhsat, başka durumlara kıyas edilemez."
+  },
+  {
+    "id": 93,
+    "arapca": " اَلِاجْتِهَادُ لَا يُنْقَضُ بِمِثْلِهِ",
+    "turkiye": "İctihad, benzeri ile bozulamaz.",
+    "ornek": "Bir âlimin ictihadı, başka bir âlimin ictihadı ile geçersiz kılınamaz."
+  },
+  {
+    "id": 94,
+    "arapca": " اَلْمَشَقَّةُ تَجْلِبُ التَّيْسِيرَ",
+    "turkiye": "Zorluk, kolaylığı getirir.",
+    "ornek": "Yolculuk halinde oruç tutmamak bu kaideye dayanır."
+  },
+  {
+    "id": 95,
+    "arapca": " اَلْأَمْرُ إِذَا ضَاقَ اتَّسَعَ",
+    "turkiye": "Bir iş daraldığında genişler.",
+    "ornek": "Borçluya ödeme gücü elde edene kadar süre tanınması."
+  },
+  {
+    "id": 96,
+    "arapca": " لَا ضَرَرَ وَلَا ضِرَارَ",
+    "turkiye": "Zarar vermek ve zarara zararla karşılık vermek yoktur.",
+    "ornek": "Alacaklı, borçluyu zorla borcunu ödemeye zorlayamaz."
+  },
+  {
+    "id": 97,
+    "arapca": " اَلضَّرَرُ يُزَالُ",
+    "turkiye": "Zarar giderilir.",
+    "ornek": "Bir komşunun duvarı diğerine zarar veriyorsa, duvar düzeltilir."
+  },
+  {
+    "id": 98,
+    "arapca": " اَلضَّرُورَاتُ تُبِيحُ الْمَحْظُورَاتِ",
+    "turkiye": "Zaruretler, yasaklanmış şeyleri mübah kılar.",
+    "ornek": "Açlıktan ölme tehlikesi yaşayan kişi, mecbur kalırsa domuz eti yiyebilir."
+  },
+  {
+    "id": 99,
+    "arapca": " مَا أُبِيحَ لِلضَّرُورَةِ يُتَقَدَّرُ بِقَدَرِهَا",
+    "turkiye": "Zaruretle mübah kılınan şey, zaruret miktarınca takdir olunur.",
+    "ornek": "Açlıktan ölme tehlikesi olan kişi, sadece hayatta kalacak kadar yer."
+  },
+  {
+    "id": 100,
+    "arapca": " مَنْ سَعَى فِي نَقْضِ مَا تَمَّ مِنْ جِهَتِهِ فَسَعْيُهُ بَاطِلٌ",
+    "turkiye": "Kim kendi tarafından tamamlanmış bir işi bozmaya çalışırsa, çabası batıldır.",
+    "ornek": "Bir kimse, yaptığı bir satışı veya hibeyi sonradan bozmaya kalkışsa, bu çabası geçersizdir."
+  }
+]

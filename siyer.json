@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "soru": "Cahiliye döneminde Arapların çoğunlukla inandığı din hangisiydi?",
+    "secenekler": [
+      "A) Putperestlik",
+      "B) Yahudilik",
+      "C) Hristiyanlık",
+      "D) Zerdüştlük"
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 2,
+    "soru": "Cahiliye döneminde Kabe çevresinde tapınılan en önemli putlardan biri aşağıdakilerden hangisidir?",
+    "secenekler": [
+      "A) Lat",
+      "B) Hubel",
+      "C) Menat",
+      "D) Uzza"
+    ],
+    "dogruCevap": "B"
+  }
+  ]

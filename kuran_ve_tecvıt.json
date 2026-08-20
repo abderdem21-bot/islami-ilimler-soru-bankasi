@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "soru": "Kur'ân-ı Kerim'in ilk kez bir araya getirilmesi (cem') hangi halife döneminde olmuştur?",
+    "secenekler": [
+      "A) Hz. Ebû Bekir",
+      "B) Hz. Ömer",
+      "C) Hz. Osman",
+      "D) Hz. Ali"
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 2,
+    "soru": "Cem'ul-Kur'ân çalışmasına başkanlık eden sahabi kimdir?",
+    "secenekler": [
+      "A) Übey b. Ka'b",
+      "B) Zeyd b. Sâbit",
+      "C) Abdullah b. Mes'ûd",
+      "D) Muâz b. Cebel"
+    ],
+    "dogruCevap": "B"
+  }
+  ]

@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "soru": "Kelam ilmi genel olarak neyi konu alır?",
+    "secenekler": [
+      "A) İbadetlerin şekli",
+      "B) İnanç esaslarını akli delillerle savunma",
+      "C) Fıkhi hükümler",
+      "D) Tasavvufi terbiye"
+    ],
+    "dogruCevap": "B"
+  },
+  {
+    "id": 2,
+    "soru": "Kelam ilmi hangi dönemde sistematik hale gelmiştir?",
+    "secenekler": [
+      "A) Sahabe dönemi",
+      "B) Emeviler dönemi",
+      "C) Abbasiler dönemi",
+      "D) Osmanlı dönemi"
+    ],
+    "dogruCevap": "C"
+  }
+  ]

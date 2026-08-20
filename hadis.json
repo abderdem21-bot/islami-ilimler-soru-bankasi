@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "soru": "\"Hadis\" kelimesinin sözlük anlamı aşağıdakilerden hangisidir?",
+    "secenekler": [
+      "A) Yeni haber",
+      "B) Eski söz",
+      "C) Kıssa",
+      "D) Vasiyet"
+    ],
+    "dogruCevap": "A"
+  },
+  {
+    "id": 2,
+    "soru": "Hadis ilmi, İslamî ilimler arasında hangi amaçla ortaya çıkmıştır?",
+    "secenekler": [
+      "A) Kur'an'ı tefsir etmek",
+      "B) Hz. Peygamber'in sünnetini tespit ve korumak",
+      "C) Fıkıh kuralları koymak",
+      "D) Arap dilini geliştirmek"
+    ],
+    "dogruCevap": "B"
+  }
+  ]

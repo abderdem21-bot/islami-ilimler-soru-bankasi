@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel – İslami İlimler</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 20px;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 24px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .back-btn-admin {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--primary, #0f2c59);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .back-btn-admin:hover {
+            background: #e2e8f0;
+        }
+        h1 { margin-top: 0; }
+        .category-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .category-selector button {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .category-selector button.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            color: #2563eb;
+        }
+        .form-box {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        .form-box input, .form-box textarea, .form-box select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+        .form-box textarea { min-height: 60px; }
+        .options-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .options-group input { margin-bottom: 0; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-success { background: #22c55e; color: white; }
+        .btn-success:hover { background: #16a34a; }
+        .list-item {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #3b82f6;
+        }
+        .list-item .text { flex: 1; font-weight: 600; }
+        .list-item .actions button { margin-left: 8px; }
+        .hidden { display: none !important; }
+        .info-text { color: #64748b; font-size: 0.9rem; margin: 6px 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="admin-header">
+        <button class="back-btn-admin" onclick="window.location.href='index.html?from=admin'">
+            ← Geri Dön
+        </button>
+        <h1>🛠️ Admin Panel</h1>
+        <div style="width: 100px;"></div>
+    </div>
+    <p>Kategori seç, soru veya bilgi kartı ekle/düzenle/sil.</p>
+
+    <div class="category-selector" id="category-selector"></div>
+
+    <!-- SORU FORMU -->
+    <div id="question-form-box" class="form-box">
+        <h3>Yeni Soru Ekle</h3>
+        <input type="text" id="new-q" placeholder="Soru metni" />
+        <div class="options-group">
+            <input type="text" id="new-opt0" placeholder="A seçeneği" />
+            <input type="text" id="new-opt1" placeholder="B seçeneği" />
+            <input type="text" id="new-opt2" placeholder="C seçeneği" />
+            <input type="text" id="new-opt3" placeholder="D seçeneği" />
+        </div>
+        <select id="new-answer">
+            <option value="0">A</option>
+            <option value="1">B</option>
+            <option value="2">C</option>
+            <option value="3">D</option>
+        </select>
+        <button class="btn btn-primary" onclick="addQuestion()">➕ Soru Ekle</button>
+    </div>
+
+    <!-- BİLGİ KARTI FORMU -->
+    <div id="kart-form-box" class="form-box hidden">
+        <h3>Yeni Bilgi Kartı Ekle</h3>
+        <input type="text" id="new-kart-title" placeholder="Başlık" />
+        <textarea id="new-kart-content" placeholder="Bilgi içeriği" rows="4"></textarea>
+        <button class="btn btn-primary" onclick="addKnowledgeCard()">📇 Bilgi Kartı Ekle</button>
+    </div>
+
+    <button class="btn btn-success" onclick="saveAndDownload()">💾 JSON'u İndir</button>
+    <button class="btn btn-primary" onclick="loadFromLocal()">📂 Yerelden Yükle</button>
+
+    <!-- SORU LİSTESİ -->
+    <div id="question-list" class="list-container"></div>
+
+    <!-- BİLGİ KARTI LİSTESİ -->
+    <div id="kart-list" class="list-container hidden"></div>
+</div>
+
+<script>
+    const ALLOWED_CATEGORIES = [
+        'TEFSİR','HADİS','KELAM','TASAVVUF','FIKIH',
+        'MEZHEPLER TARİHİ','KURAN VE TECVİT','SİYER',
+        'DİNLER TARİHİ','ZOR SORULAR','BİLGİ KARTLARI'
+    ];
+    let currentCategory = ALLOWED_CATEGORIES[0];
+    let questions = {};
+    let knowledgeCards = [];
+
+    function loadFromLocal() {
+        const data = localStorage.getItem('admin_custom_questions');
+        const kartData = localStorage.getItem('admin_bilgi_kartlari');
+        if (data) {
+            try { questions = JSON.parse(data); } catch(e) { questions = {}; }
+        } else {
+            ALLOWED_CATEGORIES.forEach(cat => { questions[cat] = []; });
+        }
+        if (kartData) {
+            try { knowledgeCards = JSON.parse(kartData); } catch(e) { knowledgeCards = []; }
+        } else {
+            knowledgeCards = [];
+        }
+        renderCategoryButtons();
+        renderCurrentView();
+        showToast('Yerel veri yüklendi.');
+    }
+
+    function renderCategoryButtons() {
+        const container = document.getElementById('category-selector');
+        container.innerHTML = '';
+        ALLOWED_CATEGORIES.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.innerText = cat;
+            btn.className = cat === currentCategory ? 'active' : '';
+            btn.onclick = () => {
+                currentCategory = cat;
+                renderCategoryButtons();
+                renderCurrentView();
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function renderCurrentView() {
+        const isKart = (currentCategory === 'BİLGİ KARTLARI');
+        document.getElementById('question-form-box').classList.toggle('hidden', isKart);
+        document.getElementById('kart-form-box').classList.toggle('hidden', !isKart);
+        document.getElementById('question-list').classList.toggle('hidden', isKart);
+        document.getElementById('kart-list').classList.toggle('hidden', !isKart);
+
+        if (isKart) {
+            renderKnowledgeCards();
+        } else {
+            renderQuestions();
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('question-list');
+        const list = questions[currentCategory] || [];
+        if (list.length === 0) {
+            container.innerHTML = '<p class="info-text">Bu kategoride henüz soru yok.</p>';
+            return;
+        }
+        let html = '<h3>Mevcut Sorular</h3>';
+        list.forEach((q, idx) => {
+            html += `
+                <div class="list-item">
+                    <div class="text">${q.q}</div>
+                    <div class="actions">
+                        <button class="btn btn-danger" onclick="deleteQuestion(${idx})">Sil</button>
+                        <button class="btn btn-primary" onclick="editQuestion(${idx})">Düzenle</button>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function addQuestion() {
+        const q = document.getElementById('new-q').value.trim();
+        const opts = [
+            document.getElementById('new-opt0').value.trim(),
+            document.getElementById('new-opt1').value.trim(),
+            document.getElementById('new-opt2').value.trim(),
+            document.getElementById('new-opt3').value.trim()
+        ];
+        const answer = parseInt(document.getElementById('new-answer').value);
+        if (!q || opts.some(o => !o)) {
+            showToast('Lütfen tüm alanları doldurun.');
+            return;
+        }
+        if (!questions[currentCategory]) questions[currentCategory] = [];
+        questions[currentCategory].push({ q, options: opts, answer });
+        renderQuestions();
+        clearForm();
+        showToast('Soru eklendi.');
+    }
+
+    function deleteQuestion(idx) {
+        if (confirm('Bu soruyu silmek istediğinize emin misiniz?')) {
+            questions[currentCategory].splice(idx, 1);
+            renderQuestions();
+            showToast('Soru silindi.');
+        }
+    }
+
+    function editQuestion(idx) {
+        const q = questions[currentCategory][idx];
+        if (!q) return;
+        document.getElementById('new-q').value = q.q;
+        document.getElementById('new-opt0').value = q.options[0] || '';
+        document.getElementById('new-opt1').value = q.options[1] || '';
+        document.getElementById('new-opt2').value = q.options[2] || '';
+        document.getElementById('new-opt3').value = q.options[3] || '';
+        document.getElementById('new-answer').value = q.answer;
+        deleteQuestion(idx);
+    }
+
+    function clearForm() {
+        document.getElementById('new-q').value = '';
+        document.getElementById('new-opt0').value = '';
+        document.getElementById('new-opt1').value = '';
+        document.getElementById('new-opt2').value = '';
+        document.getElementById('new-opt3').value = '';
+        document.getElementById('new-answer').value = '0';
+    }
+
+    function renderKnowledgeCards() {
+        const container = document.getElementById('kart-list');
+        if (knowledgeCards.length === 0) {
+            container.innerHTML = '<p class="info-text">Henüz bilgi kartı yok.</p>';
+            return;
+        }
+        let html = '<h3>Mevcut Bilgi Kartları</h3>';
+        knowledgeCards.forEach((k, idx) => {
+            html += `
+                <div class="list-item">
+                    <div class="text"><strong>${k.title}</strong><br><span style="font-weight:400;">${k.content}</span></div>
+                    <div class="actions">
+                        <button class="btn btn-danger" onclick="deleteKnowledgeCard(${idx})">Sil</button>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function addKnowledgeCard() {
+        const title = document.getElementById('new-kart-title').value.trim();
+        const content = document.getElementById('new-kart-content').value.trim();
+        if (!title || !content) {
+            showToast('Lütfen başlık ve içeriği doldurun.');
+            return;
+        }
+        knowledgeCards.push({ title, content });
+        document.getElementById('new-kart-title').value = '';
+        document.getElementById('new-kart-content').value = '';
+        renderKnowledgeCards();
+        showToast('Bilgi kartı eklendi.');
+    }
+
+    function deleteKnowledgeCard(idx) {
+        if (confirm('Bu kartı silmek istediğinize emin misiniz?')) {
+            knowledgeCards.splice(idx, 1);
+            renderKnowledgeCards();
+            showToast('Kart silindi.');
+        }
+    }
+
+    function saveAndDownload() {
+        localStorage.setItem('admin_custom_questions', JSON.stringify(questions));
+        localStorage.setItem('admin_bilgi_kartlari', JSON.stringify(knowledgeCards));
+
+        const payload = { questions, knowledgeCards };
+        const dataStr = JSON.stringify(payload, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'admin_full_data.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('JSON dosyası indirildi.');
+    }
+
+    function showToast(msg) {
+        const div = document.createElement('div');
+        div.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1e293b; color:white; padding:12px 24px; border-radius:12px; font-weight:600; z-index:999;';
+        div.innerText = msg;
+        document.body.appendChild(div);
+        setTimeout(() => { div.remove(); }, 2500);
+    }
+
+    loadFromLocal();
+</script>
+</body>
+</html>
