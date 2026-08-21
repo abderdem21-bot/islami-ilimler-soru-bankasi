@@ -64,21 +64,6 @@
     "baslik": "🔒 Gizlilik Politikası",
     "altBaslik": "Son Güncelleme: 21 Ağustos 2026",
     "paragraflar": [
-      "İslami İlimler Soru Bankası olarak kullanıcılarımızın gizliliğine büyük önem veriyoruz. Bu politika, hangi verilerin toplandığını, nasıl kullanıldığını ve korunduğunu açıklar.",
-      "1. Toplanan Veriler: Kullanıcı adı, e-posta, şifre (yerel), ilerleme (açılan üniteler, tamamlananlar, doğru/yanlış sayıları), favoriler, yanlış sorular, ipucu sayısı, can, test sayısı, tema tercihleri. Hepsi localStorage'da saklanır, sunucuya gönderilmez.",
-      "2. Verilerin Kullanımı: Oturum açmak, ilerlemeyi kaydetmek, kişiselleştirilmiş deneyim sunmak, oyun mekaniklerini yönetmek için kullanılır. Üçüncü taraflarla paylaşılmaz.",
-      "3. Veri Güvenliği: localStorage kullanılır, harici sunucu yoktur. Cihazınızın güvenliğinden siz sorumlusunuz.",
-      "4. Çerezler: Kullanılmaz.",
-      "5. Üçüncü Taraf Hizmetler: Kullanılmaz.",
-      "6. Kullanıcı Hakları: Verilerinize erişim, düzeltme, silme (hesap silme) ve taşınabilirlik haklarınız vardır.",
-      "7. Veri Saklama: Uygulamayı kullandığınız sürece saklanır, hesap silinirse kalıcı olarak silinir.",
-      "8. Politika Değişiklikleri: Güncellemeler uygulama içinde duyurulur.",
-      "9. İletişim:'Bize Ulaşın' bölümü."
-    ]
-"gizlilikPolitikasi": {
-    "baslik": "🔒 Gizlilik Politikası",
-    "altBaslik": "Son Güncelleme: 21 Ağustos 2026",
-    "paragraflar": [
       "1. Veri Sorumlusu ve Amaç: İslami İlimler Soru Bankası, kişisel verilerinizin korunmasına önem verir. Bu politika, 6698 sayılı KVKK uyarınca verilerinizin işlenme usullerini kapsar.",
       "2. Toplanan Veriler: Kullanıcı adı, e-posta, şifrelenmiş parola; test sonuçları, sıralama (leaderboard) ve streak verileri; IP adresi, cihaz türü, reklam kimlikleri (Google AAID, Apple IDFA) ve etkileşim logları işlenebilir.",
       "3. İşlenme Amaçları: Hesap oluşturma, güvenlik, sıralama ve istatistik hesaplama, kişiselleştirilmiş içerik sunma, destek taleplerini karşılama ve reklam gösterimi sağlama amacıyla verileriniz işlenir.",
@@ -102,6 +87,5 @@
       "8. Koşulların Değişikliği ve Yürürlük: Geliştiriciler bu koşulları dilediği zaman değiştirebilir. Değişiklikler uygulama içinde yayınlandığı andan itibaren geçerlidir.",
       "9. İletişim: Koşullarla ilgili sorularınız için destek@islamisoru.com adresinden veya 'Bize Ulaşın' bölümünden iletişime geçebilirsiniz."
     ]
-  }
   }
 }
