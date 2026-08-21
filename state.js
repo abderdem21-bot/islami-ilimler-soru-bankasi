@@ -28,8 +28,8 @@ let userState = {
   email: '',
   nickname: '',
   password: '',
-  uid: null,           // Firebase UID
-  isAdmin: false,      // Admin yetkisi
+  uid: null,
+  isAdmin: false,
   adRewardCounts: {
     hardQuestion: 0,
     hint: 0,
@@ -51,6 +51,7 @@ let userState = {
   vitalCardIndex: 0,
   totalTestsCompleted: 0,
   unitCompletionCount: 0,
+  remainingUnitsForChest: 0,
   hearts: 3,
   lastHeartReset: null,
   shareRewardClaimed: false,
@@ -59,7 +60,10 @@ let userState = {
   streakCount: 0,
   lastStreakDate: null,
   leaderboardScore: 0,
-  soundMode: 'sound'  // 'sound', 'vibration', 'silent'
+  soundMode: 'sound',
+  rememberMe: false,
+  dailyLaunchCount: 0,
+  lastLaunchDate: null,
 };
 
 function saveUserState() {
@@ -83,6 +87,7 @@ function loadUserState() {
       if (!userState.password) userState.password = '';
       if (userState.totalTestsCompleted === undefined) userState.totalTestsCompleted = 0;
       if (userState.unitCompletionCount === undefined) userState.unitCompletionCount = 0;
+      if (userState.remainingUnitsForChest === undefined) userState.remainingUnitsForChest = 0;
       if (userState.hearts === undefined) userState.hearts = 3;
       if (userState.shareRewardClaimed === undefined) userState.shareRewardClaimed = false;
       if (userState.statsAdWatchedToday === undefined) userState.statsAdWatchedToday = false;
@@ -93,6 +98,9 @@ function loadUserState() {
       if (userState.soundMode === undefined) userState.soundMode = 'sound';
       if (userState.uid === undefined) userState.uid = null;
       if (userState.isAdmin === undefined) userState.isAdmin = false;
+      if (userState.rememberMe === undefined) userState.rememberMe = false;
+      if (userState.dailyLaunchCount === undefined) userState.dailyLaunchCount = 0;
+      if (userState.lastLaunchDate === undefined) userState.lastLaunchDate = null;
     } catch (e) { console.warn('User state parse error', e); }
   }
   resetHeartsIfNeeded();
