@@ -437,6 +437,11 @@ function confirmLogout() {
     const modal = document.getElementById('custom-modal');
     if (modal) modal.classList.add('hidden');
     
+    // 🛠 DÜZELTME: window.firebaseLogout çağrısı KALDIRILDI (tekrarlayan modal açılmasını engeller)
+    // if (typeof window.firebaseLogout === 'function') {
+    //     window.firebaseLogout();
+    // }
+    
     // Giriş sayfasını göster, alt menüyü gizle
     document.getElementById("screen-login").classList.remove("hidden");
     document.getElementById("bottom-nav-bar").classList.add("hidden");
@@ -454,6 +459,21 @@ function confirmLogout() {
     
     playSound('click');
 }
+
+// ========== ŞİFRE GÖSTER/GİZLE (YENİ FONKSİYON) ==========
+function togglePasswordVisibility(inputId, buttonElement) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    if (input.type === 'password') {
+        input.type = 'text';
+        buttonElement.textContent = '🙈';
+    } else {
+        input.type = 'password';
+        buttonElement.textContent = '👁️';
+    }
+}
+// Fonksiyonu global yapalım (onclick ile çağrılacak)
+window.togglePasswordVisibility = togglePasswordVisibility;
 
 // ===== KATEGORİ BUTONLARI =====
 function initCategoryButtons() {
@@ -1384,55 +1404,8 @@ function closeRewardClaimModalOutside(e) {
 
 // ========== DOMCONTENTLOADED ==========
 document.addEventListener('DOMContentLoaded', function() {
-    // ✅ GİRİŞ EKRANI: Göz ikonu – başlangıçta kapalı (şifre gizli)
-    const toggleLoginBtn = document.getElementById('toggle-password-visibility');
-    const loginPwd = document.getElementById('login-password');
-    if (toggleLoginBtn && loginPwd) {
-        loginPwd.type = 'password'; // başlangıçta gizli
-        toggleLoginBtn.textContent = '👁️'; // göz ikonu
-        toggleLoginBtn.addEventListener('click', function() {
-            if (loginPwd.type === 'password') {
-                loginPwd.type = 'text';
-                this.textContent = '🙈';
-            } else {
-                loginPwd.type = 'password';
-                this.textContent = '👁️';
-            }
-        });
-    }
-
-    // ✅ KAYIT EKRANI: Şifre gözleri – başlangıçta kapalı
-    const toggleRegPass = document.getElementById('toggle-reg-password');
-    const regPass = document.getElementById('reg-password');
-    if (toggleRegPass && regPass) {
-        regPass.type = 'password';
-        toggleRegPass.textContent = '👁️';
-        toggleRegPass.addEventListener('click', function() {
-            if (regPass.type === 'password') {
-                regPass.type = 'text';
-                this.textContent = '🙈';
-            } else {
-                regPass.type = 'password';
-                this.textContent = '👁️';
-            }
-        });
-    }
-
-    const toggleRegPassConfirm = document.getElementById('toggle-reg-password-confirm');
-    const regPassConfirm = document.getElementById('reg-password-confirm');
-    if (toggleRegPassConfirm && regPassConfirm) {
-        regPassConfirm.type = 'password';
-        toggleRegPassConfirm.textContent = '👁️';
-        toggleRegPassConfirm.addEventListener('click', function() {
-            if (regPassConfirm.type === 'password') {
-                regPassConfirm.type = 'text';
-                this.textContent = '🙈';
-            } else {
-                regPassConfirm.type = 'password';
-                this.textContent = '👁️';
-            }
-        });
-    }
+    // 🛠 DÜZELTME: Göz ikonu fonksiyonu artık global ve onclick ile çağrılıyor.
+    // Buradaki eski event listener'lar kaldırıldı.
 
     // Hatırlanan şifreyi doldur
     const savedEmail = localStorage.getItem('saved_email');
@@ -1443,13 +1416,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     if (savedPass) {
         const passField = document.getElementById("login-password");
-        if (passField) {
-            passField.value = savedPass;
-            // Şifre alanı gizli kalacak
-            passField.type = 'password';
-            const toggleBtn = document.getElementById('toggle-password-visibility');
-            if (toggleBtn) toggleBtn.textContent = '👁️';
-        }
+        if (passField) passField.value = savedPass;
     }
     if (savedEmail && savedPass) {
         const rememberMe = document.getElementById("remember-me");
