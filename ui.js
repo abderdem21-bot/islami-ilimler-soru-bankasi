@@ -113,24 +113,31 @@ function changeSoundMode(mode) {
     showToast(`🔊 Ses modu: ${mode === 'sound' ? 'Sesli' : mode === 'vibration' ? 'Titreşim' : 'Sessiz'}`);
 }
 
-// ===== GİRİŞ (Firebase) =====
+// ===== GİRİŞ (rememberMe) =====
 function performLogin() {
     const email = document.getElementById("login-email").value.trim();
     const pass = document.getElementById("login-password").value.trim();
+    const remember = document.getElementById("remember-me").checked;
     if (!email || !pass) {
         showCustomModal("Uyarı", "Lütfen email ve şifre girin!");
         return;
     }
-
-    // Firebase ile giriş yap
     if (typeof window.firebaseLogin === 'function') {
         window.firebaseLogin(email, pass)
             .then((userCredential) => {
-                // Giriş başarılı
                 const user = userCredential.user;
                 userState.email = user.email;
                 userState.uid = user.uid;
-                userState.isAdmin = user.isAdmin || false;   // ★ YENİ
+                userState.isAdmin = user.isAdmin || false;
+                if (remember) {
+                    userState.rememberMe = true;
+                    localStorage.setItem('saved_email', email);
+                    localStorage.setItem('saved_password', pass);
+                } else {
+                    userState.rememberMe = false;
+                    localStorage.removeItem('saved_email');
+                    localStorage.removeItem('saved_password');
+                }
                 saveUserState();
                 hideAllScreens();
                 document.getElementById("screen-categories").classList.remove("hidden");
@@ -139,7 +146,9 @@ function performLogin() {
                 initCategoryButtons();
                 updateStreakDisplay();
                 showBannerAd();
+                updateHeartsAndHints();
                 showToast("✅ Giriş başarılı!");
+                checkDailyLaunchAd();
             })
             .catch((error) => {
                 let msg = "Hatalı e-posta veya şifre!";
@@ -161,7 +170,7 @@ function performLogin() {
     }
 }
 
-// ===== KAYIT (Firebase) =====
+// ===== KAYIT =====
 function performRegister() {
     const nick = document.getElementById("reg-nick").value.trim();
     const email = document.getElementById("reg-email").value.trim();
@@ -180,23 +189,19 @@ function performRegister() {
         showCustomModal("Uyarı", "Kullanım Şartları ve Gizlilik Politikası'nı kabul etmelisiniz.");
         return;
     }
-
-    // Firebase ile kayıt
     if (typeof window.firebaseRegister === 'function') {
         window.firebaseRegister(email, pass)
             .then((userCredential) => {
                 const user = userCredential.user;
-                // Kayıt başarılı, kullanıcı bilgilerini kaydet
                 userState.nickname = nick;
                 userState.email = user.email;
                 userState.uid = user.uid;
-                userState.isAdmin = user.isAdmin || false;   // ★ YENİ
+                userState.isAdmin = user.isAdmin || false;
                 saveUserState();
                 showCustomModal("Başarılı", "Kayıt başarılı! Giriş yapılıyor...");
-                // Otomatik giriş yap
                 document.getElementById("login-email").value = email;
                 document.getElementById("login-password").value = pass;
-                performLogin(); // direkt giriş yap
+                performLogin();
             })
             .catch((error) => {
                 let msg = "Kayıt sırasında bir hata oluştu.";
@@ -246,13 +251,11 @@ function sendResetLink() {
         showCustomModal("Uyarı", "Lütfen e-posta adresinizi girin.");
         return;
     }
-    // Yerel depolamada kullanıcı var mı kontrol et
     const users = JSON.parse(localStorage.getItem('islami_app_users') || '{}');
     if (!users[email]) {
         showCustomModal("Uyarı", "Bu e-posta ile kayıtlı kullanıcı bulunamadı.");
         return;
     }
-    // Simülasyon: şifre sıfırlama bağlantısı gönderildi mesajı
     showCustomModal("Başarılı", "📤 Şifre sıfırlama bağlantısı e-posta adresinize gönderildi (demo).");
     closeForgotPasswordModal();
 }
@@ -276,7 +279,7 @@ function sendContactMessage() {
     document.getElementById("contact-char-count").innerText = "0";
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     const textarea = document.getElementById('contact-message');
     if (textarea) {
         textarea.addEventListener('input', function() {
@@ -286,21 +289,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (userState && userState.email) {
         showBannerAd();
+        updateHeartsAndHints();
+        checkDailyLaunchAd();
     }
     const soundSelect = document.getElementById('sound-mode-select');
     if (soundSelect && userState.soundMode) {
         soundSelect.value = userState.soundMode;
     }
-
-    // ===== WEB İNDİR BUTONU KONTROLÜ =====
-    const downloadBtn = document.getElementById('web-download-btn');
-    if (downloadBtn) {
-        if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
-            downloadBtn.style.display = 'block';
-        } else {
-            downloadBtn.style.display = 'none';
-        }
-    }
+    const savedEmail = localStorage.getItem('saved_email');
+    const savedPass = localStorage.getItem('saved_password');
+    if (savedEmail) document.getElementById("login-email").value = savedEmail;
+    if (savedPass) document.getElementById("login-password").value = savedPass;
+    if (savedEmail && savedPass) document.getElementById("remember-me").checked = true;
 });
 
 // ========== METİN YÜKLEME ==========
@@ -373,11 +373,13 @@ function fillScreenWithContent(screenId, contentData, type) {
 function navigateToTab(tabName) {
     hideAllScreens();
     if (tabName === 'logout') {
-        if (typeof window.firebaseLogout === 'function') {
-            window.firebaseLogout();
-        }
-        document.getElementById("screen-login").classList.remove("hidden");
-        document.getElementById("bottom-nav-bar").classList.add("hidden");
+        showCustomModal("Çıkış", `
+            <p>Oturumunuzu kapatmak istediğinize emin misiniz?</p>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:16px;">
+                <button class="btn-primary" style="flex:1; background:var(--danger);" onclick="confirmLogout()">Evet, Çık</button>
+                <button class="btn-primary muted" style="flex:1;" onclick="closeCustomModal()">Vazgeç</button>
+            </div>
+        `);
         return;
     }
     if (tabName === 'admin') {
@@ -390,6 +392,7 @@ function navigateToTab(tabName) {
     if (tabName === 'home') {
         document.getElementById("screen-categories").classList.remove("hidden");
         updateStreakDisplay();
+        updateHeartsAndHints();
     } else if (tabName === 'results') {
         if (!userState.statsAdWatchedToday) {
             showAdSimulation(() => {
@@ -430,6 +433,20 @@ function navigateToTab(tabName) {
         document.getElementById("screen-leaderboard").classList.remove("hidden");
         renderLeaderboard();
     }
+}
+
+function confirmLogout() {
+    closeCustomModal();
+    if (typeof window.firebaseLogout === 'function') {
+        window.firebaseLogout();
+    }
+    document.getElementById("screen-login").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.add("hidden");
+    const savedEmail = localStorage.getItem('saved_email');
+    const savedPass = localStorage.getItem('saved_password');
+    if (savedEmail) document.getElementById("login-email").value = savedEmail;
+    if (savedPass) document.getElementById("login-password").value = savedPass;
+    if (savedEmail && savedPass) document.getElementById("remember-me").checked = true;
 }
 
 function setActiveNav(tabName) {
@@ -506,7 +523,7 @@ function openFiqhUnits() {
     document.getElementById("screen-units").classList.remove("hidden");
 }
 
-// ===== MECELLE (UI.js kısmı) =====
+// ===== MECELLE =====
 let unlockedMecelleGroup = 1;
 let completedMecelleGroup = 0;
 let currentMecelleGroup = 1;
@@ -635,18 +652,26 @@ function openMecelleCard(index) {
                 if (newFirstIndex < mecelleData.length) {
                     openMecelleCard(newFirstIndex);
                 } else {
-                    showToast('Tüm Mecelle kaideleri tamamlandı!');
-                    hideAllScreens();
-                    document.getElementById("screen-mecelle").classList.remove("hidden");
-                    renderMecelleGroups();
+                    showAdSimulation(() => {
+                        unlockedMecelleGroup = 1;
+                        completedMecelleGroup = 0;
+                        saveMecelleProgress();
+                        showToast('🔄 Tüm kaideler tamamlandı, başa dönülüyor.');
+                        renderMecelleGroups();
+                        openMecelleCard(0);
+                    });
                 }
                 playSound('success');
             });
         } else {
-            showToast('Tüm Mecelle kaideleri tamamlandı!');
-            hideAllScreens();
-            document.getElementById("screen-mecelle").classList.remove("hidden");
-            renderMecelleGroups();
+            showAdSimulation(() => {
+                unlockedMecelleGroup = 1;
+                completedMecelleGroup = 0;
+                saveMecelleProgress();
+                showToast('🔄 Tüm kaideler tamamlandı, başa dönülüyor.');
+                renderMecelleGroups();
+                openMecelleCard(0);
+            });
         }
     };
 
@@ -850,11 +875,13 @@ function renderRewardScreen() {
     updateRewardCounts();
     const container = document.getElementById('reward-progress-container');
     if (!container) return;
-    const filled = userState.unitCompletionCount || 0;
+    const totalUnits = userState.unitCompletionCount + (userState.remainingUnitsForChest || 0);
+    const filled = Math.min(totalUnits, 5);
     let html = `
         <div class="reward-card">
             <span class="reward-icon">🎁</span>
             <p><strong>Beş Ünite Tamamla, Hediyeyi Kap!</strong></p>
+            <p style="font-size:0.9rem;">İlerleme: ${filled}/5 (${totalUnits} ünite birikmiş)</p>
             <div class="reward-progress">
     `;
     for (let i = 0; i < 5; i++) {
@@ -868,10 +895,15 @@ function renderRewardScreen() {
 }
 
 function claimRewardChest() {
-    if (userState.unitCompletionCount < 5) {
-        showToast("Henüz 5 ünite tamamlamadınız!");
+    let totalUnits = userState.unitCompletionCount + (userState.remainingUnitsForChest || 0);
+    if (totalUnits < 5) {
+        showToast("Henüz 5 ünite tamamlamadınız! (" + totalUnits + "/5)");
         return;
     }
+    let used = 5;
+    let remaining = totalUnits - used;
+    userState.remainingUnitsForChest = remaining;
+    userState.unitCompletionCount = 0;
     const rand = Math.random();
     let rewardType, rewardAmount;
     if (rand < 0.5) {
@@ -898,7 +930,6 @@ function claimRewardChest() {
         userState.hintCount = (userState.hintCount || 0) + rewardAmount;
         rewardText = `${rewardAmount} 💡 İpucu kazandınız!`;
     }
-    userState.unitCompletionCount = 0;
     saveUserState();
     showRewardClaimModal(rewardText);
     renderRewardScreen();
@@ -1238,16 +1269,80 @@ function confirmReport(questionText) {
     playSound('click');
 }
 
-// ===== WEB İNDİR BUTONU FONKSİYONU =====
-function downloadApp() {
-    showCustomModal("📱 Uygulamayı İndir", `
-        <p>Mobil uygulamayı indirmek için aşağıdaki linke tıklayabilirsiniz.</p>
-        <p style="font-size:0.9rem; color:var(--text-muted);">(Henüz bir APK linki eklenmedi, lütfen kendi dosyanızı ekleyin.)</p>
-        <button class="btn-primary" onclick="window.open('https://example.com/app.apk', '_blank'); closeCustomModal();">📥 İndir (APK)</button>
-        <button class="btn-primary muted" onclick="closeCustomModal()">Kapat</button>
-    `);
-    playSound('click');
+// ===== CAN VE İPUCU GÖSTERGESİ =====
+function updateHeartsAndHints() {
+    const heartsEl = document.getElementById('header-hearts');
+    const hintsEl = document.getElementById('header-hints');
+    if (heartsEl) heartsEl.textContent = hearts;
+    if (hintsEl) hintsEl.textContent = userState.hintCount || 0;
 }
 
-// Mecelle ilerlemesini yükle
+// ===== MOBİL GÜNLÜK İKİNCİ GİRİŞ REKLAMI =====
+function checkDailyLaunchAd() {
+    if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
+    const today = new Date().toISOString().slice(0,10);
+    if (userState.lastLaunchDate !== today) {
+        userState.lastLaunchDate = today;
+        userState.dailyLaunchCount = 1;
+        addHearts(1);
+        userState.hintCount = (userState.hintCount || 0) + 1;
+        saveUserState();
+        showToast('🎁 Hoş geldin! 1 can ve 1 ipucu kazandın.');
+        updateHeartsAndHints();
+    } else {
+        userState.dailyLaunchCount = (userState.dailyLaunchCount || 0) + 1;
+        saveUserState();
+        if (userState.dailyLaunchCount >= 2) {
+            showInterstitialAd(() => {});
+        }
+    }
+}
+
+// ===== REKLAM FONKSİYONLARI =====
+function showInterstitialAd(onComplete) {
+    showAdSimulation(onComplete);
+}
+
+function showRewardedAd(rewardType, onComplete) {
+    showAdSimulation(() => {
+        if (rewardType === 'heart') {
+            addHearts(1);
+            showToast('❤️ +1 Can kazandın!');
+        } else if (rewardType === 'hint') {
+            userState.hintCount = (userState.hintCount || 0) + 1;
+            showToast('💡 +1 İpucu kazandın!');
+        }
+        saveUserState();
+        updateRewardCounts();
+        updateHeartsAndHints();
+        if (onComplete) onComplete();
+    });
+}
+
+function watchAdForHeart() {
+    showRewardedAd('heart', () => {
+        if (document.getElementById('screen-gameover') && !document.getElementById('screen-gameover').classList.contains('hidden')) {
+            resumeGameAfterAd();
+        }
+        playSound('success');
+    });
+}
+
+function watchAdForHint() {
+    showRewardedAd('hint', () => {
+        updateHintBadge();
+        playSound('success');
+    });
+}
+
+// ===== WEB İNDİR BUTONU FONKSİYONU =====
+function downloadApp() {
+    showCustomModal("📱 Uygulama Yakında!", `
+        <p style="font-size:1.2rem; margin:16px 0;">Uygulama şu an geliştirme aşamasındadır.</p>
+        <p style="font-size:1.1rem; color:var(--accent); font-weight:700;">📲 Yakında mobil mağazalarda yayınlanacaktır.</p>
+        <p style="font-size:0.9rem; color:var(--text-muted);">Bizi takipte kalın!</p>
+        <button class="btn-primary" style="background:var(--accent); margin-top:16px;" onclick="closeCustomModal()">Tamam</button>
+    `);
+}
+
 loadMecelleProgress();
