@@ -52,6 +52,9 @@ let userState = {
   totalTestsCompleted: 0,
   unitCompletionCount: 0,
   remainingUnitsForChest: 0,
+  dailyLaunchCount: 0,
+  lastLaunchDate: null,
+  rememberMe: false,
   hearts: 3,
   lastHeartReset: null,
   shareRewardClaimed: false,
@@ -60,10 +63,7 @@ let userState = {
   streakCount: 0,
   lastStreakDate: null,
   leaderboardScore: 0,
-  soundMode: 'sound',
-  rememberMe: false,
-  dailyLaunchCount: 0,
-  lastLaunchDate: null,
+  soundMode: 'sound'
 };
 
 function saveUserState() {
@@ -88,6 +88,9 @@ function loadUserState() {
       if (userState.totalTestsCompleted === undefined) userState.totalTestsCompleted = 0;
       if (userState.unitCompletionCount === undefined) userState.unitCompletionCount = 0;
       if (userState.remainingUnitsForChest === undefined) userState.remainingUnitsForChest = 0;
+      if (userState.dailyLaunchCount === undefined) userState.dailyLaunchCount = 0;
+      if (userState.lastLaunchDate === undefined) userState.lastLaunchDate = null;
+      if (userState.rememberMe === undefined) userState.rememberMe = false;
       if (userState.hearts === undefined) userState.hearts = 3;
       if (userState.shareRewardClaimed === undefined) userState.shareRewardClaimed = false;
       if (userState.statsAdWatchedToday === undefined) userState.statsAdWatchedToday = false;
@@ -98,9 +101,6 @@ function loadUserState() {
       if (userState.soundMode === undefined) userState.soundMode = 'sound';
       if (userState.uid === undefined) userState.uid = null;
       if (userState.isAdmin === undefined) userState.isAdmin = false;
-      if (userState.rememberMe === undefined) userState.rememberMe = false;
-      if (userState.dailyLaunchCount === undefined) userState.dailyLaunchCount = 0;
-      if (userState.lastLaunchDate === undefined) userState.lastLaunchDate = null;
     } catch (e) { console.warn('User state parse error', e); }
   }
   resetHeartsIfNeeded();
@@ -175,7 +175,7 @@ function updateLeaderboard(scoreIncrement) {
 function getLeaderboardData() {
   const myName = userState.nickname && userState.nickname.trim() !== '' ? userState.nickname : 'İsimsiz';
   return [
-    { name: myName, score: userState.leaderboardScore || 0 },
-    { name: 'Örnek Kullanıcı', score: 42 },
+    { name: myName, score: userState.leaderboardScore || 0 }
+    // Örnek kullanıcı kaldırıldı – sadece mevcut kullanıcı gösteriliyor
   ];
 }
