@@ -19,19 +19,13 @@ function reklamlariDepola() {
 
 // ===== ADMOB KONTROLÜ (Web / Mobil) =====
 function showAdMobIfAvailable() {
-    // Sadece mobil (Capacitor) ortamda çalıştır
     if (window.Capacitor && window.Capacitor.isNativePlatform()) {
-        // AdMob reklam gösterme kodlarınız buraya
         console.log("📱 AdMob reklamı gösteriliyor (mobil)");
-        // Örnek: showAdMobBanner();
     } else {
-        // Web ortamında AdMob çalıştırma
         console.log("🌐 Web ortamı – AdMob devre dışı");
-        // Burada AdSense veya başka bir reklam gösterilebilir
     }
 }
 
-// Reklam simülasyonu – değişiklik yok
 function depodanReklamGoster(callback) {
     if (adDeposu.length === 0) {
         reklamlariDepola();
@@ -95,7 +89,6 @@ let totalTime = 0;
 let timerInterval = null;
 let generalReviewCorrectCount = 0;
 
-// Test sonucu bilgilerini saklamak için global değişken
 let lastTestResult = null;
 
 function startUnit(unitNum, forceStart = false) {
@@ -103,6 +96,13 @@ function startUnit(unitNum, forceStart = false) {
     const totalUnits = getUnitCount(currentCategory);
     if (totalUnits === 0) {
         showToast('Bu kategoride henüz soru yok.');
+        return;
+    }
+    // Döngü: eğer unitNum > totalUnits ise reklam izleyip 1. üniteye dön
+    if (unitNum > totalUnits) {
+        showAdSimulation(() => {
+            startUnit(1, true);
+        });
         return;
     }
     const prevUnitCompleted = completedUnits[currentCategory] && completedUnits[currentCategory][unitNum - 1] === true;
@@ -477,9 +477,7 @@ function endTest(timeUp = false) {
     playSound('success');
 }
 
-// ===== TEST SONUCU (Yanlış listesi kaldırıldı, butonlar reklamlı) =====
 function showTestResult(correct, total, wrong, percent, timeUp) {
-    // Sonuç bilgilerini sakla (geri dönüş için)
     lastTestResult = { correct, total, wrong, percent, timeUp };
 
     hideAllScreens();
@@ -499,7 +497,6 @@ function showTestResult(correct, total, wrong, percent, timeUp) {
     `;
 }
 
-// ===== YANLIŞ ANALİZİ GÖSTER (Geri butonu eklendi) =====
 function showWrongAnalysisUI() {
     if (userState.wrongQuestions.length === 0) {
         showToast('Hiç yanlış sorunuz yok.');
@@ -512,7 +509,6 @@ function showWrongAnalysisUI() {
         html += `<p><strong>Doğru Cevap:</strong> ${q.options[q.answer]}</p>`;
         html += `</div>`;
     });
-    // Geri butonu – sonuç sayfasına dön
     html += `<button class="btn-primary muted" onclick="showTestResult(lastTestResult.correct, lastTestResult.total, lastTestResult.wrong, lastTestResult.percent, lastTestResult.timeUp)" style="margin-top:20px;">⬅️ Geri</button>`;
 
     document.getElementById('test-result-text').innerHTML = html;
@@ -520,8 +516,6 @@ function showWrongAnalysisUI() {
     document.getElementById('screen-test-result').classList.remove('hidden');
     playSound('click');
 }
-
-// ===== DİĞER FONKSİYONLAR (resumeGameAfterAd, watchAdForHeart, watchAdForHint, watchAdForFeature, startHardQuestion, useHint, startWrongRetry, startYanlislarim, startYanlislarimTest, toggleFavorite, isFavorite, updateFavoriteButton, unlockVitalCard, openBilgicCategory, openZorSoruContentDirect, openZorSoruContent, openBilgiKartiContent, showBilgiKartiModal, handleBilgiKartiTamam, closeBilgiKartiModal, closeBilgiKartiModalOutside, saveProgress, loadProgress, updateStats, showToast, showGameOverScreen, goBackFromGame) =====
 
 function resumeGameAfterAd() {
     if (!gameResumeData) {
@@ -562,31 +556,6 @@ function resumeGameAfterAd() {
     }
 
     showToast("❤️ Kaldığınız yerden devam edin!");
-}
-
-function watchAdForHeart() {
-    showAdSimulation(() => {
-        addHearts(1);
-        updateHearts();
-        showToast('❤️ +1 Can kazandın!');
-        updateRewardCounts();
-        saveUserState();
-        if (document.getElementById('screen-gameover') && !document.getElementById('screen-gameover').classList.contains('hidden')) {
-            resumeGameAfterAd();
-        }
-        playSound('success');
-    });
-}
-
-function watchAdForHint() {
-    showAdSimulation(() => {
-        userState.hintCount = (userState.hintCount || 0) + 1;
-        showToast('💡 +1 İpucu kazandın!');
-        updateRewardCounts();
-        saveUserState();
-        updateHintBadge();
-        playSound('success');
-    });
 }
 
 function watchAdForFeature(type) {
@@ -834,7 +803,6 @@ function openBilgicCategory(type) {
     });
 }
 
-// ===== ZOR SORU =====
 function openZorSoruContentDirect() {
     if (!zorSoruData || zorSoruData.length === 0) {
         showToast('Zor soru verisi yüklenemedi.');
