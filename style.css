@@ -340,7 +340,6 @@ textarea.form-input { resize:vertical; min-height:80px; }
 @media (max-width:380px) { .unit-grid { grid-template-columns:repeat(4,1fr); } }
 @media (max-width:320px) { .unit-grid { grid-template-columns:repeat(3,1fr); } }
 
-/* ===== KATEGORİ BUTONLARI ===== */
 .category-btn {
     background: var(--primary);
     border: 2px solid var(--primary);
@@ -367,7 +366,6 @@ textarea.form-input { resize:vertical; min-height:80px; }
     box-shadow: 0 6px 15px var(--accent-glow);
 }
 .category-btn:active { transform:translateY(0) scale(0.96); }
-
 body.dark-mode .category-btn {
     background: var(--primary);
     border-color: var(--primary);
@@ -380,7 +378,6 @@ body.dark-mode .category-btn:hover {
     transform: translateY(-2px);
 }
 
-/* ===== ÜNİTE BUTONLARI ===== */
 .unit-btn {
     background: #f8fafc;
     border: 2px solid var(--border);
@@ -417,7 +414,6 @@ body.dark-mode .category-btn:hover {
     transform: none !important;
     box-shadow: none !important;
 }
-
 .unit-btn.completed {
     background: #22c55e;
     border-color: #22c55e;
@@ -431,14 +427,12 @@ body.dark-mode .category-btn:hover {
 .unit-btn.completed::after {
     display: none !important;
 }
-
 .unit-btn.ad-unlock {
     background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
     border-color: #f59e0b;
     color: #92400e;
     cursor: pointer;
 }
-
 body.dark-mode .unit-btn {
     background: #f8fafc;
     color: #1e293b !important;
@@ -488,7 +482,6 @@ body.dark-mode .unit-btn em {
     color: inherit !important;
     -webkit-text-fill-color: inherit;
 }
-
 body.dark-mode .option-btn {
     background: #ffffff;
     color: #1e293b;
@@ -1031,7 +1024,6 @@ body.dark-mode .bilgi-karti-box .modal-body p {
     border-left-color: #b8875a;
 }
 
-/* Mecelle Kart Çevirme Efekti – daha estetik başlık */
 .flip-card {
     background-color: transparent;
     width: 100%;
@@ -1084,7 +1076,6 @@ body.dark-mode .flip-card-front {
 body.dark-mode .flip-card-back {
     background: #0f172a;
 }
-/* Başlık estetiği */
 #mecelle-card-title {
     font-size: 1.3rem;
     font-weight: 800;
@@ -1215,29 +1206,80 @@ body.dark-mode #banner-ad {
     color: var(--text-muted);
 }
 
-/* === WEB İNDİR BUTONU ÖZEL STİL === */
-#web-download-btn button {
-    background: linear-gradient(135deg, #0f2c59, #1b3b75);
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 14px 22px;
-    font-size: 1rem;
-    font-weight: 700;
-    box-shadow: 0 8px 24px rgba(15,44,89,0.5);
-    cursor: pointer;
+/* ===== REKLAM ALANLARI ===== */
+.desktop-ad-left, .desktop-ad-right {
+    display: none;
+    position: fixed;
+    top: 50px;
+    width: 160px;
+    height: 600px;
+    z-index: 5;
+}
+.desktop-ad-left { left: 20px; }
+.desktop-ad-right { right: 20px; }
+
+@media (min-width: 1200px) {
+    .desktop-ad-left, .desktop-ad-right {
+        display: block;
+    }
+    .container { max-width: 480px; margin: 0 auto; }
+}
+
+.ad-placeholder {
+    background: #e2e8f0;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
-    gap: 10px;
-    transition: transform 0.2s, box-shadow 0.2s;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    justify-content: center;
+    color: #64748b;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    border: 2px dashed #94a3b8;
 }
-#web-download-btn button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 12px 32px rgba(15,44,89,0.7);
+body.dark-mode .ad-placeholder {
+    background: #1e293b;
+    border-color: #475569;
+    color: #94a3b8;
 }
-#web-download-btn button:active {
-    transform: scale(0.95);
+
+.banner-ad-horizontal {
+    width: 100%;
+    height: 80px;
+    background: #f1f5f9;
+    border-radius: 12px;
+    border: 2px dashed #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: 12px 0;
+}
+body.dark-mode .banner-ad-horizontal {
+    background: #1e293b;
+    border-color: #475569;
+    color: #94a3b8;
+}
+
+#hearts-hints-display {
+    background: rgba(255,255,255,0.7);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+body.dark-mode #hearts-hints-display {
+    background: rgba(30,41,59,0.8);
+    color: #f1f5f9;
+}
+
+#web-download-btn button {
+    font-size: 0.8rem !important;
+    padding: 6px 14px !important;
 }
 
 @media (max-height:700px) {
