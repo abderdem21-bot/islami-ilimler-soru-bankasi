@@ -130,6 +130,7 @@ function performLogin() {
                 const user = userCredential.user;
                 userState.email = user.email;
                 userState.uid = user.uid;
+                userState.isAdmin = user.isAdmin || false;   // ★ YENİ
                 saveUserState();
                 hideAllScreens();
                 document.getElementById("screen-categories").classList.remove("hidden");
@@ -150,11 +151,13 @@ function performLogin() {
                     msg = "Geçersiz e-posta formatı.";
                 } else if (error.code === 'auth/too-many-requests') {
                     msg = "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin.";
+                } else {
+                    msg = error.message || "Beklenmeyen bir hata oluştu.";
                 }
                 showCustomModal("Giriş Hatası", msg);
             });
     } else {
-        showCustomModal("Hata", "Firebase başlatılamadı. Lütfen sayfayı yenileyin.");
+        showCustomModal("Hata", "Kimlik doğrulama sistemi başlatılamadı. Lütfen sayfayı yenileyin.");
     }
 }
 
@@ -187,6 +190,7 @@ function performRegister() {
                 userState.nickname = nick;
                 userState.email = user.email;
                 userState.uid = user.uid;
+                userState.isAdmin = user.isAdmin || false;   // ★ YENİ
                 saveUserState();
                 showCustomModal("Başarılı", "Kayıt başarılı! Giriş yapılıyor...");
                 // Otomatik giriş yap
@@ -202,11 +206,13 @@ function performRegister() {
                     msg = "Şifre en az 6 karakter olmalıdır.";
                 } else if (error.code === 'auth/invalid-email') {
                     msg = "Geçersiz e-posta formatı.";
+                } else {
+                    msg = error.message || "Beklenmeyen bir hata oluştu.";
                 }
                 showCustomModal("Kayıt Hatası", msg);
             });
     } else {
-        showCustomModal("Hata", "Firebase başlatılamadı. Lütfen sayfayı yenileyin.");
+        showCustomModal("Hata", "Kimlik doğrulama sistemi başlatılamadı. Lütfen sayfayı yenileyin.");
     }
 }
 
@@ -240,10 +246,14 @@ function sendResetLink() {
         showCustomModal("Uyarı", "Lütfen e-posta adresinizi girin.");
         return;
     }
-    // Firebase şifre sıfırlama (isteğe bağlı)
-    // import { sendPasswordResetEmail } from "firebase/auth"; 
-    // ve burada çağırın.
-    showCustomModal("Başarılı", "📤 Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.");
+    // Yerel depolamada kullanıcı var mı kontrol et
+    const users = JSON.parse(localStorage.getItem('islami_app_users') || '{}');
+    if (!users[email]) {
+        showCustomModal("Uyarı", "Bu e-posta ile kayıtlı kullanıcı bulunamadı.");
+        return;
+    }
+    // Simülasyon: şifre sıfırlama bağlantısı gönderildi mesajı
+    showCustomModal("Başarılı", "📤 Şifre sıfırlama bağlantısı e-posta adresinize gönderildi (demo).");
     closeForgotPasswordModal();
 }
 
@@ -280,6 +290,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const soundSelect = document.getElementById('sound-mode-select');
     if (soundSelect && userState.soundMode) {
         soundSelect.value = userState.soundMode;
+    }
+
+    // ===== WEB İNDİR BUTONU KONTROLÜ =====
+    const downloadBtn = document.getElementById('web-download-btn');
+    if (downloadBtn) {
+        if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
+            downloadBtn.style.display = 'block';
+        } else {
+            downloadBtn.style.display = 'none';
+        }
     }
 });
 
@@ -353,7 +373,6 @@ function fillScreenWithContent(screenId, contentData, type) {
 function navigateToTab(tabName) {
     hideAllScreens();
     if (tabName === 'logout') {
-        // Firebase çıkış
         if (typeof window.firebaseLogout === 'function') {
             window.firebaseLogout();
         }
@@ -1216,6 +1235,17 @@ function confirmReport(questionText) {
     const body = encodeURIComponent(`Bildirilen Soru: ${decodeURIComponent(questionText)}\n\nKullanıcı: ${userState.nickname || 'İsimsiz'}\nE-posta: ${userState.email || 'Belirtilmemiş'}`);
     window.location.href = `mailto:sorunvedestek@gmail.com?subject=${subject}&body=${body}`;
     showToast('📧 Soru bildirimi gönderildi.');
+    playSound('click');
+}
+
+// ===== WEB İNDİR BUTONU FONKSİYONU =====
+function downloadApp() {
+    showCustomModal("📱 Uygulamayı İndir", `
+        <p>Mobil uygulamayı indirmek için aşağıdaki linke tıklayabilirsiniz.</p>
+        <p style="font-size:0.9rem; color:var(--text-muted);">(Henüz bir APK linki eklenmedi, lütfen kendi dosyanızı ekleyin.)</p>
+        <button class="btn-primary" onclick="window.open('https://example.com/app.apk', '_blank'); closeCustomModal();">📥 İndir (APK)</button>
+        <button class="btn-primary muted" onclick="closeCustomModal()">Kapat</button>
+    `);
     playSound('click');
 }
 
