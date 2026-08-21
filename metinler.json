@@ -62,7 +62,7 @@
   },
   "gizlilikPolitikasi": {
     "baslik": "🔒 Gizlilik Politikası",
-    "altBaslik": "Son Güncelleme: 4 Ağustos 2026",
+    "altBaslik": "Son Güncelleme: 21 Ağustos 2026",
     "paragraflar": [
       "İslami İlimler Soru Bankası olarak kullanıcılarımızın gizliliğine büyük önem veriyoruz. Bu politika, hangi verilerin toplandığını, nasıl kullanıldığını ve korunduğunu açıklar.",
       "1. Toplanan Veriler: Kullanıcı adı, e-posta, şifre (yerel), ilerleme (açılan üniteler, tamamlananlar, doğru/yanlış sayıları), favoriler, yanlış sorular, ipucu sayısı, can, test sayısı, tema tercihleri. Hepsi localStorage'da saklanır, sunucuya gönderilmez.",
@@ -72,41 +72,36 @@
       "5. Üçüncü Taraf Hizmetler: Kullanılmaz.",
       "6. Kullanıcı Hakları: Verilerinize erişim, düzeltme, silme (hesap silme) ve taşınabilirlik haklarınız vardır.",
       "7. Veri Saklama: Uygulamayı kullandığınız sürece saklanır, hesap silinirse kalıcı olarak silinir.",
-      "8. Çocukların Gizliliği: 13 yaş altı bilerek veri toplanmaz.",
-      "9. Politika Değişiklikleri: Güncellemeler uygulama içinde duyurulur.",
-      "10. İletişim: destek@islamisoru.com veya 'Bize Ulaşın' bölümü."
+      "8. Politika Değişiklikleri: Güncellemeler uygulama içinde duyurulur.",
+      "9. İletişim:'Bize Ulaşın' bölümü."
     ]
-  },
-  "hakkimizda": {
-    "baslik":"ℹ️ Hakkında",
-    "altBaslik": "İslami İlimler Soru Bankası - Sürüm v2.0.0",
+"gizlilikPolitikasi": {
+    "baslik": "🔒 Gizlilik Politikası",
+    "altBaslik": "Son Güncelleme: 21 Ağustos 2026",
     "paragraflar": [
-      "Bu uygulama, İlahiyat ve İslami İlimler alanında eğitim gören öğrenciler ve kendini geliştirmek isteyen herkes için hazırlanmış kapsamlı bir soru bankası ve öğrenme platformudur.",
-      "Misyonumuz: İslami ilimleri modern ve etkileşimli bir öğrenme deneyimiyle sunarak, oyunlaştırılmış unsurlarla motivasyonu artırmak.",
-      "Vizyonumuz: Türkiye’nin ve dünyanın en kapsamlı, güvenilir ve kullanıcı dostu İslami ilimler soru bankası olmak.",
-      "Teknik Özellikler: Web tabanlı, localStorage ile veri saklama, Türkçe, vanilla JS, mobil uyumlu.",
-      "Geliştirici Ekibi: İslami ilimlere gönül vermiş yazılım ve eğitim teknolojileri uzmanları.",
-      "İçerik Kaynakları: Temel kaynaklar, ders notları, uzman eğitmen katkıları.",
-      "Teşekkürler: Tüm kullanıcılarımıza teşekkür ederiz. Görüşlerinizi 'Bize Ulaşın' ile paylaşabilirsiniz.",
-      "Lisans: Bireysel kullanım için ücretsiz, ticari kullanım yasaktır. Tüm hakları saklıdır.",
-      "İletişim: destek@islamisoru.com"
+      "1. Veri Sorumlusu ve Amaç: İslami İlimler Soru Bankası, kişisel verilerinizin korunmasına önem verir. Bu politika, 6698 sayılı KVKK uyarınca verilerinizin işlenme usullerini kapsar.",
+      "2. Toplanan Veriler: Kullanıcı adı, e-posta, şifrelenmiş parola; test sonuçları, sıralama (leaderboard) ve streak verileri; IP adresi, cihaz türü, reklam kimlikleri (Google AAID, Apple IDFA) ve etkileşim logları işlenebilir.",
+      "3. İşlenme Amaçları: Hesap oluşturma, güvenlik, sıralama ve istatistik hesaplama, kişiselleştirilmiş içerik sunma, destek taleplerini karşılama ve reklam gösterimi sağlama amacıyla verileriniz işlenir.",
+      "4. Reklam ve Üçüncü Taraf Paylaşımı: Ücretsiz hizmet sunabilmek için Google AdMob, Firebase ve Vercel gibi altyapı sağlayıcıları kullanılır. Bu servisler reklam kimlikleri ve çerezlerle kişiselleştirilmiş reklamlar sunabilir. Verileriniz üçüncü şahıslara satılmaz.",
+      "5. Çerezler ve Yerel Depolama: Kullanıcı tercihleri, oturum bilgileri ve reklam analizleri için LocalStorage, SessionStorage ve çerezler kullanılır.",
+      "6. Kullanıcı Hakları ve Veri Güvenliği: KVKK Madde 11 uyarınca verilerinize erişme, düzeltme ve silme hakkınız vardır. Hesabınızı ve verilerinizi silmek için 'Ayarlar > Hesabımı Sil' adımlarını takip edebilir veya bizimle iletişime geçebilirsiniz."
     ]
   },
   "kullanimKosullari": {
     "baslik": "📜 Kullanım Koşulları",
-    "altBaslik": "Son Güncelleme: 4 Ağustos 2026",
+    "altBaslik": "Son Güncelleme: 21 Ağustos 2026",
     "paragraflar": [
       "Bu Kullanım Koşulları, İslami İlimler Soru Bankası uygulamasını kullanırken uymanız gereken kuralları belirler. Uygulamayı kullanarak bu koşulları kabul etmiş sayılırsınız.",
-      "1. Kullanım Amacı: Uygulama yalnızca kişisel eğitim ve öğrenme amacıyla kullanılabilir. Ticari veya yasa dışı amaçlarla kullanılamaz.",
-      "2. Fikri Mülkiyet: Uygulama içindeki tüm sorular, metinler, tasarımlar ve kodlar telif hakkı ile korunmaktadır. İzinsiz kopyalanamaz, dağıtılamaz veya türetilemez.",
-      "3. Kullanıcı Sorumlulukları: Kullanıcı, uygulamayı kullanırken tüm yerel ve uluslararası yasalara uymayı kabul eder. Uygulamayı başkalarını rahatsız etmek veya zarar vermek için kullanmayacaktır.",
-      "4. Veri Gizliliği: Uygulama, kullanıcı verilerini yalnızca cihazınızda (localStorage) saklar. Bu veriler geliştiriciler tarafından erişilemez veya paylaşılamaz.",
-      "5. Garanti Reddi: Uygulama 'olduğu gibi' sunulur ve herhangi bir garanti verilmez. Geliştiriciler, uygulamanın kullanımından kaynaklanan doğrudan veya dolaylı zararlardan sorumlu değildir.",
-      "6. Hizmet Kesintileri: Uygulama, bakım veya teknik sorunlar nedeniyle geçici olarak hizmet veremeyebilir. Geliştiriciler bu durumdan sorumlu değildir.",
+      "1. Kullanım Amacı ve Reklamlar: Uygulama kişisel eğitim amacıyla sunulur. Banner, geçiş veya ödüllü reklam gösterimi yapılabilir. Geliştiriciler reklam modellerini ve içeriği değiştirme hakkını saklı tutar.",
+      "2. Hesap Güvenliği: Kullanıcı, kayıt esnasında doğru bilgi vermekle ve hesap/şifre güvenliğini sağlamakla doğrudan sorumludur.",
+      "3. Yasaklı Davranışlar: Bot kullanımı, puan manipülasyonu, reklam engelleme (ad-blocker) veya hilelerle haksız avantaj sağlamak ve sisteme zarar vermek yasaktır.",
+      "4. Fikri Mülkiyet: Uygulama içindeki tüm sorular, metinler, tasarımlar, logo ve kodlar telif hakkı ile korunmaktadır. İzinsiz kopyalanamaz, dağıtılamaz veya ticari amaçla kullanılamaz.",
+      "5. İçerik ve Reklam Sorumluluk Reddi: Sorular bilgilendirme amaçlıdır; kesin hatasızlık garanti edilmez. Gösterilen üçüncü taraf reklamların içeriğinden ve dış bağlantılardan reklam veren sorumludur.",
+      "6. Garanti Reddi ve Kesintiler: Uygulama 'olduğu gibi' sunulur. Sunucu kesintileri, teknik aksaklıklar veya veri kayıplarından kaynaklanan zararlardan geliştiriciler sorumlu tutulamaz.",
       "7. Yaş Sınırı: Uygulama 13 yaş ve üzeri kullanıcılar içindir. 13 yaşından küçükler ebeveyn gözetimi olmadan kullanmamalıdır.",
-      "8. Koşulların Değişikliği: Geliştiriciler, bu koşulları herhangi bir zamanda değiştirme hakkını saklı tutar. Değişiklikler uygulama içinde duyurulur ve yürürlüğe girer.",
-      "9. Yürürlük: Bu koşullar, uygulamanın ilk kullanımından itibaren geçerlidir. Kullanıcı, uygulamayı kullanmaya devam ederek değişiklikleri kabul etmiş sayılır.",
-      "10. İletişim: Koşullarla ilgili sorularınız için destek@islamisoru.com adresinden veya 'Bize Ulaşın' bölümünden iletişime geçebilirsiniz."
+      "8. Koşulların Değişikliği ve Yürürlük: Geliştiriciler bu koşulları dilediği zaman değiştirebilir. Değişiklikler uygulama içinde yayınlandığı andan itibaren geçerlidir.",
+      "9. İletişim: Koşullarla ilgili sorularınız için destek@islamisoru.com adresinden veya 'Bize Ulaşın' bölümünden iletişime geçebilirsiniz."
     ]
+  }
   }
 }
