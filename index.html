@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#0f2c59" />
     
-    <!-- ===== SEO META ETİKETLERİ ===== -->
+    <!-- SEO META -->
     <meta name="description" content="İslami İlimler Soru Bankası ile Tefsir, Hadis, Fıkıh, Kelam ve daha birçok dersten online test çöz, bilgini ölç, öğren. Ücretsiz ve interaktif." />
     <meta name="keywords" content="islami ilimler, soru bankası, tefsir, hadis, fıkıh, kelam, dinler tarihi, siyer, kuran tecviti, mezhepler tarihi, online test, ilahiyat, din kültürü" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://islamisoru.vercel.app/" />
-
-    <!-- ===== OPEN GRAPH ===== -->
     <meta property="og:title" content="İslami İlimler Soru Bankası - Online Test Çöz" />
     <meta property="og:description" content="Tefsir, Hadis, Fıkıh, Kelam ve daha fazlası. Ücretsiz interaktif soru bankası ile öğrenmeye hemen başla." />
     <meta property="og:type" content="website" />
@@ -19,14 +17,10 @@
     <meta property="og:image" content="https://islamisoru.vercel.app/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-
-    <!-- ===== TWITTER CARD ===== -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="İslami İlimler Soru Bankası" />
     <meta name="twitter:description" content="Ücretsiz online testlerle İslami ilimlerde kendini geliştir." />
     <meta name="twitter:image" content="https://islamisoru.vercel.app/og-image.jpg" />
-
-    <!-- ===== JSON-LD ===== -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -41,12 +35,20 @@
       }
     }
     </script>
-
     <title>İslami İlimler Soru Bankası - Online Test Çöz</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+<!-- ===== SOL DİKEY REKLAM (Masaüstü) ===== -->
+<div class="desktop-ad-left" id="desktop-ad-left">
+    <div class="ad-placeholder">📢 Reklam Alanı</div>
+</div>
+<!-- ===== SAĞ DİKEY REKLAM (Masaüstü) ===== -->
+<div class="desktop-ad-right" id="desktop-ad-right">
+    <div class="ad-placeholder">📢 Reklam Alanı</div>
+</div>
 
 <div class="container" id="app">
     <div class="scrollable-content" id="scroll-area">
@@ -63,9 +65,14 @@
                     <label for="login-email" class="form-label">E-posta Adresi</label>
                     <input type="email" id="login-email" class="form-input" placeholder="ornek@email.com" />
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="position:relative;">
                     <label for="login-password" class="form-label">Şifre</label>
-                    <input type="password" id="login-password" class="form-input" placeholder="••••••••" />
+                    <input type="password" id="login-password" class="form-input" placeholder="••••••••" style="padding-right:50px;" />
+                    <button type="button" id="toggle-password-visibility" style="position:absolute; right:10px; top:38px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
+                </div>
+                <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" id="remember-me" />
+                    <label for="remember-me" style="font-size:0.9rem; color:var(--text-muted);">Şifreyi hatırla</label>
                 </div>
                 <button type="submit" class="btn-primary">Giriş Yap</button>
                 <div class="auth-links">
@@ -73,6 +80,32 @@
                     <button type="button" class="auth-link-btn forgot" onclick="openForgotPasswordModal()">Şifremi Unuttum</button>
                 </div>
             </form>
+            <!-- ===== UYGULAMAYI İNDİR BUTONU (sadece giriş sayfasında, sağ alt) ===== -->
+            <div id="web-download-btn" style="position:fixed; bottom:20px; right:20px; z-index:10; display:none;">
+                <button onclick="downloadApp()" style="
+                    background: linear-gradient(135deg, #0f2c59, #1b3b75);
+                    color: white;
+                    border: none;
+                    border-radius: 50px;
+                    padding: 8px 16px;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    box-shadow: 0 4px 12px rgba(15,44,89,0.4);
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    transition: transform 0.2s, box-shadow 0.2s;
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                "
+                onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 20px rgba(15,44,89,0.6)';"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(15,44,89,0.4)';"
+                onmousedown="this.style.transform='scale(0.95)';"
+                onmouseup="this.style.transform='scale(1)';"
+                >
+                    <span style="font-size:1rem;">📱</span> Uygulamayı İndir
+                </button>
+            </div>
         </div>
 
         <!-- ===== KAYIT ===== -->
@@ -116,6 +149,8 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <button class="menu-burger-btn" onclick="openDrawerMenu()" title="Menüyü Aç" aria-label="Menüyü Aç">☰</button>
                 <div style="display:flex; align-items:center; gap:12px;">
+                    <!-- Can ve İpucu Göstergesi -->
+                    <span id="hearts-hints-display" style="font-weight:700; color:var(--text-main); font-size:0.9rem;">❤️ <span id="header-hearts">3</span>  💡 <span id="header-hints">0</span></span>
                     <span id="streak-display" style="font-weight:700; color:var(--accent);">🔥 0</span>
                     <span id="leaderboard-badge" style="cursor:pointer; font-size:1.2rem;" onclick="navigateToTab('leaderboard')">🏆</span>
                 </div>
@@ -127,31 +162,9 @@
             <div class="category-grid" id="category-grid"></div>
             <button class="btn-primary" style="margin-top:20px; background:var(--accent);" onclick="navigateToTab('favorites')">⭐ Favori Sorularım</button>
 
-            <!-- ===== WEB İNDİR BUTONU – sadece web'de, lacivert alanın sağ alt köşesinde ===== -->
-            <div id="web-download-btn" style="position:absolute; bottom:20px; right:20px; z-index:10; display:none;">
-                <button onclick="downloadApp()" style="
-                    background: linear-gradient(135deg, #0f2c59, #1b3b75);
-                    color: white;
-                    border: none;
-                    border-radius: 50px;
-                    padding: 12px 20px;
-                    font-size: 0.9rem;
-                    font-weight: 700;
-                    box-shadow: 0 8px 24px rgba(15,44,89,0.5);
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    transition: transform 0.2s, box-shadow 0.2s;
-                    font-family: 'Plus Jakarta Sans', sans-serif;
-                "
-                onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 12px 32px rgba(15,44,89,0.7)';"
-                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 24px rgba(15,44,89,0.5)';"
-                onmousedown="this.style.transform='scale(0.95)';"
-                onmouseup="this.style.transform='scale(1)';"
-                >
-                    <span style="font-size:1.2rem;">📱</span> Uygulamayı İndir
-                </button>
+            <!-- ===== YATAY BANNER REKLAM (Ana Sayfa) ===== -->
+            <div class="banner-ad-horizontal" id="banner-ad-home" style="margin-top:16px;">
+                <div class="ad-placeholder">📢 Reklam Alanı</div>
             </div>
         </div>
 
@@ -184,6 +197,10 @@
             </div>
             <p id="unit-info-text">Toplam ünite: 0</p>
             <div class="unit-grid" id="unit-grid-container"></div>
+            <!-- Yatay Banner (Ünite Seçimi) -->
+            <div class="banner-ad-horizontal" id="banner-ad-units" style="margin-top:16px;">
+                <div class="ad-placeholder">📢 Reklam Alanı</div>
+            </div>
         </div>
 
         <!-- ===== MECELLE KART EKRANI ===== -->
@@ -301,6 +318,10 @@
                 <h2 class="title">📊 Sonuç</h2>
             </div>
             <div id="test-result-text" class="profile-card" style="font-size:1.2rem;"></div>
+            <!-- Yatay Banner (Test Sonucu) -->
+            <div class="banner-ad-horizontal" id="banner-ad-testresult" style="margin-top:16px;">
+                <div class="ad-placeholder">📢 Reklam Alanı</div>
+            </div>
         </div>
 
         <!-- ===== İSTATİSTİKLER ===== -->
@@ -507,6 +528,10 @@
                 <button class="btn-primary" style="background:var(--accent);" onclick="openBilgicCategory('kart')">📇 Bilgi Kartları (1 Can)</button>
             </div>
             <div id="bilgic-content" style="margin-top:24px;"></div>
+            <!-- Yatay Banner (Bilgiç) -->
+            <div class="banner-ad-horizontal" id="banner-ad-bilgic" style="margin-top:16px;">
+                <div class="ad-placeholder">📢 Reklam Alanı</div>
+            </div>
         </div>
 
         <!-- ===== ÖDÜL EKRANI ===== -->
@@ -616,7 +641,7 @@
             </div>
         </div>
 
-        <!-- ===== BANNER REKLAM ===== -->
+        <!-- ===== BANNER REKLAM (alt bilgi) ===== -->
         <div id="banner-ad" style="background:#f1f5f9; text-align:center; padding:8px; border-radius:8px; margin-top:8px;">
             <p id="banner-ad-text" style="font-size:0.8rem; color:#64748b; margin:0;">📢 Yükleniyor...</p>
         </div>
@@ -750,12 +775,26 @@
     document.addEventListener('DOMContentLoaded', function() {
         const downloadBtn = document.getElementById('web-download-btn');
         if (downloadBtn) {
-            // Eğer Capacitor ile paketlenmiş native uygulama değilse (yani web tarayıcısı) göster
             if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
                 downloadBtn.style.display = 'block';
             } else {
                 downloadBtn.style.display = 'none';
             }
+        }
+
+        // Şifre göz ikonu
+        const toggleBtn = document.getElementById('toggle-password-visibility');
+        const passwordInput = document.getElementById('login-password');
+        if (toggleBtn && passwordInput) {
+            toggleBtn.addEventListener('click', function() {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleBtn.textContent = '🙈';
+                } else {
+                    passwordInput.type = 'password';
+                    toggleBtn.textContent = '👁️';
+                }
+            });
         }
     });
 </script>
@@ -778,6 +817,7 @@
                 initCategoryButtons();
                 updateStreakDisplay();
                 showBannerAd();
+                updateHeartsAndHints(); // Can/ipucu güncelle
             } else {
                 document.getElementById("screen-login").classList.remove("hidden");
             }
