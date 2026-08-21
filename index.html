@@ -66,7 +66,8 @@
                 <div class="form-group" style="position:relative;">
                     <label for="login-password" class="form-label">Şifre</label>
                     <input type="password" id="login-password" class="form-input" placeholder="••••••••" style="padding-right:50px;" />
-                    <button type="button" id="toggle-password-visibility" style="position:absolute; right:10px; top:38px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
+                    <!-- ✅ DÜZELTME: onclick eklendi -->
+                    <button type="button" id="toggle-password-visibility" onclick="togglePasswordVisibility('login-password', this)" style="position:absolute; right:10px; top:38px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
                 </div>
                 <div class="form-group" style="display:flex; align-items:center; gap:8px;">
                     <input type="checkbox" id="remember-me" />
@@ -127,12 +128,14 @@
             <div class="form-group" style="position:relative;">
                 <label for="reg-password" class="form-label">Şifre</label>
                 <input type="password" id="reg-password" class="form-input" placeholder="••••••••" autocomplete="new-password" style="padding-right:50px;" />
-                <button type="button" id="toggle-reg-password" style="position:absolute; right:10px; top:38px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
+                <!-- ✅ DÜZELTME: onclick eklendi -->
+                <button type="button" id="toggle-reg-password" onclick="togglePasswordVisibility('reg-password', this)" style="position:absolute; right:10px; top:38px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
             </div>
             <div class="form-group" style="position:relative;">
                 <label for="reg-password-confirm" class="form-label">Şifre (Tekrar)</label>
                 <input type="password" id="reg-password-confirm" class="form-input" placeholder="••••••••" autocomplete="new-password" style="padding-right:50px;" />
-                <button type="button" id="toggle-reg-password-confirm" style="position:absolute; right:10px; top:38px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
+                <!-- ✅ DÜZELTME: onclick eklendi -->
+                <button type="button" id="toggle-reg-password-confirm" onclick="togglePasswordVisibility('reg-password-confirm', this)" style="position:absolute; right:10px; top:38px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
             </div>
             <div class="form-group" style="display:flex; align-items:center; gap:10px; margin-top:10px; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid var(--border);">
                 <input type="checkbox" id="terms-checkbox" style="width:20px; height:20px; cursor:pointer; flex-shrink:0;" />
@@ -780,49 +783,6 @@
             } else {
                 downloadBtn.style.display = 'none';
             }
-        }
-
-        // Giriş şifre göz ikonu
-        const toggleBtn = document.getElementById('toggle-password-visibility');
-        const passwordInput = document.getElementById('login-password');
-        if (toggleBtn && passwordInput) {
-            toggleBtn.addEventListener('click', function() {
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    toggleBtn.textContent = '🙈';
-                } else {
-                    passwordInput.type = 'password';
-                    toggleBtn.textContent = '👁️';
-                }
-            });
-        }
-
-        // Kayıt şifre göz ikonları
-        const toggleRegPass = document.getElementById('toggle-reg-password');
-        const regPass = document.getElementById('reg-password');
-        if (toggleRegPass && regPass) {
-            toggleRegPass.addEventListener('click', function() {
-                if (regPass.type === 'password') {
-                    regPass.type = 'text';
-                    toggleRegPass.textContent = '🙈';
-                } else {
-                    regPass.type = 'password';
-                    toggleRegPass.textContent = '👁️';
-                }
-            });
-        }
-        const toggleRegPassConfirm = document.getElementById('toggle-reg-password-confirm');
-        const regPassConfirm = document.getElementById('reg-password-confirm');
-        if (toggleRegPassConfirm && regPassConfirm) {
-            toggleRegPassConfirm.addEventListener('click', function() {
-                if (regPassConfirm.type === 'password') {
-                    regPassConfirm.type = 'text';
-                    toggleRegPassConfirm.textContent = '🙈';
-                } else {
-                    regPassConfirm.type = 'password';
-                    toggleRegPassConfirm.textContent = '👁️';
-                }
-            });
         }
     });
 </script>
