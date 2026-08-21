@@ -113,7 +113,7 @@ function changeSoundMode(mode) {
     showToast(`🔊 Ses modu: ${mode === 'sound' ? 'Sesli' : mode === 'vibration' ? 'Titreşim' : 'Sessiz'}`);
 }
 
-// ===== GİRİŞ (rememberMe) =====
+// ===== GİRİŞ =====
 function performLogin() {
     const email = document.getElementById("login-email").value.trim();
     const pass = document.getElementById("login-password").value.trim();
@@ -122,6 +122,7 @@ function performLogin() {
         showCustomModal("Uyarı", "Lütfen email ve şifre girin!");
         return;
     }
+
     if (typeof window.firebaseLogin === 'function') {
         window.firebaseLogin(email, pass)
             .then((userCredential) => {
@@ -189,6 +190,7 @@ function performRegister() {
         showCustomModal("Uyarı", "Kullanım Şartları ve Gizlilik Politikası'nı kabul etmelisiniz.");
         return;
     }
+
     if (typeof window.firebaseRegister === 'function') {
         window.firebaseRegister(email, pass)
             .then((userCredential) => {
@@ -279,31 +281,7 @@ function sendContactMessage() {
     document.getElementById("contact-char-count").innerText = "0";
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const textarea = document.getElementById('contact-message');
-    if (textarea) {
-        textarea.addEventListener('input', function() {
-            const count = document.getElementById('contact-char-count');
-            if (count) count.innerText = this.value.length;
-        });
-    }
-    if (userState && userState.email) {
-        showBannerAd();
-        updateHeartsAndHints();
-        checkDailyLaunchAd();
-    }
-    const soundSelect = document.getElementById('sound-mode-select');
-    if (soundSelect && userState.soundMode) {
-        soundSelect.value = userState.soundMode;
-    }
-    const savedEmail = localStorage.getItem('saved_email');
-    const savedPass = localStorage.getItem('saved_password');
-    if (savedEmail) document.getElementById("login-email").value = savedEmail;
-    if (savedPass) document.getElementById("login-password").value = savedPass;
-    if (savedEmail && savedPass) document.getElementById("remember-me").checked = true;
-});
-
-// ========== METİN YÜKLEME ==========
+// ===== METİN YÜKLEME =====
 let metinVerileri = null;
 
 function loadMetinler() {
@@ -435,20 +413,6 @@ function navigateToTab(tabName) {
     }
 }
 
-function confirmLogout() {
-    closeCustomModal();
-    if (typeof window.firebaseLogout === 'function') {
-        window.firebaseLogout();
-    }
-    document.getElementById("screen-login").classList.remove("hidden");
-    document.getElementById("bottom-nav-bar").classList.add("hidden");
-    const savedEmail = localStorage.getItem('saved_email');
-    const savedPass = localStorage.getItem('saved_password');
-    if (savedEmail) document.getElementById("login-email").value = savedEmail;
-    if (savedPass) document.getElementById("login-password").value = savedPass;
-    if (savedEmail && savedPass) document.getElementById("remember-me").checked = true;
-}
-
 function setActiveNav(tabName) {
     ['home', 'test', 'results', 'favorites', 'rewards', 'bilgic', 'yanlislarim', 'leaderboard'].forEach(t => {
         const btn = document.getElementById(`nav-${t}`);
@@ -466,6 +430,30 @@ function closeBilgic() {
     navigateToTab('home');
 }
 
+// ===== ÇIKIŞ ONAYI (düzeltildi) =====
+function confirmLogout() {
+    // Modalı kapat
+    const modal = document.getElementById('custom-modal');
+    if (modal) modal.classList.add('hidden');
+    
+    // Kısa bir gecikmeyle giriş sayfasına yönlen
+    setTimeout(() => {
+        if (typeof window.firebaseLogout === 'function') {
+            window.firebaseLogout();
+        }
+        document.getElementById("screen-login").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.add("hidden");
+        
+        // Hatırlanan şifreyi doldur
+        const savedEmail = localStorage.getItem('saved_email');
+        const savedPass = localStorage.getItem('saved_password');
+        if (savedEmail) document.getElementById("login-email").value = savedEmail;
+        if (savedPass) document.getElementById("login-password").value = savedPass;
+        if (savedEmail && savedPass) document.getElementById("remember-me").checked = true;
+    }, 150);
+}
+
+// ===== KATEGORİ BUTONLARI =====
 function initCategoryButtons() {
     const grid = document.getElementById('category-grid');
     if (!grid) return;
@@ -875,13 +863,11 @@ function renderRewardScreen() {
     updateRewardCounts();
     const container = document.getElementById('reward-progress-container');
     if (!container) return;
-    const totalUnits = userState.unitCompletionCount + (userState.remainingUnitsForChest || 0);
-    const filled = Math.min(totalUnits, 5);
+    const filled = userState.unitCompletionCount || 0;
     let html = `
         <div class="reward-card">
             <span class="reward-icon">🎁</span>
             <p><strong>Beş Ünite Tamamla, Hediyeyi Kap!</strong></p>
-            <p style="font-size:0.9rem;">İlerleme: ${filled}/5 (${totalUnits} ünite birikmiş)</p>
             <div class="reward-progress">
     `;
     for (let i = 0; i < 5; i++) {
@@ -938,27 +924,7 @@ function claimRewardChest() {
     playSound('success');
 }
 
-function showRewardClaimModal(rewardText) {
-    const modal = document.getElementById('reward-claim-modal');
-    const body = document.getElementById('reward-claim-body');
-    if (!modal || !body) return;
-    body.innerHTML = `
-        <p style="font-size:1.6rem; font-weight:800; color:#f59e0b;">🎁 Tebrikler!</p>
-        <p style="font-size:1.3rem; margin:16px 0;">${rewardText}</p>
-        <button class="btn-primary" style="background:var(--accent);" onclick="closeRewardClaimModal()">Tamam</button>
-    `;
-    modal.classList.remove('hidden');
-}
-
-function closeRewardClaimModal() {
-    document.getElementById('reward-claim-modal').classList.add('hidden');
-}
-
-function closeRewardClaimModalOutside(e) {
-    if (e.target.id === 'reward-claim-modal') closeRewardClaimModal();
-}
-
-// ========== HAVAI FİŞEK ==========
+// ===== KONFETİ =====
 function fireConfetti() {
     const canvas = document.getElementById('confetti-canvas');
     if (!canvas) return;
@@ -999,7 +965,7 @@ function fireConfetti() {
     }, 30);
 }
 
-// ========== FAVORİLER ==========
+// ===== FAVORİLER =====
 function renderFavorites() {
     const container = document.getElementById('favorites-list');
     container.innerHTML = '';
@@ -1269,33 +1235,12 @@ function confirmReport(questionText) {
     playSound('click');
 }
 
-// ===== CAN VE İPUCU GÖSTERGESİ =====
+// ===== CAN/İPUCU GÖSTERGESİ =====
 function updateHeartsAndHints() {
     const heartsEl = document.getElementById('header-hearts');
     const hintsEl = document.getElementById('header-hints');
     if (heartsEl) heartsEl.textContent = hearts;
     if (hintsEl) hintsEl.textContent = userState.hintCount || 0;
-}
-
-// ===== MOBİL GÜNLÜK İKİNCİ GİRİŞ REKLAMI =====
-function checkDailyLaunchAd() {
-    if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
-    const today = new Date().toISOString().slice(0,10);
-    if (userState.lastLaunchDate !== today) {
-        userState.lastLaunchDate = today;
-        userState.dailyLaunchCount = 1;
-        addHearts(1);
-        userState.hintCount = (userState.hintCount || 0) + 1;
-        saveUserState();
-        showToast('🎁 Hoş geldin! 1 can ve 1 ipucu kazandın.');
-        updateHeartsAndHints();
-    } else {
-        userState.dailyLaunchCount = (userState.dailyLaunchCount || 0) + 1;
-        saveUserState();
-        if (userState.dailyLaunchCount >= 2) {
-            showInterstitialAd(() => {});
-        }
-    }
 }
 
 // ===== REKLAM FONKSİYONLARI =====
@@ -1335,7 +1280,56 @@ function watchAdForHint() {
     });
 }
 
-// ===== WEB İNDİR BUTONU FONKSİYONU =====
+function watchAdForFeature(type) {
+    showAdSimulation(() => {
+        if (!userState.adRewardCounts[type]) userState.adRewardCounts[type] = 0;
+        userState.adRewardCounts[type] += 1;
+        if (type === 'hardQuestion') {
+            userState.featureUnlocked.hardQuestion = true;
+            showToast('🔓 Zor soru modu açıldı!');
+            startHardQuestion();
+        } else if (type === 'wrongAnalysis') {
+            userState.featureUnlocked.wrongAnalysis = true;
+            showToast('📊 Yanlış analiz açıldı!');
+            showWrongAnalysisUI();
+        } else if (type === 'wrongRetry') {
+            userState.featureUnlocked.wrongRetry = true;
+            showToast('🔄 Hatalı soru tekrarı aktif!');
+            startWrongRetry();
+        } else if (type === 'dailyTestExtra') {
+            userState.adRewardCounts.dailyTestExtra = (userState.adRewardCounts.dailyTestExtra || 0) + 1;
+            showToast('📢 Test hakkı kazandın!');
+            if (typeof updateTestModalInfo === 'function') {
+                updateTestModalInfo();
+            }
+        }
+        saveUserState();
+        playSound('success');
+    });
+}
+
+// ===== MOBİL GÜNLÜK İKİNCİ GİRİŞ REKLAMI =====
+function checkDailyLaunchAd() {
+    if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
+    const today = new Date().toISOString().slice(0,10);
+    if (userState.lastLaunchDate !== today) {
+        userState.lastLaunchDate = today;
+        userState.dailyLaunchCount = 1;
+        addHearts(1);
+        userState.hintCount = (userState.hintCount || 0) + 1;
+        saveUserState();
+        showToast('🎁 Hoş geldin! 1 can ve 1 ipucu kazandın.');
+        updateHeartsAndHints();
+    } else {
+        userState.dailyLaunchCount = (userState.dailyLaunchCount || 0) + 1;
+        saveUserState();
+        if (userState.dailyLaunchCount >= 2) {
+            showInterstitialAd(() => {});
+        }
+    }
+}
+
+// ===== WEB İNDİR BUTONU =====
 function downloadApp() {
     showCustomModal("📱 Uygulama Yakında!", `
         <p style="font-size:1.2rem; margin:16px 0;">Uygulama şu an geliştirme aşamasındadır.</p>
@@ -1345,4 +1339,144 @@ function downloadApp() {
     `);
 }
 
+// ========== ÖZEL MODAL FONKSİYONLARI ==========
+function showCustomModal(title, bodyHTML) {
+    const modal = document.getElementById('custom-modal');
+    const titleEl = document.getElementById('custom-modal-title');
+    const bodyEl = document.getElementById('custom-modal-body');
+    if (!modal || !titleEl || !bodyEl) return;
+    titleEl.innerText = title;
+    bodyEl.innerHTML = bodyHTML;
+    modal.classList.remove('hidden');
+    playSound('click');
+}
+
+function closeCustomModal() {
+    const modal = document.getElementById('custom-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function closeCustomModalOutside(e) {
+    if (e.target.id === 'custom-modal') closeCustomModal();
+}
+
+function showRewardClaimModal(rewardText) {
+    const modal = document.getElementById('reward-claim-modal');
+    const body = document.getElementById('reward-claim-body');
+    if (!modal || !body) return;
+    body.innerHTML = `
+        <p style="font-size:1.6rem; font-weight:800; color:#f59e0b;">🎁 Tebrikler!</p>
+        <p style="font-size:1.3rem; margin:16px 0;">${rewardText}</p>
+        <button class="btn-primary" style="background:var(--accent);" onclick="closeRewardClaimModal()">Tamam</button>
+    `;
+    modal.classList.remove('hidden');
+}
+
+function closeRewardClaimModal() {
+    document.getElementById('reward-claim-modal').classList.add('hidden');
+}
+
+function closeRewardClaimModalOutside(e) {
+    if (e.target.id === 'reward-claim-modal') closeRewardClaimModal();
+}
+
+// ========== DOMCONTENTLOADED ==========
+document.addEventListener('DOMContentLoaded', function() {
+    // Şifre göz ikonları (giriş)
+    const toggleBtn = document.getElementById('toggle-password-visibility');
+    const passwordInput = document.getElementById('login-password');
+    if (toggleBtn && passwordInput) {
+        toggleBtn.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        });
+    }
+
+    // Kayıt şifre göz ikonları
+    const toggleRegPass = document.getElementById('toggle-reg-password');
+    const regPass = document.getElementById('reg-password');
+    if (toggleRegPass && regPass) {
+        toggleRegPass.addEventListener('click', function() {
+            if (regPass.type === 'password') {
+                regPass.type = 'text';
+                toggleRegPass.textContent = '🙈';
+            } else {
+                regPass.type = 'password';
+                toggleRegPass.textContent = '👁️';
+            }
+        });
+    }
+    const toggleRegPassConfirm = document.getElementById('toggle-reg-password-confirm');
+    const regPassConfirm = document.getElementById('reg-password-confirm');
+    if (toggleRegPassConfirm && regPassConfirm) {
+        toggleRegPassConfirm.addEventListener('click', function() {
+            if (regPassConfirm.type === 'password') {
+                regPassConfirm.type = 'text';
+                toggleRegPassConfirm.textContent = '🙈';
+            } else {
+                regPassConfirm.type = 'password';
+                toggleRegPassConfirm.textContent = '👁️';
+            }
+        });
+    }
+
+    // Hatırlanan şifreyi doldur
+    const savedEmail = localStorage.getItem('saved_email');
+    const savedPass = localStorage.getItem('saved_password');
+    if (savedEmail) {
+        const emailField = document.getElementById("login-email");
+        if (emailField) emailField.value = savedEmail;
+    }
+    if (savedPass) {
+        const passField = document.getElementById("login-password");
+        if (passField) passField.value = savedPass;
+    }
+    if (savedEmail && savedPass) {
+        const rememberMe = document.getElementById("remember-me");
+        if (rememberMe) rememberMe.checked = true;
+    }
+
+    // Giriş yapılmışsa can/ipucu güncelle
+    if (userState && userState.email) {
+        updateHeartsAndHints();
+        checkDailyLaunchAd();
+    }
+
+    // İletişim formu karakter sayacı
+    const textarea = document.getElementById('contact-message');
+    if (textarea) {
+        textarea.addEventListener('input', function() {
+            const count = document.getElementById('contact-char-count');
+            if (count) count.innerText = this.value.length;
+        });
+    }
+
+    // Ses modu seçici
+    const soundSelect = document.getElementById('sound-mode-select');
+    if (soundSelect && userState.soundMode) {
+        soundSelect.value = userState.soundMode;
+    }
+
+    // Banner reklam göster
+    if (userState && userState.email) {
+        showBannerAd();
+    }
+
+    // Web indir butonu kontrolü
+    const downloadBtn = document.getElementById('web-download-btn');
+    if (downloadBtn) {
+        if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
+            downloadBtn.style.display = 'block';
+        } else {
+            downloadBtn.style.display = 'none';
+        }
+    }
+});
+
+// Mecelle ilerlemesini yükle
 loadMecelleProgress();
