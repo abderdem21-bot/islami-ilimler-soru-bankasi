@@ -1215,6 +1215,31 @@ body.dark-mode #banner-ad {
     color: var(--text-muted);
 }
 
+/* === WEB İNDİR BUTONU ÖZEL STİL === */
+#web-download-btn button {
+    background: linear-gradient(135deg, #0f2c59, #1b3b75);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 22px;
+    font-size: 1rem;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(15,44,89,0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+#web-download-btn button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 32px rgba(15,44,89,0.7);
+}
+#web-download-btn button:active {
+    transform: scale(0.95);
+}
+
 @media (max-height:700px) {
     .container { height:98vh; margin:4px; padding:16px 16px 24px 16px; }
     .hero-banner { padding:20px 16px; margin-bottom:16px; }
