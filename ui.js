@@ -436,11 +436,13 @@ function confirmLogout() {
     const modal = document.getElementById('custom-modal');
     if (modal) modal.classList.add('hidden');
     
-    // Kısa bir gecikmeyle giriş sayfasına yönlen
+    // Kısa bir gecikmeyle giriş sayfasına yönlen (modal tam kapansın diye)
     setTimeout(() => {
+        // Çıkış işlemleri (state temizleme vb.)
         if (typeof window.firebaseLogout === 'function') {
             window.firebaseLogout();
         }
+        // Giriş sayfasını göster, alt menüyü gizle
         document.getElementById("screen-login").classList.remove("hidden");
         document.getElementById("bottom-nav-bar").classList.add("hidden");
         
