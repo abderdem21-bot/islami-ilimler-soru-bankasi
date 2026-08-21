@@ -11,7 +11,7 @@
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://islamisoru.vercel.app/" />
 
-    <!-- ===== OPEN GRAPH (Sosyal Medya) ===== -->
+    <!-- ===== OPEN GRAPH ===== -->
     <meta property="og:title" content="İslami İlimler Soru Bankası - Online Test Çöz" />
     <meta property="og:description" content="Tefsir, Hadis, Fıkıh, Kelam ve daha fazlası. Ücretsiz interaktif soru bankası ile öğrenmeye hemen başla." />
     <meta property="og:type" content="website" />
@@ -26,7 +26,7 @@
     <meta name="twitter:description" content="Ücretsiz online testlerle İslami ilimlerde kendini geliştir." />
     <meta name="twitter:image" content="https://islamisoru.vercel.app/og-image.jpg" />
 
-    <!-- ===== JSON-LD (Yapılandırılmış Veri) ===== -->
+    <!-- ===== JSON-LD ===== -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -59,20 +59,21 @@
             </div>
             <h2 style="margin-bottom:20px;">Giriş Yap</h2>
             <form onsubmit="performLogin(); return false;">
-    <div class="form-group">
-        <label for="login-email" class="form-label">E-posta Adresi</label>
-        <input type="email" id="login-email" class="form-input" placeholder="ornek@email.com" ...>
-    </div>
-    <div class="form-group">
-        <label for="login-password" class="form-label">Şifre</label>
-        <input type="password" id="login-password" class="form-input" placeholder="••••••••" ...>
-    </div>
-    <button type="submit" class="btn-primary">Giriş Yap</button>
-    <div class="auth-links">
-        <button type="button" class="auth-link-btn" onclick="openRegister()">Yeni Kayıt</button>
-        <button type="button" class="auth-link-btn forgot" onclick="openForgotPasswordModal()">Şifremi Unuttum</button>
-    </div>
-</form>
+                <div class="form-group">
+                    <label for="login-email" class="form-label">E-posta Adresi</label>
+                    <input type="email" id="login-email" class="form-input" placeholder="ornek@email.com" />
+                </div>
+                <div class="form-group">
+                    <label for="login-password" class="form-label">Şifre</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="••••••••" />
+                </div>
+                <button type="submit" class="btn-primary">Giriş Yap</button>
+                <div class="auth-links">
+                    <button type="button" class="auth-link-btn" onclick="openRegister()">Yeni Kayıt</button>
+                    <button type="button" class="auth-link-btn forgot" onclick="openForgotPasswordModal()">Şifremi Unuttum</button>
+                </div>
+            </form>
+        </div>
 
         <!-- ===== KAYIT ===== -->
         <div id="screen-register" class="hidden center screen">
@@ -111,7 +112,7 @@
         </div>
 
         <!-- ===== ANA SAYFA (KATEGORİLER) ===== -->
-        <div id="screen-categories" class="hidden screen">
+        <div id="screen-categories" class="hidden screen" style="position:relative;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <button class="menu-burger-btn" onclick="openDrawerMenu()" title="Menüyü Aç" aria-label="Menüyü Aç">☰</button>
                 <div style="display:flex; align-items:center; gap:12px;">
@@ -125,6 +126,33 @@
             </div>
             <div class="category-grid" id="category-grid"></div>
             <button class="btn-primary" style="margin-top:20px; background:var(--accent);" onclick="navigateToTab('favorites')">⭐ Favori Sorularım</button>
+
+            <!-- ===== WEB İNDİR BUTONU – sadece web'de, lacivert alanın sağ alt köşesinde ===== -->
+            <div id="web-download-btn" style="position:absolute; bottom:20px; right:20px; z-index:10; display:none;">
+                <button onclick="downloadApp()" style="
+                    background: linear-gradient(135deg, #0f2c59, #1b3b75);
+                    color: white;
+                    border: none;
+                    border-radius: 50px;
+                    padding: 12px 20px;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    box-shadow: 0 8px 24px rgba(15,44,89,0.5);
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    transition: transform 0.2s, box-shadow 0.2s;
+                    font-family: 'Plus Jakarta Sans', sans-serif;
+                "
+                onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 12px 32px rgba(15,44,89,0.7)';"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 24px rgba(15,44,89,0.5)';"
+                onmousedown="this.style.transform='scale(0.95)';"
+                onmouseup="this.style.transform='scale(1)';"
+                >
+                    <span style="font-size:1.2rem;">📱</span> Uygulamayı İndir
+                </button>
+            </div>
         </div>
 
         <!-- ===== FIKIH ALT MENÜ ===== -->
@@ -638,33 +666,6 @@
     </div>
 </div>
 
-<!-- ===== WEB'DE GÖRÜNEN "UYGULAMAYI İNDİR" BUTONU (sadece tarayıcıda) ===== -->
-<div id="web-download-btn" style="position:fixed; bottom:90px; right:20px; z-index:9999; display:none;">
-    <button onclick="downloadApp()" style="
-        background: linear-gradient(135deg, #0f2c59, #1b3b75);
-        color: white;
-        border: none;
-        border-radius: 50px;
-        padding: 14px 22px;
-        font-size: 1rem;
-        font-weight: 700;
-        box-shadow: 0 8px 24px rgba(15,44,89,0.5);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: transform 0.2s, box-shadow 0.2s;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-    "
-    onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 12px 32px rgba(15,44,89,0.7)';"
-    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 24px rgba(15,44,89,0.5)';"
-    onmousedown="this.style.transform='scale(0.95)';"
-    onmouseup="this.style.transform='scale(1)';"
-    >
-        <span style="font-size:1.4rem;">📱</span> Uygulamayı İndir
-    </button>
-</div>
-
 <!-- ===== KONFETİ ===== -->
 <canvas id="confetti-canvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; display:none;"></canvas>
 
@@ -734,6 +735,29 @@
             navigateToTab('logout');
         }
     };
+
+    // ===== WEB İNDİR BUTONU – SADECE WEB'DE GÖSTER =====
+    function downloadApp() {
+        showCustomModal("📱 Uygulama Yakında!", `
+            <p style="font-size:1.2rem; margin:16px 0;">Uygulama şu an geliştirme aşamasındadır.</p>
+            <p style="font-size:1.1rem; color:var(--accent); font-weight:700;">📲 Yakında mobil mağazalarda yayınlanacaktır.</p>
+            <p style="font-size:0.9rem; color:var(--text-muted);">Bizi takipte kalın!</p>
+            <button class="btn-primary" style="background:var(--accent); margin-top:16px;" onclick="closeCustomModal()">Tamam</button>
+        `);
+    }
+
+    // DOM yüklendiğinde buton görünürlüğünü ayarla
+    document.addEventListener('DOMContentLoaded', function() {
+        const downloadBtn = document.getElementById('web-download-btn');
+        if (downloadBtn) {
+            // Eğer Capacitor ile paketlenmiş native uygulama değilse (yani web tarayıcısı) göster
+            if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
+                downloadBtn.style.display = 'block';
+            } else {
+                downloadBtn.style.display = 'none';
+            }
+        }
+    });
 </script>
 
 <script src="state.js"></script>
