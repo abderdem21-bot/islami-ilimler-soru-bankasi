@@ -351,6 +351,7 @@ function fillScreenWithContent(screenId, contentData, type) {
 function navigateToTab(tabName) {
     hideAllScreens();
     if (tabName === 'logout') {
+        // Modal açılacak, confirmLogout içinde işlem yapılacak
         showCustomModal("Çıkış", `
             <p>Oturumunuzu kapatmak istediğinize emin misiniz?</p>
             <div style="display:flex; gap:10px; justify-content:center; margin-top:16px;">
@@ -430,29 +431,34 @@ function closeBilgic() {
     navigateToTab('home');
 }
 
-// ===== ÇIKIŞ ONAYI (düzeltildi) =====
+// ===== ÇIKIŞ ONAYI (DÜZELTİLDİ) =====
 function confirmLogout() {
-    // Modalı kapat
+    // Modal'ı kapat
     const modal = document.getElementById('custom-modal');
     if (modal) modal.classList.add('hidden');
     
-    // Kısa bir gecikmeyle giriş sayfasına yönlen (modal tam kapansın diye)
-    setTimeout(() => {
-        // Çıkış işlemleri (state temizleme vb.)
-        if (typeof window.firebaseLogout === 'function') {
-            window.firebaseLogout();
-        }
-        // Giriş sayfasını göster, alt menüyü gizle
-        document.getElementById("screen-login").classList.remove("hidden");
-        document.getElementById("bottom-nav-bar").classList.add("hidden");
-        
-        // Hatırlanan şifreyi doldur
-        const savedEmail = localStorage.getItem('saved_email');
-        const savedPass = localStorage.getItem('saved_password');
-        if (savedEmail) document.getElementById("login-email").value = savedEmail;
-        if (savedPass) document.getElementById("login-password").value = savedPass;
-        if (savedEmail && savedPass) document.getElementById("remember-me").checked = true;
-    }, 150);
+    // Firebase çıkış yap
+    if (typeof window.firebaseLogout === 'function') {
+        window.firebaseLogout();
+    }
+    
+    // Giriş sayfasını göster, alt menüyü gizle
+    document.getElementById("screen-login").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.add("hidden");
+    
+    // Hatırlanan şifreyi doldur
+    const savedEmail = localStorage.getItem('saved_email');
+    const savedPass = localStorage.getItem('saved_password');
+    if (savedEmail) document.getElementById("login-email").value = savedEmail;
+    if (savedPass) document.getElementById("login-password").value = savedPass;
+    if (savedEmail && savedPass) document.getElementById("remember-me").checked = true;
+    
+    // Tüm ekranları gizle (zaten login açık)
+    // Ekstra olarak kategoriler vs kapalı kalsın
+    hideAllScreens();
+    document.getElementById("screen-login").classList.remove("hidden");
+    
+    playSound('click');
 }
 
 // ===== KATEGORİ BUTONLARI =====
