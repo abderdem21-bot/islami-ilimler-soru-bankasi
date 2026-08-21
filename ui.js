@@ -433,14 +433,14 @@ function closeBilgic() {
 
 // ===== ÇIKIŞ ONAYI (DÜZELTİLDİ) =====
 function confirmLogout() {
-    // Modal'ı kapat
+    // ✅ DÜZELTME: Modal'ı kapat
     const modal = document.getElementById('custom-modal');
     if (modal) modal.classList.add('hidden');
     
-    // Firebase çıkış yap
-    if (typeof window.firebaseLogout === 'function') {
-        window.firebaseLogout();
-    }
+    // ✅ DÜZELTME: window.firebaseLogout çağrısı KALDIRILDI
+    // if (typeof window.firebaseLogout === 'function') {
+    //     window.firebaseLogout();
+    // }
     
     // Giriş sayfasını göster, alt menüyü gizle
     document.getElementById("screen-login").classList.remove("hidden");
@@ -454,7 +454,6 @@ function confirmLogout() {
     if (savedEmail && savedPass) document.getElementById("remember-me").checked = true;
     
     // Tüm ekranları gizle (zaten login açık)
-    // Ekstra olarak kategoriler vs kapalı kalsın
     hideAllScreens();
     document.getElementById("screen-login").classList.remove("hidden");
     
@@ -1390,17 +1389,19 @@ function closeRewardClaimModalOutside(e) {
 
 // ========== DOMCONTENTLOADED ==========
 document.addEventListener('DOMContentLoaded', function() {
-    // Şifre göz ikonları (giriş)
+    // ✅ DÜZELTME: Göz ikonu – şifre görünürlüğü (doğrudan ekleme)
     const toggleBtn = document.getElementById('toggle-password-visibility');
-    const passwordInput = document.getElementById('login-password');
-    if (toggleBtn && passwordInput) {
+    if (toggleBtn) {
         toggleBtn.addEventListener('click', function() {
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleBtn.textContent = '🙈';
-            } else {
-                passwordInput.type = 'password';
-                toggleBtn.textContent = '👁️';
+            const pwd = document.getElementById('login-password');
+            if (pwd) {
+                if (pwd.type === 'password') {
+                    pwd.type = 'text';
+                    this.textContent = '🙈';
+                } else {
+                    pwd.type = 'password';
+                    this.textContent = '👁️';
+                }
             }
         });
     }
