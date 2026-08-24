@@ -288,11 +288,7 @@ function performLogin() {
             })
             .catch((error) => {
                 let msg = "Hatalı e-posta veya şifre!";
-                if (error.code === 'auth/user-not-found') msg = "Bu e-posta adresiyle kayıtlı kullanıcı bulunamadı.";
-                else if (error.code === 'auth/wrong-password') msg = "Şifre yanlış.";
-                else if (error.code === 'auth/invalid-email') msg = "Geçersiz e-posta formatı.";
-                else if (error.code === 'auth/too-many-requests') msg = "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin.";
-                else msg = error.message || "Beklenmeyen bir hata oluştu.";
+                if (error.message) msg = error.message;
                 showCustomModal("Giriş Hatası", msg);
             });
     } else {
@@ -336,15 +332,7 @@ function performRegister() {
             })
             .catch((error) => {
                 let msg = "Kayıt sırasında bir hata oluştu.";
-                if (error.code === 'auth/email-already-in-use') {
-                    msg = "Bu e-posta adresi zaten kullanımda.";
-                } else if (error.code === 'auth/weak-password') {
-                    msg = "Şifre en az 6 karakter olmalıdır.";
-                } else if (error.code === 'auth/invalid-email') {
-                    msg = "Geçersiz e-posta formatı.";
-                } else {
-                    msg = error.message || "Beklenmeyen bir hata oluştu.";
-                }
+                if (error.message) msg = error.message;
                 showCustomModal("Kayıt Hatası", msg);
             });
     } else {
@@ -392,7 +380,7 @@ function sendResetLink() {
             .then((result) => {
                 showCustomModal("✅ Şifre Sıfırlandı", `
                     <p style="font-size:1.1rem; margin:16px 0;">
-                        <strong>${result.email}</strong> adresine yeni şifre gönderildi.
+                        <strong>${result.email}</strong> adresine yeni şifre oluşturuldu.
                     </p>
                     <div style="background: #f0fdf4; padding: 16px; border-radius: 12px; border: 2px solid #22c55e;">
                         <p style="font-size:1.3rem; font-weight:800; color:#22c55e; margin:0;">
