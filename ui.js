@@ -14,12 +14,15 @@ function hideAllScreens() {
     });
 }
 
+// ========== KAYIT SAYFASINDAN GELİNEN SAYFA KONTROLÜ ==========
+let navigatedFromRegister = false;
+
 // ========== BANNER REKLAM ==========
 function showBannerAd() {
     const banner = document.getElementById('banner-ad');
     const textEl = document.getElementById('banner-ad-text');
     if (!banner || !textEl) return;
-    if (adDeposu.length > 0) {
+    if (adDeposu && adDeposu.length > 0) {
         const ad = adDeposu[0];
         textEl.textContent = '📢 ' + (ad.content || 'Reklam');
     } else {
@@ -114,6 +117,8 @@ function changeSoundMode(mode) {
 }
 
 // ===== METİN YÜKLEME =====
+let metinVerileri = {};
+
 function loadMetinler() {
     return fetch('metinler.json')
         .then(res => {
@@ -124,6 +129,7 @@ function loadMetinler() {
             metinVerileri = data;
             fillScreenWithContent('screen-user-guide', metinVerileri.kullanımRehberi, 'rehber');
             fillScreenWithContent('screen-privacy', metinVerileri.gizlilikPolitikasi, 'gizlilik');
+            // DÜZELTME: hakkimizda (eski hakkıda)
             fillScreenWithContent('screen-about', metinVerileri.hakkimizda, 'hakkimizda');
             fillScreenWithContent('screen-terms', metinVerileri.kullanimKosullari, 'terms');
         })
@@ -223,7 +229,14 @@ function performLogin() {
                 updateHeartsAndHints();
                 showToast("✅ Giriş başarılı!");
                 
+                // Son sayfayı kaydet
+                sessionStorage.setItem('lastScreen', 'home');
+                
                 checkDailyLaunchAd();
+                // Alt banner'ı yenile
+                if (typeof refreshBottomBanner === 'function') {
+                    refreshBottomBanner();
+                }
             })
             .catch((error) => {
                 let msg = "Hatalı e-posta veya şifre!";
@@ -292,11 +305,13 @@ function performRegister() {
 }
 
 function openRegister() {
+    navigatedFromRegister = true;
     hideAllScreens();
     document.getElementById("screen-register").classList.remove("hidden");
 }
 
 function closeRegister() {
+    navigatedFromRegister = false;
     hideAllScreens();
     document.getElementById("screen-login").classList.remove("hidden");
 }
@@ -366,6 +381,12 @@ function navigateToTab(tabName) {
         window.location.href = 'admin.html?from=admin';
         return;
     }
+    
+    // Sayfa geçişini kaydet (çıkış ve admin hariç)
+    if (tabName !== 'logout' && tabName !== 'admin') {
+        sessionStorage.setItem('lastScreen', tabName);
+    }
+    
     document.getElementById("bottom-nav-bar").classList.remove("hidden");
     setActiveNav(tabName);
 
@@ -373,6 +394,10 @@ function navigateToTab(tabName) {
         document.getElementById("screen-categories").classList.remove("hidden");
         updateStreakDisplay();
         updateHeartsAndHints();
+        // Alt banner'ı yenile
+        if (typeof refreshBottomBanner === 'function') {
+            refreshBottomBanner();
+        }
     } else if (tabName === 'results') {
         if (!userState.statsAdWatchedToday) {
             showAdSimulation(() => {
@@ -393,8 +418,25 @@ function navigateToTab(tabName) {
         }
     } else if (tabName === 'privacy') {
         document.getElementById("screen-privacy").classList.remove("hidden");
+        // Kayıt sayfasından gelindiğinde geri butonunu değiştir
+        if (navigatedFromRegister) {
+            const backBtn = document.querySelector('#screen-privacy .back-btn');
+            if (backBtn) {
+                backBtn.onclick = function() {
+                    closePrivacyOrTermsFromRegister();
+                };
+            }
+        }
     } else if (tabName === 'terms') {
         document.getElementById("screen-terms").classList.remove("hidden");
+        if (navigatedFromRegister) {
+            const backBtn = document.querySelector('#screen-terms .back-btn');
+            if (backBtn) {
+                backBtn.onclick = function() {
+                    closePrivacyOrTermsFromRegister();
+                };
+            }
+        }
     } else if (tabName === 'user-guide') {
         document.getElementById("screen-user-guide").classList.remove("hidden");
     } else if (tabName === 'about') {
@@ -432,6 +474,13 @@ function closeBilgic() {
     navigateToTab('home');
 }
 
+// ===== KAYIT SAYFASINDAN DÖNÜŞ =====
+function closePrivacyOrTermsFromRegister() {
+    navigatedFromRegister = false;
+    hideAllScreens();
+    document.getElementById("screen-register").classList.remove("hidden");
+}
+
 // ===== ÇIKIŞ ONAYI =====
 function confirmLogout() {
     const modal = document.getElementById('custom-modal');
@@ -444,6 +493,9 @@ function confirmLogout() {
         userState.rememberMe = false;
         saveUserState();
     }
+    
+    // Son sayfayı temizle
+    sessionStorage.removeItem('lastScreen');
     
     document.getElementById("screen-login").classList.remove("hidden");
     document.getElementById("bottom-nav-bar").classList.add("hidden");
@@ -1283,23 +1335,34 @@ function checkDailyLaunchAd() {
 
 // ===== REKLAM FONKSİYONLARI =====
 function showInterstitialAd(onComplete) {
-    showAdSimulation(onComplete);
+    // Önce AdSense geçiş reklamını dene, yoksa simülasyon
+    if (typeof gosterInterstitialAd === 'function') {
+        gosterInterstitialAd(onComplete);
+    } else {
+        showAdSimulation(onComplete);
+    }
 }
 
 function showRewardedAd(rewardType, onComplete) {
-    showAdSimulation(() => {
-        if (rewardType === 'heart') {
-            addHearts(1);
-            showToast('❤️ +1 Can kazandın!');
-        } else if (rewardType === 'hint') {
-            userState.hintCount = (userState.hintCount || 0) + 1;
-            showToast('💡 +1 İpucu kazandın!');
-        }
-        saveUserState();
-        updateRewardCounts();
-        updateHeartsAndHints();
-        if (onComplete) onComplete();
-    });
+    // Önce AdSense ödüllü reklamı dene, yoksa simülasyon
+    if (typeof gosterRewardedAd === 'function') {
+        gosterRewardedAd(rewardType);
+        if (onComplete) setTimeout(onComplete, 500);
+    } else {
+        showAdSimulation(() => {
+            if (rewardType === 'heart') {
+                addHearts(1);
+                showToast('❤️ +1 Can kazandın!');
+            } else if (rewardType === 'hint') {
+                userState.hintCount = (userState.hintCount || 0) + 1;
+                showToast('💡 +1 İpucu kazandın!');
+            }
+            saveUserState();
+            updateRewardCounts();
+            updateHeartsAndHints();
+            if (onComplete) onComplete();
+        });
+    }
 }
 
 function watchAdForHeart() {
@@ -1424,7 +1487,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (userState && userState.email) {
         updateHeartsAndHints();
         checkDailyLaunchAd();
-        if (document.getElementById("screen-login") && !document.getElementById("screen-login").classList.contains('hidden')) {
+        
+        // Son sayfayı yükle
+        const lastScreen = sessionStorage.getItem('lastScreen');
+        const validScreens = ['home', 'results', 'settings', 'bilgic', 'rewards', 'favorites', 'leaderboard'];
+        
+        if (lastScreen && validScreens.includes(lastScreen)) {
+            hideAllScreens();
+            navigateToTab(lastScreen);
+        } else {
             hideAllScreens();
             document.getElementById("screen-categories").classList.remove("hidden");
             document.getElementById("bottom-nav-bar").classList.remove("hidden");
