@@ -70,11 +70,10 @@
       "4. Reklam ve Üçüncü Taraf Paylaşımı: Ücretsiz hizmet sunabilmek için Google AdMob, Firebase ve Vercel gibi altyapı sağlayıcıları kullanılır. Bu servisler reklam kimlikleri ve çerezlerle kişiselleştirilmiş reklamlar sunabilir. Verileriniz üçüncü şahıslara satılmaz.",
       "5. Çerezler ve Yerel Depolama: Kullanıcı tercihleri, oturum bilgileri ve reklam analizleri için LocalStorage, SessionStorage ve çerezler kullanılır.",
       "6. Kullanıcı Hakları ve Veri Güvenliği: KVKK Madde 11 uyarınca verilerinize erişme, düzeltme ve silme hakkınız vardır. Hesabınızı ve verilerinizi silmek için 'Ayarlar > Hesabımı Sil' adımlarını takip edebilir veya bizimle iletişime geçebilirsiniz."
-   }
     ]
   },
-  "hakkıda": {
-    "baslik":"ℹ️ Hakkında",
+  "hakkimizda": {
+    "baslik": "ℹ️ Hakkında",
     "altBaslik": "İslami İlimler Soru Bankası - Sürüm v2.0.0",
     "paragraflar": [
       "Bu uygulama, İlahiyat ve İslami İlimler alanında eğitim gören öğrenciler ve kendini geliştirmek isteyen herkes için hazırlanmış kapsamlı bir soru bankası ve öğrenme platformudur.",
