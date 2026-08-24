@@ -24,7 +24,6 @@ function ekleCan(miktar) {
   let yeniCan = getCan() + miktar;
   localStorage.setItem("user_can", yeniCan);
   guncelleArayuz();
-  // UI'dan erişilebilir olması için global fonksiyon
   if (typeof window.updateHeartsAndHints === 'function') {
     window.updateHeartsAndHints();
   }
@@ -50,27 +49,25 @@ function guncelleArayuz() {
 }
 
 // ==========================================
-// 2. GOOGLE ADSENSE & GPT REKLAM YÖNETİMİ (WEB OPTİMİZE)
+// 2. GOOGLE ADSENSE & GPT REKLAM YÖNETİMİ
 // ==========================================
 
 window.googletag = window.googletag || { cmd: [] };
 
 // --- REKLAM BİRİM KİMLİKLERİNİZİ BURAYA GİRİN ---
 const AD_UNITS = {
-    REWARDED: '/123456789/rewarded_ad_unit',        // Ödüllü Reklam Birimi
-    INTERSTITIAL: '/123456789/interstitial_ad_unit', // Geçiş Reklamı Birimi
-    BANNER_HOME: '/123456789/banner_home',           // Ana Sayfa Banner
-    BANNER_BOTTOM: '/123456789/banner_bottom'        // Alt Sabit Banner
+    REWARDED: '/123456789/rewarded_ad_unit',
+    INTERSTITIAL: '/123456789/interstitial_ad_unit',
+    BANNER_BOTTOM: '/123456789/banner_bottom'
 };
 
-// --- Global Değişkenler ---
 let rewardedSlot = null;
 let interstitialSlot = null;
 let bannerBottomSlot = null;
-window.currentRewardType = null; // 'CAN' veya 'IPUCU'
+window.currentRewardType = null;
 
 googletag.cmd.push(function () {
-  // --- A. ÖDÜLLÜ REKLAM (Rewarded Ad) ---
+  // Ödüllü Reklam
   rewardedSlot = googletag.defineOutOfPageSlot(
     AD_UNITS.REWARDED,
     googletag.enums.OutOfPageFormat.REWARDED
@@ -78,8 +75,6 @@ googletag.cmd.push(function () {
 
   if (rewardedSlot) {
     rewardedSlot.addService(googletag.pubads());
-
-    // Reklam başarıyla izlendiğinde çalışacak olay
     googletag.pubads().addEventListener('rewardedSlotGranted', function () {
       if (window.currentRewardType === 'CAN') {
         ekleCan(3);
@@ -94,14 +89,12 @@ googletag.cmd.push(function () {
       }
       window.currentRewardType = null;
     });
-
-    // Reklam kapatıldığında slotu temizle
     googletag.pubads().addEventListener('rewardedSlotClosed', function () {
       window.currentRewardType = null;
     });
   }
 
-  // --- B. GEÇİŞ REKLAMI (Interstitial Ad) ---
+  // Geçiş Reklamı
   interstitialSlot = googletag.defineOutOfPageSlot(
     AD_UNITS.INTERSTITIAL,
     googletag.enums.OutOfPageFormat.INTERSTITIAL
@@ -111,71 +104,49 @@ googletag.cmd.push(function () {
     interstitialSlot.addService(googletag.pubads());
   }
 
-  // --- C. ALT SABİT BANNER (Sticky Ad) ---
+  // Alt Sabit Banner
   bannerBottomSlot = googletag.defineSlot(
     AD_UNITS.BANNER_BOTTOM,
-    [728, 90], // Masaüstü için
+    [728, 90],
     'banner-ad-bottom'
   );
 
   if (bannerBottomSlot) {
     bannerBottomSlot.addService(googletag.pubads());
-    // Responsive ayarları - mobilde 320x50 göster
     googletag.pubads().setTargeting('device', 'desktop');
   }
 
   googletag.enableServices();
 
-  // Alt banner'ı hemen göster
   if (document.getElementById('banner-ad-bottom')) {
     googletag.display('banner-ad-bottom');
   }
 });
 
-// ==========================================
-// 3. DIŞARIYA AÇIK REKLAM ÇAĞIRMA FONKSİYONLARI
-// ==========================================
-
-/**
- * Butonlara basıldığında Ödüllü Reklamı başlatır
- * @param {'CAN' | 'IPUCU'} tip 
- */
 function gosterRewardedAd(tip) {
   window.currentRewardType = tip;
-  
   googletag.cmd.push(function () {
     if (rewardedSlot) {
       googletag.display(rewardedSlot);
     } else {
-      // Reklam yüklenemediyse veya engellendiyse bildirim ver
       if (typeof window.showToast === 'function') {
         window.showToast("Reklam şu an hazır değil, lütfen tekrar deneyin.");
-      } else {
-        alert("Reklam şu an hazır değil, lütfen bağlantınızı kontrol edip tekrar deneyin.");
       }
     }
   });
 }
 
-/**
- * Test bittiğinde veya ünite geçişlerinde Geçiş Reklamını başlatır
- * @param {Function} callback - Reklam kapandıktan sonra çalışacak fonksiyon
- */
 function gosterInterstitialAd(callback) {
   googletag.cmd.push(function () {
     if (interstitialSlot) {
       googletag.display(interstitialSlot);
     }
-    // Kullanıcı reklamı kapattıktan veya reklam açılmadıysa akış bozulmasın diye yönlendir
     if (typeof callback === "function") {
       setTimeout(callback, 500);
     }
   });
 }
 
-/**
- * Alt Sabit Banner'ı yeniden yükler (sayfa değişimlerinde)
- */
 function refreshBottomBanner() {
   googletag.cmd.push(function () {
     if (bannerBottomSlot) {
@@ -185,11 +156,8 @@ function refreshBottomBanner() {
 }
 
 // ==========================================
-// 4. YEDEK SİMÜLASYON (AdSense Yoksa veya Test Aşamasında)
+// 3. YEDEK SİMÜLASYON
 // ==========================================
-
-// Eğer AdSense entegre değilse veya test aşamasındaysanız,
-// aşağıdaki simülasyon fonksiyonları çalışır.
 
 let adDeposu = [];
 const MAX_AD_DEPO = 10;
@@ -216,8 +184,6 @@ function showAdSimulation(callback) {
         if (adDeposu.length === 0) {
             if (typeof window.showCustomModal === 'function') {
                 window.showCustomModal("Uyarı", "📡 Reklamlar yüklenemedi. Lütfen internet bağlantınızı kontrol edin.");
-            } else {
-                alert("Reklamlar yüklenemedi. Lütfen internet bağlantınızı kontrol edin.");
             }
             if (callback) callback();
             return;
@@ -262,13 +228,11 @@ function showAdSimulationWithContent(ad, callback) {
     }, 300);
 }
 
-// Basit Toast bildirimi (ui.js'deki showToast kullanılamazsa)
 function showToast(message) {
     if (typeof window.showToast === 'function') {
         window.showToast(message);
         return;
     }
-    // Fallback toast
     let toast = document.getElementById("app-toast");
     if (!toast) {
         toast = document.createElement("div");
@@ -290,15 +254,6 @@ function showToast(message) {
     }, 2500);
 }
 
-// Web ortamında çalıştığını kontrol et
-function isWebEnvironment() {
-    return !(window.Capacitor && window.Capacitor.isNativePlatform());
-}
-
-// ==========================================
-// 5. DIŞARIYA AÇIK GLOBAL FONKSİYONLAR
-// ==========================================
-
 window.gosterRewardedAd = gosterRewardedAd;
 window.gosterInterstitialAd = gosterInterstitialAd;
 window.refreshBottomBanner = refreshBottomBanner;
@@ -308,5 +263,4 @@ window.ekleIpucu = ekleIpucu;
 window.getCan = getCan;
 window.getIpucu = getIpucu;
 
-// UI'dan erişilebilir olması için
 console.log('✅ AdSenseManager.js yüklendi - Web Reklam Yönetimi Aktif');
