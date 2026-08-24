@@ -159,8 +159,8 @@ body.dark-mode .back-btn:hover {
 
 .header-row {
     display: flex;
-    align-items: flex-start;
-    gap: 20px;
+    align-items: center;
+    gap: 16px;
     margin-bottom: 20px;
     border-bottom: 2px solid var(--border);
     padding-bottom: 8px;
@@ -170,12 +170,10 @@ body.dark-mode .back-btn:hover {
     color: var(--text-main);
 }
 .header-row h2, .header-row .title {
-    margin-top: 1cm;
-    position: relative;
+    margin: 0;
     font-size: 1.35rem;
     font-weight: 800;
     color: var(--text-main);
-    margin-bottom: 0;
 }
 
 .btn-primary {
@@ -775,7 +773,7 @@ body.dark-mode .profile-card.danger-zone { border-color:rgba(239,68,68,0.4); }
     flex-shrink:0;
 }
 .toggle-switch::after {
-    content:'';
+    content:('');
     position:absolute;
     width:20px;
     height:20px;
@@ -810,9 +808,9 @@ body.dark-mode .progress-bar-track { background:#334155; }
 .centered-page {
     display:flex;
     flex-direction:column;
-    justify-content:center;
+    justify-content:flex-start;
     min-height:60vh;
-    text-align:center;
+    text-align:left;
 }
 .big-emoji {
     font-size:3rem;
@@ -1206,80 +1204,51 @@ body.dark-mode #banner-ad {
     color: var(--text-muted);
 }
 
-/* ===== REKLAM ALANLARI ===== */
-.desktop-ad-left, .desktop-ad-right {
-    display: none;
-    position: fixed;
-    top: 50px;
-    width: 160px;
-    height: 600px;
-    z-index: 5;
-}
-.desktop-ad-left { left: 20px; }
-.desktop-ad-right { right: 20px; }
-
-@media (min-width: 1200px) {
-    .desktop-ad-left, .desktop-ad-right {
-        display: block;
-    }
-    .container { max-width: 480px; margin: 0 auto; }
+/* ===== REKLAM ALANLARI GİZLİ (ŞİMDİLİK) ===== */
+.desktop-ad-left,
+.desktop-ad-right,
+.banner-ad-horizontal,
+#banner-ad,
+.ad-placeholder,
+#banner-ad-home,
+#banner-ad-units,
+#banner-ad-bilgic,
+#banner-ad-testresult {
+    display: none !important;
 }
 
-.ad-placeholder {
-    background: #e2e8f0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #64748b;
-    font-size: 0.9rem;
-    border-radius: 12px;
-    border: 2px dashed #94a3b8;
-}
-body.dark-mode .ad-placeholder {
-    background: #1e293b;
-    border-color: #475569;
-    color: #94a3b8;
+/* ===== BAŞLIK DÜZELTMELERİ ===== */
+.centered-page .header-row h2,
+.centered-page .header-row .title {
+    margin-top: 0 !important;
+    margin-bottom: 10px !important;
 }
 
-.banner-ad-horizontal {
-    width: 100%;
-    height: 80px;
-    background: #f1f5f9;
-    border-radius: 12px;
-    border: 2px dashed #94a3b8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #64748b;
-    font-size: 0.9rem;
-    margin: 12px 0;
-}
-body.dark-mode .banner-ad-horizontal {
-    background: #1e293b;
-    border-color: #475569;
-    color: #94a3b8;
-}
-
+/* ===== CAN VE İPUCU GÖSTERGESİ (DAHA ŞIK) ===== */
 #hearts-hints-display {
-    background: rgba(255,255,255,0.7);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(4px);
+    padding: 6px 14px !important;
+    border-radius: 30px !important;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 body.dark-mode #hearts-hints-display {
-    background: rgba(30,41,59,0.8);
+    background: rgba(30, 41, 59, 0.9) !important;
+    border-color: #334155;
     color: #f1f5f9;
 }
-
-#web-download-btn button {
-    font-size: 0.8rem !important;
-    padding: 6px 14px !important;
+#hearts-hints-display span {
+    font-weight: 800;
+}
+#hearts-hints-display .heart-icon {
+    color: #ef4444;
+}
+#hearts-hints-display .hint-icon {
+    color: var(--accent);
 }
 
 @media (max-height:700px) {
