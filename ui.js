@@ -113,6 +113,77 @@ function changeSoundMode(mode) {
     showToast(`🔊 Ses modu: ${mode === 'sound' ? 'Sesli' : mode === 'vibration' ? 'Titreşim' : 'Sessiz'}`);
 }
 
+// ===== METİN YÜKLEME =====
+function loadMetinler() {
+    return fetch('metinler.json')
+        .then(res => {
+            if (!res.ok) throw new Error('metinler.json yüklenemedi');
+            return res.json();
+        })
+        .then(data => {
+            metinVerileri = data;
+            fillScreenWithContent('screen-user-guide', metinVerileri.kullanımRehberi, 'rehber');
+            fillScreenWithContent('screen-privacy', metinVerileri.gizlilikPolitikasi, 'gizlilik');
+            fillScreenWithContent('screen-about', metinVerileri.hakkimizda, 'hakkimizda');
+            fillScreenWithContent('screen-terms', metinVerileri.kullanimKosullari, 'terms');
+        })
+        .catch(err => {
+            console.warn('Metinler yüklenemedi, varsayılan metinler kullanılacak.', err);
+        });
+}
+
+function fillScreenWithContent(screenId, contentData, type) {
+    const screen = document.getElementById(screenId);
+    if (!screen) return;
+
+    let container = screen.querySelector('.content-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'content-container';
+        const headerRow = screen.querySelector('.header-row');
+        if (headerRow) {
+            headerRow.after(container);
+        } else {
+            screen.prepend(container);
+        }
+    }
+    container.innerHTML = '';
+
+    if (!contentData) {
+        container.innerHTML = '<p class="profile-card">İçerik yüklenemedi.</p>';
+        return;
+    }
+
+    if (type === 'rehber') {
+        contentData.icerik.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'profile-card';
+            const h3 = document.createElement('h3');
+            h3.textContent = item.baslik;
+            const p = document.createElement('p');
+            p.style.whiteSpace = 'pre-wrap';
+            p.textContent = item.metin;
+            div.appendChild(h3);
+            div.appendChild(p);
+            container.appendChild(div);
+        });
+    } else if (type === 'gizlilik' || type === 'hakkimizda' || type === 'terms') {
+        if (contentData.altBaslik) {
+            const sub = document.createElement('p');
+            sub.style.fontWeight = '600';
+            sub.style.marginBottom = '16px';
+            sub.textContent = contentData.altBaslik;
+            container.appendChild(sub);
+        }
+        contentData.paragraflar.forEach(text => {
+            const p = document.createElement('p');
+            p.style.whiteSpace = 'pre-wrap';
+            p.textContent = text;
+            container.appendChild(p);
+        });
+    }
+}
+
 // ===== GİRİŞ =====
 function performLogin() {
     const email = document.getElementById("login-email").value.trim();
@@ -130,6 +201,7 @@ function performLogin() {
                 userState.email = user.email;
                 userState.uid = user.uid;
                 userState.isAdmin = user.isAdmin || false;
+                
                 if (remember) {
                     userState.rememberMe = true;
                     localStorage.setItem('saved_email', email);
@@ -140,6 +212,7 @@ function performLogin() {
                     localStorage.removeItem('saved_password');
                 }
                 saveUserState();
+                
                 hideAllScreens();
                 document.getElementById("screen-categories").classList.remove("hidden");
                 document.getElementById("bottom-nav-bar").classList.remove("hidden");
@@ -149,21 +222,16 @@ function performLogin() {
                 showBannerAd();
                 updateHeartsAndHints();
                 showToast("✅ Giriş başarılı!");
+                
                 checkDailyLaunchAd();
             })
             .catch((error) => {
                 let msg = "Hatalı e-posta veya şifre!";
-                if (error.code === 'auth/user-not-found') {
-                    msg = "Bu e-posta adresiyle kayıtlı kullanıcı bulunamadı.";
-                } else if (error.code === 'auth/wrong-password') {
-                    msg = "Şifre yanlış.";
-                } else if (error.code === 'auth/invalid-email') {
-                    msg = "Geçersiz e-posta formatı.";
-                } else if (error.code === 'auth/too-many-requests') {
-                    msg = "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin.";
-                } else {
-                    msg = error.message || "Beklenmeyen bir hata oluştu.";
-                }
+                if (error.code === 'auth/user-not-found') msg = "Bu e-posta adresiyle kayıtlı kullanıcı bulunamadı.";
+                else if (error.code === 'auth/wrong-password') msg = "Şifre yanlış.";
+                else if (error.code === 'auth/invalid-email') msg = "Geçersiz e-posta formatı.";
+                else if (error.code === 'auth/too-many-requests') msg = "Çok fazla başarısız deneme. Lütfen daha sonra tekrar deneyin.";
+                else msg = error.message || "Beklenmeyen bir hata oluştu.";
                 showCustomModal("Giriş Hatası", msg);
             });
     } else {
@@ -281,77 +349,10 @@ function sendContactMessage() {
     document.getElementById("contact-char-count").innerText = "0";
 }
 
-// ===== METİN YÜKLEME =====
-let metinVerileri = null;
-
-function loadMetinler() {
-    return fetch('metinler.json')
-        .then(res => {
-            if (!res.ok) throw new Error('metinler.json yüklenemedi');
-            return res.json();
-        })
-        .then(data => {
-            metinVerileri = data;
-            fillScreenWithContent('screen-user-guide', metinVerileri.kullanımRehberi, 'rehber');
-            fillScreenWithContent('screen-privacy', metinVerileri.gizlilikPolitikasi, 'gizlilik');
-            fillScreenWithContent('screen-about', metinVerileri.hakkimizda, 'hakkimizda');
-            fillScreenWithContent('screen-terms', metinVerileri.kullanimKosullari, 'terms');
-        })
-        .catch(err => {
-            console.warn('Metinler yüklenemedi, varsayılan metinler kullanılacak.', err);
-        });
-}
-
-function fillScreenWithContent(screenId, contentData, type) {
-    const screen = document.getElementById(screenId);
-    if (!screen) return;
-    let container = screen.querySelector('.content-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.className = 'content-container';
-        const headerRow = screen.querySelector('.header-row');
-        if (headerRow) {
-            headerRow.after(container);
-        } else {
-            screen.prepend(container);
-        }
-    }
-    container.innerHTML = '';
-
-    if (type === 'rehber') {
-        contentData.icerik.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'profile-card';
-            const h3 = document.createElement('h3');
-            h3.textContent = item.baslik;
-            const p = document.createElement('p');
-            p.style.whiteSpace = 'pre-wrap';
-            p.textContent = item.metin;
-            div.appendChild(h3);
-            div.appendChild(p);
-            container.appendChild(div);
-        });
-    } else if (type === 'gizlilik' || type === 'hakkimizda' || type === 'terms') {
-        if (contentData.altBaslik) {
-            const sub = document.createElement('p');
-            sub.style.fontWeight = '600';
-            sub.textContent = contentData.altBaslik;
-            container.appendChild(sub);
-        }
-        contentData.paragraflar.forEach(text => {
-            const p = document.createElement('p');
-            p.style.whiteSpace = 'pre-wrap';
-            p.textContent = text;
-            container.appendChild(p);
-        });
-    }
-}
-
 // ========== NAVIGATION ==========
 function navigateToTab(tabName) {
     hideAllScreens();
     if (tabName === 'logout') {
-        // Modal açılacak, confirmLogout içinde işlem yapılacak
         showCustomModal("Çıkış", `
             <p>Oturumunuzu kapatmak istediğinize emin misiniz?</p>
             <div style="display:flex; gap:10px; justify-content:center; margin-top:16px;">
@@ -431,36 +432,33 @@ function closeBilgic() {
     navigateToTab('home');
 }
 
-// ===== ÇIKIŞ ONAYI (DÜZELTİLDİ) =====
+// ===== ÇIKIŞ ONAYI =====
 function confirmLogout() {
-    // Modal'ı kapat
     const modal = document.getElementById('custom-modal');
     if (modal) modal.classList.add('hidden');
     
-    // 🛠 DÜZELTME: window.firebaseLogout çağrısı KALDIRILDI (tekrarlayan modal açılmasını engeller)
-    // if (typeof window.firebaseLogout === 'function') {
-    //     window.firebaseLogout();
-    // }
+    const rememberCheck = document.getElementById("remember-me");
+    if (rememberCheck && !rememberCheck.checked) {
+        localStorage.removeItem('saved_email');
+        localStorage.removeItem('saved_password');
+        userState.rememberMe = false;
+        saveUserState();
+    }
     
-    // Giriş sayfasını göster, alt menüyü gizle
     document.getElementById("screen-login").classList.remove("hidden");
     document.getElementById("bottom-nav-bar").classList.add("hidden");
     
-    // Hatırlanan şifreyi doldur
-    const savedEmail = localStorage.getItem('saved_email');
-    const savedPass = localStorage.getItem('saved_password');
-    if (savedEmail) document.getElementById("login-email").value = savedEmail;
-    if (savedPass) document.getElementById("login-password").value = savedPass;
-    if (savedEmail && savedPass) document.getElementById("remember-me").checked = true;
+    document.getElementById("login-email").value = '';
+    document.getElementById("login-password").value = '';
+    if (rememberCheck) rememberCheck.checked = false;
     
-    // Tüm ekranları gizle (zaten login açık)
     hideAllScreens();
     document.getElementById("screen-login").classList.remove("hidden");
     
     playSound('click');
 }
 
-// ========== ŞİFRE GÖSTER/GİZLE (YENİ FONKSİYON) ==========
+// ===== ŞİFRE GÖSTER/GİZLE =====
 function togglePasswordVisibility(inputId, buttonElement) {
     const input = document.getElementById(inputId);
     if (!input) return;
@@ -472,7 +470,6 @@ function togglePasswordVisibility(inputId, buttonElement) {
         buttonElement.textContent = '👁️';
     }
 }
-// Fonksiyonu global yapalım (onclick ile çağrılacak)
 window.togglePasswordVisibility = togglePasswordVisibility;
 
 // ===== KATEGORİ BUTONLARI =====
@@ -1265,6 +1262,25 @@ function updateHeartsAndHints() {
     if (hintsEl) hintsEl.textContent = userState.hintCount || 0;
 }
 
+// ===== GÜNLÜK 2. GİRİŞ HEDİYESİ =====
+function checkDailyLaunchAd() {
+    const today = new Date().toISOString().slice(0,10);
+    if (userState.lastLaunchDate !== today) {
+        userState.lastLaunchDate = today;
+        userState.dailyLaunchCount = 1;
+        saveUserState();
+    } else {
+        userState.dailyLaunchCount = (userState.dailyLaunchCount || 0) + 1;
+        saveUserState();
+        
+        if (userState.dailyLaunchCount === 2) {
+            addHearts(1);
+            showToast('🎁 Günde 2. giriş hediyesi: +1 Can kazandın!');
+            updateHeartsAndHints();
+        }
+    }
+}
+
 // ===== REKLAM FONKSİYONLARI =====
 function showInterstitialAd(onComplete) {
     showAdSimulation(onComplete);
@@ -1330,27 +1346,6 @@ function watchAdForFeature(type) {
     });
 }
 
-// ===== MOBİL GÜNLÜK İKİNCİ GİRİŞ REKLAMI =====
-function checkDailyLaunchAd() {
-    if (!window.Capacitor || !window.Capacitor.isNativePlatform()) return;
-    const today = new Date().toISOString().slice(0,10);
-    if (userState.lastLaunchDate !== today) {
-        userState.lastLaunchDate = today;
-        userState.dailyLaunchCount = 1;
-        addHearts(1);
-        userState.hintCount = (userState.hintCount || 0) + 1;
-        saveUserState();
-        showToast('🎁 Hoş geldin! 1 can ve 1 ipucu kazandın.');
-        updateHeartsAndHints();
-    } else {
-        userState.dailyLaunchCount = (userState.dailyLaunchCount || 0) + 1;
-        saveUserState();
-        if (userState.dailyLaunchCount >= 2) {
-            showInterstitialAd(() => {});
-        }
-    }
-}
-
 // ===== WEB İNDİR BUTONU =====
 function downloadApp() {
     showCustomModal("📱 Uygulama Yakında!", `
@@ -1404,29 +1399,44 @@ function closeRewardClaimModalOutside(e) {
 
 // ========== DOMCONTENTLOADED ==========
 document.addEventListener('DOMContentLoaded', function() {
-    // 🛠 DÜZELTME: Göz ikonu fonksiyonu artık global ve onclick ile çağrılıyor.
-    // Buradaki eski event listener'lar kaldırıldı.
-
     // Hatırlanan şifreyi doldur
     const savedEmail = localStorage.getItem('saved_email');
     const savedPass = localStorage.getItem('saved_password');
-    if (savedEmail) {
+    const rememberMe = userState.rememberMe;
+    
+    if (savedEmail && rememberMe) {
         const emailField = document.getElementById("login-email");
         if (emailField) emailField.value = savedEmail;
-    }
-    if (savedPass) {
         const passField = document.getElementById("login-password");
         if (passField) passField.value = savedPass;
-    }
-    if (savedEmail && savedPass) {
-        const rememberMe = document.getElementById("remember-me");
-        if (rememberMe) rememberMe.checked = true;
+        const rememberCheck = document.getElementById("remember-me");
+        if (rememberCheck) rememberCheck.checked = true;
+    } else {
+        const emailField = document.getElementById("login-email");
+        if (emailField) emailField.value = '';
+        const passField = document.getElementById("login-password");
+        if (passField) passField.value = '';
+        const rememberCheck = document.getElementById("remember-me");
+        if (rememberCheck) rememberCheck.checked = false;
     }
 
-    // Giriş yapılmışsa can/ipucu güncelle
+    // Giriş yapılmışsa can/ipucu güncelle ve sayfayı göster
     if (userState && userState.email) {
         updateHeartsAndHints();
         checkDailyLaunchAd();
+        if (document.getElementById("screen-login") && !document.getElementById("screen-login").classList.contains('hidden')) {
+            hideAllScreens();
+            document.getElementById("screen-categories").classList.remove("hidden");
+            document.getElementById("bottom-nav-bar").classList.remove("hidden");
+            setActiveNav('home');
+            initCategoryButtons();
+            updateStreakDisplay();
+            showBannerAd();
+        }
+    } else {
+        hideAllScreens();
+        document.getElementById("screen-login").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.add("hidden");
     }
 
     // İletişim formu karakter sayacı
