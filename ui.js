@@ -116,31 +116,83 @@ function changeSoundMode(mode) {
     showToast(`🔊 Ses modu: ${mode === 'sound' ? 'Sesli' : mode === 'vibration' ? 'Titreşim' : 'Sessiz'}`);
 }
 
-// ===== METİN YÜKLEME =====
+// ===== METİN YÜKLEME (DÜZELTİLDİ) =====
 let metinVerileri = {};
 
 function loadMetinler() {
     return fetch('metinler.json')
         .then(res => {
-            if (!res.ok) throw new Error('metinler.json yüklenemedi');
+            if (!res.ok) throw new Error('metinler.json yüklenemedi - HTTP ' + res.status);
             return res.json();
         })
         .then(data => {
+            console.log('✅ metinler.json başarıyla yüklendi!', data);
             metinVerileri = data;
-            fillScreenWithContent('screen-user-guide', metinVerileri.kullanımRehberi, 'rehber');
-            fillScreenWithContent('screen-privacy', metinVerileri.gizlilikPolitikasi, 'gizlilik');
-            // DÜZELTME: hakkimizda (eski hakkıda)
-            fillScreenWithContent('screen-about', metinVerileri.hakkimizda, 'hakkimizda');
-            fillScreenWithContent('screen-terms', metinVerileri.kullanimKosullari, 'terms');
+            
+            // Her bir sayfayı doldur
+            if (data.kullanımRehberi) {
+                fillScreenWithContent('screen-user-guide', data.kullanımRehberi, 'rehber');
+            } else {
+                console.warn('⚠️ kullanımRehberi bulunamadı');
+            }
+            
+            if (data.gizlilikPolitikasi) {
+                fillScreenWithContent('screen-privacy', data.gizlilikPolitikasi, 'gizlilik');
+            } else {
+                console.warn('⚠️ gizlilikPolitikasi bulunamadı');
+            }
+            
+            if (data.hakkimizda) {
+                fillScreenWithContent('screen-about', data.hakkimizda, 'hakkimizda');
+            } else {
+                console.warn('⚠️ hakkimizda bulunamadı');
+            }
+            
+            if (data.kullanimKosullari) {
+                fillScreenWithContent('screen-terms', data.kullanimKosullari, 'terms');
+            } else {
+                console.warn('⚠️ kullanimKosullari bulunamadı');
+            }
+            
+            return data;
         })
         .catch(err => {
-            console.warn('Metinler yüklenemedi, varsayılan metinler kullanılacak.', err);
+            console.error('❌ metinler.json yüklenirken hata:', err);
+            // Hata durumunda varsayılan içerik göster
+            showFallbackContent();
         });
+}
+
+// Yedek içerik (metinler.json yüklenemezse)
+function showFallbackContent() {
+    const fallbackText = 'İçerik yüklenemedi. Lütfen internet bağlantınızı kontrol edin veya sayfayı yenileyin.';
+    
+    const screens = ['screen-user-guide', 'screen-privacy', 'screen-about', 'screen-terms'];
+    screens.forEach(id => {
+        const screen = document.getElementById(id);
+        if (screen) {
+            let container = screen.querySelector('.content-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.className = 'content-container';
+                const headerRow = screen.querySelector('.header-row');
+                if (headerRow) {
+                    headerRow.after(container);
+                } else {
+                    screen.prepend(container);
+                }
+            }
+            container.innerHTML = `<p class="profile-card" style="color:var(--danger);">${fallbackText}</p>`;
+        }
+    });
 }
 
 function fillScreenWithContent(screenId, contentData, type) {
     const screen = document.getElementById(screenId);
-    if (!screen) return;
+    if (!screen) {
+        console.warn('⚠️ Screen bulunamadı:', screenId);
+        return;
+    }
 
     let container = screen.querySelector('.content-container');
     if (!container) {
@@ -156,37 +208,53 @@ function fillScreenWithContent(screenId, contentData, type) {
     container.innerHTML = '';
 
     if (!contentData) {
+        console.warn('⚠️ contentData boş:', screenId);
         container.innerHTML = '<p class="profile-card">İçerik yüklenemedi.</p>';
         return;
     }
 
+    // Rehber tipi için
     if (type === 'rehber') {
-        contentData.icerik.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'profile-card';
-            const h3 = document.createElement('h3');
-            h3.textContent = item.baslik;
-            const p = document.createElement('p');
-            p.style.whiteSpace = 'pre-wrap';
-            p.textContent = item.metin;
-            div.appendChild(h3);
-            div.appendChild(p);
-            container.appendChild(div);
-        });
-    } else if (type === 'gizlilik' || type === 'hakkimizda' || type === 'terms') {
+        if (contentData.icerik && Array.isArray(contentData.icerik)) {
+            contentData.icerik.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'profile-card';
+                const h3 = document.createElement('h3');
+                h3.textContent = item.baslik || 'Başlık yok';
+                const p = document.createElement('p');
+                p.style.whiteSpace = 'pre-wrap';
+                p.textContent = item.metin || 'İçerik yok';
+                div.appendChild(h3);
+                div.appendChild(p);
+                container.appendChild(div);
+            });
+        } else {
+            container.innerHTML = '<p class="profile-card">Rehber içeriği bulunamadı.</p>';
+        }
+    } 
+    // Gizlilik, Hakkında, Kullanım Koşulları için
+    else if (type === 'gizlilik' || type === 'hakkimizda' || type === 'terms') {
         if (contentData.altBaslik) {
             const sub = document.createElement('p');
             sub.style.fontWeight = '600';
             sub.style.marginBottom = '16px';
+            sub.style.color = 'var(--accent)';
             sub.textContent = contentData.altBaslik;
             container.appendChild(sub);
         }
-        contentData.paragraflar.forEach(text => {
-            const p = document.createElement('p');
-            p.style.whiteSpace = 'pre-wrap';
-            p.textContent = text;
-            container.appendChild(p);
-        });
+        
+        if (contentData.paragraflar && Array.isArray(contentData.paragraflar)) {
+            contentData.paragraflar.forEach(text => {
+                const p = document.createElement('p');
+                p.style.whiteSpace = 'pre-wrap';
+                p.textContent = text;
+                container.appendChild(p);
+            });
+        } else {
+            container.innerHTML = '<p class="profile-card">İçerik paragrafları bulunamadı.</p>';
+        }
+    } else {
+        container.innerHTML = '<p class="profile-card">Bilinmeyen içerik tipi.</p>';
     }
 }
 
@@ -1539,6 +1607,9 @@ document.addEventListener('DOMContentLoaded', function() {
             downloadBtn.style.display = 'none';
         }
     }
+    
+    // METİNLERİ YÜKLE - BURASI ÇOK ÖNEMLİ!
+    loadMetinler();
 });
 
 // Mecelle ilerlemesini yükle
