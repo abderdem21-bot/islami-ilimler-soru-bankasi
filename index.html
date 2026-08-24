@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <!-- 1. Meta Etiketleri Her Zaman En Üstte Olmalı -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- 2. Google AdSense / Publisher Tag Scripti -->
+    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+
+    <!-- 3. Sizin Reklam Dosyanız (defer ile güvenli yükleme) -->
+    <script src="AdSenseManager.js" defer></script>
+
+    <!-- Diğer Meta ve Link Etiketleriniz -->
+    <meta name="theme-color" content="#0f2c59" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#0f2c59" />
@@ -643,6 +655,19 @@
         <!-- ===== BANNER REKLAM (alt bilgi) ===== -->
         <div id="banner-ad" style="background:#f1f5f9; text-align:center; padding:8px; border-radius:8px; margin-top:8px;">
             <p id="banner-ad-text" style="font-size:0.8rem; color:#64748b; margin:0;">📢 Yükleniyor...</p>
+        </div>
+
+        <!-- ===== ALT SABİT BANNER REKLAM ALANI (YENİ EKLENDİ) ===== -->
+        <div id="banner-ad-bottom" style="
+            position: sticky; 
+            bottom: 0; 
+            background: #f1f5f9; 
+            text-align: center; 
+            padding: 8px; 
+            border-top: 1px solid var(--border);
+            z-index: 10;
+        ">
+            <!-- AdSense bu div'in içini dolduracak -->
         </div>
 
     </div>
