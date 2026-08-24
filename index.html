@@ -66,7 +66,6 @@
                 <div class="form-group" style="position:relative;">
                     <label for="login-password" class="form-label">Şifre</label>
                     <input type="password" id="login-password" class="form-input" placeholder="••••••••" style="padding-right:50px;" />
-                    <!-- ✅ DÜZELTME: onclick eklendi -->
                     <button type="button" id="toggle-password-visibility" onclick="togglePasswordVisibility('login-password', this)" style="position:absolute; right:10px; top:38px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
                 </div>
                 <div class="form-group" style="display:flex; align-items:center; gap:8px;">
@@ -128,13 +127,11 @@
             <div class="form-group" style="position:relative;">
                 <label for="reg-password" class="form-label">Şifre</label>
                 <input type="password" id="reg-password" class="form-input" placeholder="••••••••" autocomplete="new-password" style="padding-right:50px;" />
-                <!-- ✅ DÜZELTME: onclick eklendi -->
                 <button type="button" id="toggle-reg-password" onclick="togglePasswordVisibility('reg-password', this)" style="position:absolute; right:10px; top:38px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
             </div>
             <div class="form-group" style="position:relative;">
                 <label for="reg-password-confirm" class="form-label">Şifre (Tekrar)</label>
                 <input type="password" id="reg-password-confirm" class="form-input" placeholder="••••••••" autocomplete="new-password" style="padding-right:50px;" />
-                <!-- ✅ DÜZELTME: onclick eklendi -->
                 <button type="button" id="toggle-reg-password-confirm" onclick="togglePasswordVisibility('reg-password-confirm', this)" style="position:absolute; right:10px; top:38px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
             </div>
             <div class="form-group" style="display:flex; align-items:center; gap:10px; margin-top:10px; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid var(--border);">
@@ -152,7 +149,6 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <button class="menu-burger-btn" onclick="openDrawerMenu()" title="Menüyü Aç" aria-label="Menüyü Aç">☰</button>
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <!-- Can ve İpucu Göstergesi -->
                     <span id="hearts-hints-display" style="font-weight:700; color:var(--text-main); font-size:0.9rem;">❤️ <span id="header-hearts">3</span>  💡 <span id="header-hints">0</span></span>
                     <span id="streak-display" style="font-weight:700; color:var(--accent);">🔥 0</span>
                     <span id="leaderboard-badge" style="cursor:pointer; font-size:1.2rem;" onclick="navigateToTab('leaderboard')">🏆</span>
@@ -200,7 +196,6 @@
             </div>
             <p id="unit-info-text">Toplam ünite: 0</p>
             <div class="unit-grid" id="unit-grid-container"></div>
-            <!-- Yatay Banner (Ünite Seçimi) -->
             <div class="banner-ad-horizontal" id="banner-ad-units" style="margin-top:16px;">
                 <div class="ad-placeholder">📢 Reklam Alanı</div>
             </div>
@@ -321,7 +316,6 @@
                 <h2 class="title">📊 Sonuç</h2>
             </div>
             <div id="test-result-text" class="profile-card" style="font-size:1.2rem;"></div>
-            <!-- Yatay Banner (Test Sonucu) -->
             <div class="banner-ad-horizontal" id="banner-ad-testresult" style="margin-top:16px;">
                 <div class="ad-placeholder">📢 Reklam Alanı</div>
             </div>
@@ -421,14 +415,17 @@
             </div>
             <div class="profile-card">
                 <h3>🔑 Şifre Değiştir</h3>
-                <div class="form-group">
-                    <input type="password" id="old-pass" class="form-input" placeholder="Mevcut Şifre" style="margin-bottom:10px;" />
+                <div class="form-group" style="position:relative;">
+                    <input type="password" id="old-pass" class="form-input" placeholder="Mevcut Şifre" style="padding-right:50px;" />
+                    <button type="button" onclick="togglePasswordVisibility('old-pass', this)" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="new-pass" class="form-input" placeholder="Yeni Şifre" style="margin-bottom:10px;" />
+                <div class="form-group" style="position:relative;">
+                    <input type="password" id="new-pass" class="form-input" placeholder="Yeni Şifre" style="padding-right:50px;" />
+                    <button type="button" onclick="togglePasswordVisibility('new-pass', this)" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="new-pass-confirm" class="form-input" placeholder="Yeni Şifre (Tekrar)" style="margin-bottom:10px;" />
+                <div class="form-group" style="position:relative;">
+                    <input type="password" id="new-pass-confirm" class="form-input" placeholder="Yeni Şifre (Tekrar)" style="padding-right:50px;" />
+                    <button type="button" onclick="togglePasswordVisibility('new-pass-confirm', this)" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted);">👁️</button>
                 </div>
                 <button class="btn-primary" onclick="changePassword()" style="margin-top:0; padding:10px;">Şifreyi Güncelle</button>
             </div>
@@ -484,26 +481,26 @@
 
         <!-- ===== HAKKINDA ===== -->
         <div id="screen-about" class="hidden centered-page screen">
-            <div class="header-row" style="display:flex; align-items:flex-start;">
+            <div class="header-row">
                 <button class="back-btn" onclick="goBackToDrawer()">
                     <svg width="40" height="40" viewBox="0 0 100 100">
                         <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
                     </svg>
                 </button>
-                <h2 class="title" style="flex:1; text-align:center; margin-top:1cm;">ℹ️ Hakkında</h2>
+                <h2 class="title">ℹ️ Hakkında</h2>
             </div>
             <div class="content-container"></div>
         </div>
 
         <!-- ===== BİZE ULAŞIN ===== -->
         <div id="screen-contact" class="hidden centered-page screen">
-            <div class="header-row" style="display:flex; align-items:flex-start;">
+            <div class="header-row">
                 <button class="back-btn" onclick="goBackToDrawer()">
                     <svg width="40" height="40" viewBox="0 0 100 100">
                         <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
                     </svg>
                 </button>
-                <h2 class="title" style="flex:1; text-align:center; margin-top:1cm;">📧 Bize Ulaşın</h2>
+                <h2 class="title">📧 Bize Ulaşın</h2>
             </div>
             <div class="profile-card">
                 <p>Herhangi bir sorunuz, öneriniz veya geri bildiriminiz varsa lütfen aşağıdaki formu doldurun.</p>
@@ -531,7 +528,6 @@
                 <button class="btn-primary" style="background:var(--accent);" onclick="openBilgicCategory('kart')">📇 Bilgi Kartları (1 Can)</button>
             </div>
             <div id="bilgic-content" style="margin-top:24px;"></div>
-            <!-- Yatay Banner (Bilgiç) -->
             <div class="banner-ad-horizontal" id="banner-ad-bilgic" style="margin-top:16px;">
                 <div class="ad-placeholder">📢 Reklam Alanı</div>
             </div>
