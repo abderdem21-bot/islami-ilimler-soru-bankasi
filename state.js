@@ -243,7 +243,6 @@ window.firebaseResetPassword = function(email) {
       reject(new Error("Bu e-posta ile kayıtlı kullanıcı bulunamadı."));
       return;
     }
-    // Yeni şifre oluştur (8 haneli random)
     const newPassword = Math.random().toString(36).slice(2, 10);
     users[email].password = newPassword;
     saveUsers(users);
