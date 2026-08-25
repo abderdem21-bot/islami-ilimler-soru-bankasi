@@ -1235,9 +1235,6 @@ body.dark-mode #banner-ad {
     color: var(--text-main);
     border: 1px solid var(--border);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
 }
 body.dark-mode #hearts-hints-display {
     background: rgba(30, 41, 59, 0.9) !important;
