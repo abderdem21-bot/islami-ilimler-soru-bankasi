@@ -278,16 +278,17 @@ function performLogin() {
                 userState.isAdmin = user.isAdmin || false;
                 userState.lastPage = 'screen-categories'; // Ana sayfa
                 
-                if (remember) {
-                    userState.rememberMe = true;
-                    localStorage.setItem('saved_email', email);
-                    localStorage.setItem('saved_password', pass);
-                } else {
-                    userState.rememberMe = false;
-                    localStorage.removeItem('saved_email');
-                    localStorage.removeItem('saved_password');
-                }
-                saveUserState();
+                // E-posta adresini HER ZAMAN hafızada tut
+        localStorage.setItem('saved_email', email);
+
+        // Şifreyi sadece "Şifreyi Hatırla" seçiliyse tut
+        if (remember) {
+          userState.rememberMe = true;
+          localStorage.setItem('saved_password', pass);
+        } else {
+          userState.rememberMe = false;
+          localStorage.removeItem('saved_password');
+        }
                 
                 hideAllScreens();
                 document.getElementById("screen-categories").classList.remove("hidden");
@@ -1612,3 +1613,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Mecelle ilerlemesini yükle
 loadMecelleProgress();
+// Sayfa yüklendiğinde hafızadaki mail ve şifreyi otomatik doldurur
+// Sayfa yüklendiğinde kaydedilen bilgileri alanlara doldur
+document.addEventListener('DOMContentLoaded', () => {
+  const emailInput = document.getElementById('login-email');
+  const passInput = document.getElementById('login-password');
+  const rememberCheckbox = document.getElementById('remember-me');
+
+  // E-postayı her zaman getir ve yaz
+  const savedEmail = localStorage.getItem('saved_email');
+  if (savedEmail && emailInput) {
+    emailInput.value = savedEmail;
+  }
+
+  // Şifreyi sadece daha önce "Şifreyi Hatırla" seçildiyse getir
+  const savedPass = localStorage.getItem('saved_password');
+  if (savedPass && passInput) {
+    passInput.value = savedPass;
+    if (rememberCheckbox) rememberCheckbox.checked = true;
+  }
+});
