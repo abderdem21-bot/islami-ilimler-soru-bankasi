@@ -275,20 +275,17 @@
 
         <!-- ===== SORU ÇÖZÜM ===== -->
         <div id="screen-game" class="hidden screen">
-            <div class="header">
-                <div class="header-left">
-                    <button class="back-btn" onclick="goBackFromGame()">
-                        <svg width="40" height="40" viewBox="0 0 100 100">
-                            <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-                        </svg>
-                    </button>
-                    <div class="hearts" id="hearts-display">❤️ 3</div>
-                </div>
-                <div class="score" id="progress-display">Soru: 1 / 20</div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <div class="timer-display" id="timer-display"></div>
-                    <button id="hint-btn-header" style="background:none; border:none; font-size:1.2rem; cursor:pointer; font-weight:700; color:var(--accent);" onclick="useHint()" title="İpucu kullan">💡 0</button>
-                </div>
+    <div class="game-header-bar">
+                <svg width="40" height="40" viewBox="0 0 100 100">
+                    <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <div class="stats-badge-container">
+                <div class="stat-badge heart-badge" id="hearts-display">❤️ 3</div>
+                <button id="hint-btn-header" class="stat-badge hint-badge" style="background:none; border:none; cursor:pointer;">💡 2</button>
+            </div>
+            <div class="question-counter" id="progress-display">Soru: 1 / 20</div>
+        </div>
             </div>
             <h2 id="unit-title" style="font-size:0.95rem; color:var(--text-muted); margin-bottom:8px;">Ünite Adı</h2>
             <div class="question" id="question-text">Soru metni yükleniyor...</div>
