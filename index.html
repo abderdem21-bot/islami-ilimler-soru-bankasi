@@ -155,8 +155,8 @@
             <div class="form-group" style="display:flex; align-items:center; gap:10px; margin-top:10px; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid var(--border);">
                 <input type="checkbox" id="terms-checkbox" style="width:20px; height:20px; cursor:pointer; flex-shrink:0;" />
                 <label for="terms-checkbox" style="font-size:0.9rem; color:var(--text-muted); cursor:pointer; user-select:none;">
-                    <a href="#" onclick="navigateToTab('terms'); return false;" style="color:var(--accent);">Kullanım Şartları</a> ve 
-                    <a href="#" onclick="navigateToTab('privacy'); return false;" style="color:var(--accent);">Gizlilik Politikası</a>'nı okudum, kabul ediyorum.
+                    <a href="#" onclick="navigateToTab('terms', 'register'); return false;" style="color:var(--accent);">Kullanım Şartları</a> ve
+                    <a href="#" onclick="navigateToTab('privacy', 'register'); return false;" style="color:var(--accent);">Gizlilik Politikası</a>'nı
                 </label>
             </div>
             <button class="btn-primary" onclick="performRegister()">Kaydol</button>
@@ -479,7 +479,7 @@
         <!-- ===== GİZLİLİK POLİTİKASI ===== -->
         <div id="screen-privacy" class="hidden centered-page screen">
             <div class="header-row">
-                <button class="back-btn" onclick="goBackToDrawer()">
+                <button class="back-btn" onclick="goBackFromPolicy()">
                     <svg width="40" height="40" viewBox="0 0 100 100">
                         <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
                     </svg>
@@ -492,7 +492,7 @@
         <!-- ===== KULLANIM KOŞULLARI ===== -->
         <div id="screen-terms" class="hidden centered-page screen">
             <div class="header-row">
-                <button class="back-btn" onclick="goBackToDrawer()">
+               <button class="back-btn" onclick="goBackFromPolicy()">
                     <svg width="40" height="40" viewBox="0 0 100 100">
                         <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
                     </svg>
