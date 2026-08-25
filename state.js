@@ -176,6 +176,7 @@ function getLeaderboardData() {
   const myName = userState.nickname && userState.nickname.trim() !== '' ? userState.nickname : 'İsimsiz';
   return [
     { name: myName, score: userState.leaderboardScore || 0 }
+    // Örnek kullanıcı kaldırıldı – sadece mevcut kullanıcı gösteriliyor
   ];
 }
 
@@ -235,7 +236,7 @@ window.firebaseRegister = function(email, password) {
   });
 };
 
-// ========== ŞİFRE SIFIRLAMA ==========
+// ========== ŞİFRE SIFIRLAMA (1.txt'den eklendi) ==========
 window.firebaseResetPassword = function(email) {
   return new Promise((resolve, reject) => {
     const users = getUsers();
