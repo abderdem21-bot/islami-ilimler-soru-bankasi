@@ -103,6 +103,9 @@ function loadUserState() {
       if (userState.uid === undefined) userState.uid = null;
       if (userState.isAdmin === undefined) userState.isAdmin = false;
       if (userState.lastPage === undefined) userState.lastPage = 'screen-categories';
+      
+      // 🔥 ÖNEMLİ: Hearts değerini userState'ten al
+      hearts = userState.hearts;
     } catch (e) { console.warn('User state parse error', e); }
   }
   resetHeartsIfNeeded();
