@@ -3,16 +3,6 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5165596538310622" crossorigin="anonymous"></script>
-    
-    <!-- Google Ad Manager / GPT -->
-    <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-
-    <!-- Reklam Yöneticisi -->
-    <script src="AdSenseManager.js" defer></script>
-
     <meta name="theme-color" content="#0f2c59" />
     <meta name="description" content="İslami İlimler Soru Bankası ile Tefsir, Hadis, Fıkıh, Kelam ve daha birçok dersten online test çöz, bilgini ölç, öğren. Ücretsiz ve interaktif." />
     <meta name="keywords" content="islami ilimler, soru bankası, tefsir, hadis, fıkıh, kelam, dinler tarihi, siyer, kuran tecviti, mezhepler tarihi, online test, ilahiyat, din kültürü" />
@@ -88,7 +78,7 @@
                     <button type="button" class="auth-link-btn forgot" onclick="openForgotPasswordModal()">Şifremi Unuttum</button>
                 </div>
             </form>
-            <!-- ===== UYGULAMAYI İNDİR BUTONU ===== -->
+            <!-- ===== UYGULAMAYI İNDİR BUTONU (sadece giriş sayfasında, sağ alt) ===== -->
             <div id="web-download-btn" style="position:fixed; bottom:20px; right:20px; z-index:10; display:none;">
                 <button onclick="downloadApp()" style="
                     background: linear-gradient(135deg, #0f2c59, #1b3b75);
@@ -655,19 +645,6 @@
             <p id="banner-ad-text" style="font-size:0.8rem; color:#64748b; margin:0;">📢 Yükleniyor...</p>
         </div>
 
-        <!-- ===== ALT SABİT BANNER REKLAM ALANI ===== -->
-        <div id="banner-ad-bottom" style="
-            position: sticky; 
-            bottom: 0; 
-            background: #f1f5f9; 
-            text-align: center; 
-            padding: 8px; 
-            border-top: 1px solid var(--border);
-            z-index: 10;
-        ">
-            <!-- AdSense bu div'in içini dolduracak -->
-        </div>
-
     </div>
 
     <!-- ===== ALT MENÜ ===== -->
@@ -804,6 +781,187 @@
             }
         }
     });
+
+    // --- YENİ ÖZELLİKLER: E-POSTA VE ŞİFRE HATIRLAMA ---
+
+    // Sayfa yüklendiğinde kaydedilmiş e-posta ve şifreyi doldur
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedEmail = localStorage.getItem('rememberedEmail');
+        const savedPassword = localStorage.getItem('rememberedPassword');
+        const rememberMeChecked = localStorage.getItem('rememberMeChecked') === 'true';
+
+        const emailInput = document.getElementById('login-email');
+        const passwordInput = document.getElementById('login-password');
+        const rememberCheckbox = document.getElementById('remember-me');
+
+        if (emailInput && savedEmail) {
+            emailInput.value = savedEmail;
+        }
+        if (rememberCheckbox && rememberMeChecked) {
+            rememberCheckbox.checked = true;
+            if (passwordInput && savedPassword) {
+                passwordInput.value = savedPassword;
+            }
+        } else {
+            if (passwordInput) {
+                passwordInput.value = ''; // Şifreyi temizle
+            }
+        }
+    });
+
+    // performLogin fonksiyonunu genişlet
+    const originalPerformLogin = window.performLogin;
+    window.performLogin = function() {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const rememberMe = document.getElementById('remember-me').checked;
+
+        // E-postayı her zaman kaydet
+        if (email) {
+            localStorage.setItem('rememberedEmail', email);
+        }
+
+        // Şifreyi sadece "Beni Hatırla" işaretliyse kaydet
+        if (rememberMe && password) {
+            localStorage.setItem('rememberedPassword', password);
+            localStorage.setItem('rememberMeChecked', 'true');
+        } else {
+            localStorage.removeItem('rememberedPassword');
+            localStorage.setItem('rememberMeChecked', 'false');
+        }
+
+        // Orijinal fonksiyonu çağır
+        if (typeof originalPerformLogin === 'function') {
+            originalPerformLogin();
+        } else {
+            // Eğer orijinal fonksiyon yoksa, varsayılan giriş işlemini yap
+            firebaseLogin(email, password)
+                .then((result) => {
+                    const user = result.user;
+                    localStorage.setItem('app_user', JSON.stringify(user));
+                    // ... geri kalan giriş işlemleri
+                    hideAllScreens();
+                    document.getElementById("screen-categories").classList.remove("hidden");
+                    document.getElementById("bottom-nav-bar").classList.remove("hidden");
+                    setActiveNav('home');
+                    initCategoryButtons();
+                    updateStreakDisplay();
+                    showBannerAd();
+                    updateHeartsAndHints();
+                })
+                .catch((error) => {
+                    alert(error.message);
+                });
+        }
+    };
+
+    // --- YENİ ÖZELLİK: ŞİFRE SIFIRLAMA KODU GÖNDERME ---
+
+    // sendResetLink fonksiyonunu güncelle
+    window.sendResetLink = function() {
+        const email = document.getElementById('reset-email').value.trim();
+        if (!email) {
+            alert('Lütfen e-posta adresinizi girin.');
+            return;
+        }
+
+        const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '{}');
+        if (!users[email]) {
+            alert('Bu e-posta adresine kayıtlı bir hesap bulunamadı.');
+            return;
+        }
+
+        // Rastgele 6 haneli bir kod oluştur
+        const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+        // Kodu geçici olarak sakla (gerçek bir uygulamada bu süre sınırlı olmalı)
+        localStorage.setItem('passwordResetCode_' + email, resetCode);
+
+        // Simüle edilmiş e-posta gönderimi
+        console.log(`Şifre sıfırlama kodu ${email} adresine gönderildi: ${resetCode}`);
+
+        // Kullanıcıya bilgi ver ve kodu girmesini iste
+        showCustomModal("🔑 Şifre Sıfırlama Kodu", `
+            <p>E-posta adresinize bir sıfırlama kodu gönderildi.</p>
+            <p style="font-weight:bold; font-size:1.5rem; margin:20px 0; color:var(--accent);">${resetCode}</p>
+            <p style="font-size:0.9rem; color:var(--text-muted);">Bu kodu kullanarak şifrenizi sıfırlayabilirsiniz.</p>
+            <div class="form-group" style="margin-top:20px;">
+                <label for="new-password-reset" class="form-label">Yeni Şifreniz</label>
+                <input type="password" id="new-password-reset" class="form-input" placeholder="Yeni şifrenizi girin" />
+            </div>
+            <div class="form-group">
+                <label for="reset-code-input" class="form-label">Sıfırlama Kodu</label>
+                <input type="text" id="reset-code-input" class="form-input" placeholder="6 haneli kodu girin" maxlength="6" />
+            </div>
+            <button class="btn-primary" onclick="confirmPasswordReset('${email}')" style="margin-top:10px;">✅ Şifreyi Sıfırla</button>
+        `);
+
+        closeForgotPasswordModal();
+    };
+
+    // Şifre sıfırlama onayı
+    window.confirmPasswordReset = function(email) {
+        const newPassword = document.getElementById('new-password-reset').value;
+        const enteredCode = document.getElementById('reset-code-input').value;
+        const storedCode = localStorage.getItem('passwordResetCode_' + email);
+
+        if (!newPassword || newPassword.length < 6) {
+            alert('Lütfen en az 6 karakterli yeni bir şifre girin.');
+            return;
+        }
+
+        if (!enteredCode) {
+            alert('Lütfen e-posta adresinize gönderilen sıfırlama kodunu girin.');
+            return;
+        }
+
+        if (enteredCode !== storedCode) {
+            alert('Girdiğiniz kod hatalı. Lütfen tekrar deneyin.');
+            return;
+        }
+
+        // Şifreyi güncelle
+        const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY) || '{}');
+        if (users[email]) {
+            users[email].password = newPassword;
+            localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+            // Kodu temizle
+            localStorage.removeItem('passwordResetCode_' + email);
+            closeCustomModal();
+            alert('Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz.');
+        } else {
+            alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+        }
+    };
+
+    // --- DIŞARI DANIŞMAK İÇİN FONKSİYONLARI KORU ---
+    // Orijinal fonksiyonların üzerine yazmamak için kontrol et
+    if (typeof window.originalNavigateToTab === 'undefined') {
+        window.originalNavigateToTab = window.navigateToTab;
+    }
+    // navigateToTab fonksiyonunu koru
+    if (typeof window.navigateToTab === 'undefined') {
+        window.navigateToTab = function(tab) {
+            if (tab === 'logout') {
+                localStorage.removeItem('app_user');
+                localStorage.removeItem('rememberedPassword');
+                localStorage.setItem('rememberMeChecked', 'false');
+                hideAllScreens();
+                document.getElementById("screen-login").classList.remove("hidden");
+                document.getElementById("bottom-nav-bar").classList.add("hidden");
+                // E-posta alanını temizleme, hatırlanan e-posta varsa doldurulur
+                const savedEmail = localStorage.getItem('rememberedEmail');
+                if (savedEmail) {
+                    document.getElementById('login-email').value = savedEmail;
+                }
+                return;
+            }
+            // Diğer tab işlemleri için orijinal fonksiyonu çağır
+            if (typeof window.originalNavigateToTab === 'function') {
+                window.originalNavigateToTab(tab);
+            }
+        };
+    }
+
 </script>
 
 <script src="state.js"></script>
