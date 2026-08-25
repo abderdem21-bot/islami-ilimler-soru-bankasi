@@ -1185,26 +1185,7 @@ body.dark-mode .reward-step.filled { background:#22c55e; }
 .leaderboard-item .name { flex:1; margin-left:12px; }
 .leaderboard-item .score { color:var(--accent); }
 
-#banner-ad {
-    background: #f1f5f9;
-    text-align: center;
-    padding: 8px;
-    border-radius: 8px;
-    margin-top: 8px;
-    border: 1px solid var(--border);
-    transition: background 0.3s, border-color 0.3s;
-}
-body.dark-mode #banner-ad {
-    background: #1e293b;
-    border-color: #334155;
-}
-#banner-ad p {
-    margin: 0;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-/* ===== REKLAM ALANLARI GİZLİ (ŞİMDİLİK) ===== */
+/* ===== REKLAM ALANLARI TAMAMEN GİZLENDİ ===== */
 .desktop-ad-left,
 .desktop-ad-right,
 .banner-ad-horizontal,
@@ -1217,38 +1198,57 @@ body.dark-mode #banner-ad {
     display: none !important;
 }
 
+/* ===== CAN VE İPUCU GÖSTERGESİ (YENİ TASARIM) ===== */
+#hearts-hints-display {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+}
+body.dark-mode #hearts-hints-display {
+    background: rgba(30, 41, 59, 0.9);
+    border-color: #334155;
+    color: #f1f5f9;
+}
+#hearts-hints-display .heart-icon {
+    color: #ef4444;
+    font-size: 1rem;
+}
+#hearts-hints-display .hint-icon {
+    color: var(--accent);
+    font-size: 1rem;
+}
+#hearts-hints-display .badge-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0,0,0,0.04);
+    padding: 2px 8px 2px 4px;
+    border-radius: 20px;
+}
+body.dark-mode #hearts-hints-display .badge-item {
+    background: rgba(255,255,255,0.06);
+}
+#hearts-hints-display .badge-item span {
+    font-weight: 800;
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
 /* ===== BAŞLIK DÜZELTMELERİ ===== */
 .centered-page .header-row h2,
 .centered-page .header-row .title {
     margin-top: 0 !important;
     margin-bottom: 10px !important;
-}
-
-/* ===== CAN VE İPUCU GÖSTERGESİ (DAHA ŞIK) ===== */
-#hearts-hints-display {
-    background: rgba(255, 255, 255, 0.8) !important;
-    backdrop-filter: blur(4px);
-    padding: 6px 14px !important;
-    border-radius: 30px !important;
-    font-weight: 700;
-    font-size: 0.85rem;
-    color: var(--text-main);
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-body.dark-mode #hearts-hints-display {
-    background: rgba(30, 41, 59, 0.9) !important;
-    border-color: #334155;
-    color: #f1f5f9;
-}
-#hearts-hints-display span {
-    font-weight: 800;
-}
-#hearts-hints-display .heart-icon {
-    color: #ef4444;
-}
-#hearts-hints-display .hint-icon {
-    color: var(--accent);
 }
 
 @media (max-height:700px) {
