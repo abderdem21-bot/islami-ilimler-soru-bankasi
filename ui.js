@@ -17,11 +17,14 @@ function hideAllScreens() {
 
 // ========== OTURUM KALICILIĞI (Sayfa Yenileme) ==========
 function restoreUserSession() {
+    // Önce userState'i yeniden yükle
+    loadUserState();
+    
     // Eğer kullanıcı giriş yapmışsa ve bir sayfada kaydı varsa
     if (userState && userState.email) {
         const lastPage = userState.lastPage || 'screen-categories';
         // Eğer kayıtlı sayfa geçerli bir ekran ID'siyse
-        const validScreens = ['screen-categories', 'screen-units', 'screen-game', 'screen-bilgic', 'screen-rewards', 'screen-favorites', 'screen-results', 'screen-settings', 'screen-leaderboard', 'screen-mecelle', 'screen-mecelle-card'];
+        const validScreens = ['screen-categories', 'screen-units', 'screen-game', 'screen-bilgic', 'screen-rewards', 'screen-favorites', 'screen-results', 'screen-settings', 'screen-leaderboard', 'screen-mecelle', 'screen-mecelle-card', 'screen-fiqh-submenu'];
         if (validScreens.includes(lastPage)) {
             // Tüm ekranları gizle
             hideAllScreens();
@@ -43,7 +46,8 @@ function restoreUserSession() {
                     'screen-settings': 'settings',
                     'screen-leaderboard': 'leaderboard',
                     'screen-mecelle': 'home',
-                    'screen-mecelle-card': 'home'
+                    'screen-mecelle-card': 'home',
+                    'screen-fiqh-submenu': 'home'
                 };
                 setActiveNav(navMap[lastPage] || 'home');
                 
@@ -71,6 +75,9 @@ function restoreUserSession() {
                 }
                 if (lastPage === 'screen-mecelle') {
                     renderMecelleGroups();
+                }
+                if (lastPage === 'screen-fiqh-submenu') {
+                    // Fıkıh alt menüsü zaten açık
                 }
                 updateHeartsAndHints();
                 updateStreakDisplay();
@@ -277,19 +284,19 @@ function performLogin() {
                 userState.email = user.email;
                 userState.uid = user.uid;
                 userState.isAdmin = user.isAdmin || false;
-                userState.lastPage = 'screen-categories'; // Ana sayfa
+                userState.lastPage = 'screen-categories';
                 
                 // E-posta adresini HER ZAMAN hafızada tut
-        localStorage.setItem('saved_email', email);
+                localStorage.setItem('saved_email', email);
 
-        // Şifreyi sadece "Şifreyi Hatırla" seçiliyse tut
-        if (remember) {
-          userState.rememberMe = true;
-          localStorage.setItem('saved_password', pass);
-        } else {
-          userState.rememberMe = false;
-          localStorage.removeItem('saved_password');
-        }
+                // Şifreyi sadece "Şifreyi Hatırla" seçiliyse tut
+                if (remember) {
+                    userState.rememberMe = true;
+                    localStorage.setItem('saved_password', pass);
+                } else {
+                    userState.rememberMe = false;
+                    localStorage.removeItem('saved_password');
+                }
                 
                 hideAllScreens();
                 document.getElementById("screen-categories").classList.remove("hidden");
@@ -443,9 +450,9 @@ function sendContactMessage() {
 
 // ========== NAVIGATION ==========
 function navigateToTab(tabName, source = null) {
-  if (source) {
-    policySourceScreen = source;
-  }
+    if (source) {
+        policySourceScreen = source;
+    }
     hideAllScreens();
     if (tabName === 'logout') {
         showCustomModal("Çıkış", `
@@ -1542,6 +1549,10 @@ function closeRewardClaimModalOutside(e) {
 
 // ========== DOMCONTENTLOADED ==========
 document.addEventListener('DOMContentLoaded', function() {
+    // Önce state'i yükle
+    loadUserState();
+    loadProgress();
+    
     // Hatırlanan şifreyi doldur
     const savedEmail = localStorage.getItem('saved_email');
     const savedPass = localStorage.getItem('saved_password');
@@ -1554,13 +1565,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (passField) passField.value = savedPass;
         const rememberCheck = document.getElementById("remember-me");
         if (rememberCheck) rememberCheck.checked = true;
-    } else {
-        const emailField = document.getElementById("login-email");
-        if (emailField) emailField.value = '';
-        const passField = document.getElementById("login-password");
-        if (passField) passField.value = '';
-        const rememberCheck = document.getElementById("remember-me");
-        if (rememberCheck) rememberCheck.checked = false;
     }
 
     // Kullanıcı giriş yapmışsa ve oturum geri yüklenebiliyorsa
@@ -1620,29 +1624,30 @@ loadMecelleProgress();
 // Sayfa yüklendiğinde hafızadaki mail ve şifreyi otomatik doldurur
 // Sayfa yüklendiğinde kaydedilen bilgileri alanlara doldur
 document.addEventListener('DOMContentLoaded', () => {
-  const emailInput = document.getElementById('login-email');
-  const passInput = document.getElementById('login-password');
-  const rememberCheckbox = document.getElementById('remember-me');
+    const emailInput = document.getElementById('login-email');
+    const passInput = document.getElementById('login-password');
+    const rememberCheckbox = document.getElementById('remember-me');
 
-  // E-postayı her zaman getir ve yaz
-  const savedEmail = localStorage.getItem('saved_email');
-  if (savedEmail && emailInput) {
-    emailInput.value = savedEmail;
-  }
+    // E-postayı her zaman getir ve yaz
+    const savedEmail = localStorage.getItem('saved_email');
+    if (savedEmail && emailInput) {
+        emailInput.value = savedEmail;
+    }
 
-  // Şifreyi sadece daha önce "Şifreyi Hatırla" seçildiyse getir
-  const savedPass = localStorage.getItem('saved_password');
-  if (savedPass && passInput) {
-    passInput.value = savedPass;
-    if (rememberCheckbox) rememberCheckbox.checked = true;
-  }
+    // Şifreyi sadece daha önce "Şifreyi Hatırla" seçildiyse getir
+    const savedPass = localStorage.getItem('saved_password');
+    if (savedPass && passInput) {
+        passInput.value = savedPass;
+        if (rememberCheckbox) rememberCheckbox.checked = true;
+    }
 });
+
 function goBackFromPolicy() {
-  if (policySourceScreen === 'register') {
-    hideAllScreens();
-    document.getElementById("screen-register")?.classList.remove("hidden");
-    policySourceScreen = null;
-  } else {
-    navigateToTab('home');
-  }
+    if (policySourceScreen === 'register') {
+        hideAllScreens();
+        document.getElementById("screen-register")?.classList.remove("hidden");
+        policySourceScreen = null;
+    } else {
+        navigateToTab('home');
+    }
 }
