@@ -273,31 +273,29 @@
             <p style="margin-top:10px;" id="mecelle-card-progress">1 / 100</p>
         </div>
 
-        <!-- ===== SORU ÇÖZÜM ===== -->
-        <div id="screen-game" class="hidden screen">
+        <!-- ====== SORU ÇÖZÜM ====== -->
+<div id="screen-game" class="hidden screen">
     <div class="game-header-bar">
-                <svg width="40" height="40" viewBox="0 0 100 100">
-                    <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
-            <div class="stats-badge-container">
-                <div class="stat-badge heart-badge" id="hearts-display">❤️ 3</div>
-                <button id="hint-btn-header" class="stat-badge hint-badge" style="background:none; border:none; cursor:pointer;">💡 2</button>
-            </div>
-            <div class="question-counter" id="progress-display">Soru: 1 / 20</div>
+        <button class="back-btn" onclick="goBackFromGame()">
+            <svg width="40" height="40" viewBox="0 0 100 100">
+                <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+        <div class="stats-badge-container">
+            <div class="stat-badge heart-badge" id="hearts-display">❤️ 3</div>
+            <button id="hint-btn-header" class="stat-badge hint-badge" style="background:none; border:none; cursor:pointer;">💡 2</button>
         </div>
-            </div>
-            <h2 id="unit-title" style="font-size:0.95rem; color:var(--text-muted); margin-bottom:8px;">Ünite Adı</h2>
-            <div class="question" id="question-text">Soru metni yükleniyor...</div>
-            <div class="options" id="options-container"></div>
-            <div style="display:flex; gap:8px; margin-top:12px;">
-                <button id="favorite-btn" class="btn-primary muted" style="flex:1;">⭐ Favorilere Ekle</button>
-                <button id="prev-question-btn" class="btn-primary muted" style="flex:1;">⏪ Önceki Soru</button>
-            </div>
-            <div style="margin-top:12px; display:flex; gap:8px;">
-                <button class="btn-primary muted" style="flex:1; background:#475569;" onclick="reportQuestion()">🚨 Soru Bildir</button>
-            </div>
-        </div>
+        <div class="question-counter" id="progress-display">Soru: 1 / 20</div>
+    </div>
+
+    <h2 id="unit-title" style="font-size:0.95rem; color:var(--text-muted); margin-bottom:8px;">Ünite Adı</h2>
+    <div class="question" id="question-text">Soru metni yükleniyor...</div>
+    <div class="options" id="options-container"></div>
+    <div style="display:flex; gap:8px; margin-top:12px;">
+        <button id="favorite-btn" class="btn-primary muted" style="flex:1;">⭐ Favorilere Ekle</button>
+        <button id="prev-btn" class="btn-primary muted" style="flex:1;" onclick="prevQuestion()">⏪ Önceki Soru</button>
+    </div>
+</div>
 
         <!-- ===== CAN BİTTİ ===== -->
         <div id="screen-gameover" class="hidden center screen">
