@@ -63,7 +63,8 @@ let userState = {
   streakCount: 0,
   lastStreakDate: null,
   leaderboardScore: 0,
-  soundMode: 'sound'
+  soundMode: 'sound',
+  lastPage: 'screen-categories' // Varsayılan ana sayfa
 };
 
 function saveUserState() {
@@ -101,6 +102,7 @@ function loadUserState() {
       if (userState.soundMode === undefined) userState.soundMode = 'sound';
       if (userState.uid === undefined) userState.uid = null;
       if (userState.isAdmin === undefined) userState.isAdmin = false;
+      if (userState.lastPage === undefined) userState.lastPage = 'screen-categories';
     } catch (e) { console.warn('User state parse error', e); }
   }
   resetHeartsIfNeeded();
@@ -176,6 +178,5 @@ function getLeaderboardData() {
   const myName = userState.nickname && userState.nickname.trim() !== '' ? userState.nickname : 'İsimsiz';
   return [
     { name: myName, score: userState.leaderboardScore || 0 }
-    // Örnek kullanıcı kaldırıldı – sadece mevcut kullanıcı gösteriliyor
   ];
 }
