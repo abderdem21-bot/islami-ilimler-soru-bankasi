@@ -14,6 +14,73 @@ function hideAllScreens() {
     });
 }
 
+// ========== OTURUM KALICILIĞI (Sayfa Yenileme) ==========
+function restoreUserSession() {
+    // Eğer kullanıcı giriş yapmışsa ve bir sayfada kaydı varsa
+    if (userState && userState.email) {
+        const lastPage = userState.lastPage || 'screen-categories';
+        // Eğer kayıtlı sayfa geçerli bir ekran ID'siyse
+        const validScreens = ['screen-categories', 'screen-units', 'screen-game', 'screen-bilgic', 'screen-rewards', 'screen-favorites', 'screen-results', 'screen-settings', 'screen-leaderboard', 'screen-mecelle', 'screen-mecelle-card'];
+        if (validScreens.includes(lastPage)) {
+            // Tüm ekranları gizle
+            hideAllScreens();
+            // Kayıtlı ekranı göster
+            const screenElement = document.getElementById(lastPage);
+            if (screenElement) {
+                screenElement.classList.remove('hidden');
+                // Alt navigasyonu göster
+                document.getElementById("bottom-nav-bar").classList.remove("hidden");
+                // Doğru sekme aktif olsun
+                const navMap = {
+                    'screen-categories': 'home',
+                    'screen-units': 'home',
+                    'screen-game': 'home',
+                    'screen-bilgic': 'bilgic',
+                    'screen-rewards': 'rewards',
+                    'screen-favorites': 'favorites',
+                    'screen-results': 'results',
+                    'screen-settings': 'settings',
+                    'screen-leaderboard': 'leaderboard',
+                    'screen-mecelle': 'home',
+                    'screen-mecelle-card': 'home'
+                };
+                setActiveNav(navMap[lastPage] || 'home');
+                
+                // Eğer son sayfa units ise, içeriği yeniden oluştur
+                if (lastPage === 'screen-units' && currentCategory) {
+                    renderUnits();
+                }
+                if (lastPage === 'screen-game' && currentQuestions.length > 0) {
+                    renderQuestion();
+                }
+                if (lastPage === 'screen-bilgic') {
+                    // Bilgiç sayfası içeriği varsa yeniden oluştur
+                }
+                if (lastPage === 'screen-rewards') {
+                    renderRewardScreen();
+                }
+                if (lastPage === 'screen-favorites') {
+                    renderFavorites();
+                }
+                if (lastPage === 'screen-results') {
+                    updateStats();
+                }
+                if (lastPage === 'screen-leaderboard') {
+                    renderLeaderboard();
+                }
+                if (lastPage === 'screen-mecelle') {
+                    renderMecelleGroups();
+                }
+                updateHeartsAndHints();
+                updateStreakDisplay();
+                showBannerAd();
+                return true; // Başarıyla geri yüklendi
+            }
+        }
+    }
+    return false; // Geri yüklenemedi
+}
+
 // ========== BANNER REKLAM ==========
 function showBannerAd() {
     const banner = document.getElementById('banner-ad');
@@ -155,18 +222,22 @@ function fillScreenWithContent(screenId, contentData, type) {
     }
 
     if (type === 'rehber') {
-        contentData.icerik.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'profile-card';
-            const h3 = document.createElement('h3');
-            h3.textContent = item.baslik;
-            const p = document.createElement('p');
-            p.style.whiteSpace = 'pre-wrap';
-            p.textContent = item.metin;
-            div.appendChild(h3);
-            div.appendChild(p);
-            container.appendChild(div);
-        });
+        if (contentData.icerik && Array.isArray(contentData.icerik)) {
+            contentData.icerik.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'profile-card';
+                const h3 = document.createElement('h3');
+                h3.textContent = item.baslik;
+                const p = document.createElement('p');
+                p.style.whiteSpace = 'pre-wrap';
+                p.textContent = item.metin;
+                div.appendChild(h3);
+                div.appendChild(p);
+                container.appendChild(div);
+            });
+        } else {
+            container.innerHTML = '<p class="profile-card">Rehber içeriği yüklenemedi.</p>';
+        }
     } else if (type === 'gizlilik' || type === 'hakkimizda' || type === 'terms') {
         if (contentData.altBaslik) {
             const sub = document.createElement('p');
@@ -175,12 +246,16 @@ function fillScreenWithContent(screenId, contentData, type) {
             sub.textContent = contentData.altBaslik;
             container.appendChild(sub);
         }
-        contentData.paragraflar.forEach(text => {
-            const p = document.createElement('p');
-            p.style.whiteSpace = 'pre-wrap';
-            p.textContent = text;
-            container.appendChild(p);
-        });
+        if (contentData.paragraflar && Array.isArray(contentData.paragraflar)) {
+            contentData.paragraflar.forEach(text => {
+                const p = document.createElement('p');
+                p.style.whiteSpace = 'pre-wrap';
+                p.textContent = text;
+                container.appendChild(p);
+            });
+        } else {
+            container.innerHTML = '<p class="profile-card">İçerik yüklenemedi.</p>';
+        }
     }
 }
 
@@ -201,6 +276,7 @@ function performLogin() {
                 userState.email = user.email;
                 userState.uid = user.uid;
                 userState.isAdmin = user.isAdmin || false;
+                userState.lastPage = 'screen-categories'; // Ana sayfa
                 
                 if (remember) {
                     userState.rememberMe = true;
@@ -267,6 +343,7 @@ function performRegister() {
                 userState.email = user.email;
                 userState.uid = user.uid;
                 userState.isAdmin = user.isAdmin || false;
+                userState.lastPage = 'screen-categories';
                 saveUserState();
                 showCustomModal("Başarılı", "Kayıt başarılı! Giriş yapılıyor...");
                 document.getElementById("login-email").value = email;
@@ -292,13 +369,26 @@ function performRegister() {
 }
 
 function openRegister() {
+    // Kayıt sayfasına geçmeden önce mevcut ekranı kaydet
+    userState._previousScreen = 'screen-login';
+    saveUserState();
     hideAllScreens();
     document.getElementById("screen-register").classList.remove("hidden");
 }
 
 function closeRegister() {
     hideAllScreens();
-    document.getElementById("screen-login").classList.remove("hidden");
+    // Kayıt sayfasından geri dönüş
+    const prevScreen = userState._previousScreen || 'screen-login';
+    document.getElementById(prevScreen).classList.remove("hidden");
+    // Eğer giriş sayfasına dönüyorsa, formları temizleme
+    if (prevScreen === 'screen-login') {
+        document.getElementById("reg-nick").value = '';
+        document.getElementById("reg-email").value = '';
+        document.getElementById("reg-password").value = '';
+        document.getElementById("reg-password-confirm").value = '';
+        document.getElementById("terms-checkbox").checked = false;
+    }
 }
 
 function openForgotPasswordModal() {
@@ -368,6 +458,26 @@ function navigateToTab(tabName) {
     }
     document.getElementById("bottom-nav-bar").classList.remove("hidden");
     setActiveNav(tabName);
+
+    // Sayfa değişiminde son sayfayı kaydet
+    const screenMap = {
+        'home': 'screen-categories',
+        'results': 'screen-results',
+        'settings': 'screen-settings',
+        'privacy': 'screen-privacy',
+        'terms': 'screen-terms',
+        'user-guide': 'screen-user-guide',
+        'about': 'screen-about',
+        'contact': 'screen-contact',
+        'favorites': 'screen-favorites',
+        'bilgic': 'screen-bilgic',
+        'rewards': 'screen-rewards',
+        'leaderboard': 'screen-leaderboard'
+    };
+    if (screenMap[tabName]) {
+        userState.lastPage = screenMap[tabName];
+        saveUserState();
+    }
 
     if (tabName === 'home') {
         document.getElementById("screen-categories").classList.remove("hidden");
@@ -445,6 +555,13 @@ function confirmLogout() {
         saveUserState();
     }
     
+    // Oturum bilgilerini temizle
+    userState.email = '';
+    userState.uid = null;
+    userState.isAdmin = false;
+    userState.lastPage = 'screen-login';
+    saveUserState();
+    
     document.getElementById("screen-login").classList.remove("hidden");
     document.getElementById("bottom-nav-bar").classList.add("hidden");
     
@@ -509,12 +626,16 @@ function initCategoryButtons() {
 function openFiqhSubmenu() {
     hideAllScreens();
     document.getElementById("screen-fiqh-submenu").classList.remove("hidden");
+    userState.lastPage = 'screen-fiqh-submenu';
+    saveUserState();
 }
 
 function goBackFromFiqhSubmenu() {
     hideAllScreens();
     document.getElementById("screen-categories").classList.remove("hidden");
     setActiveNav('home');
+    userState.lastPage = 'screen-categories';
+    saveUserState();
 }
 
 function openFiqhUnits() {
@@ -528,6 +649,8 @@ function openFiqhUnits() {
     renderUnits();
     hideAllScreens();
     document.getElementById("screen-units").classList.remove("hidden");
+    userState.lastPage = 'screen-units';
+    saveUserState();
 }
 
 // ===== MECELLE =====
@@ -547,6 +670,8 @@ function openMecelle() {
                 hideAllScreens();
                 document.getElementById("screen-mecelle").classList.remove("hidden");
                 document.getElementById("mecelle-info-text").innerText = `Toplam kaide: ${mecelleData.length} (10 grup)`;
+                userState.lastPage = 'screen-mecelle';
+                saveUserState();
             } else {
                 showToast('Mecelle verisi yüklenemedi.');
             }
@@ -558,6 +683,8 @@ function openMecelle() {
     hideAllScreens();
     document.getElementById("screen-mecelle").classList.remove("hidden");
     document.getElementById("mecelle-info-text").innerText = `Toplam kaide: ${mecelleData.length} (10 grup)`;
+    userState.lastPage = 'screen-mecelle';
+    saveUserState();
 }
 
 function renderMecelleGroups() {
@@ -702,6 +829,9 @@ function openMecelleCard(index) {
         }
         playSound('click');
     };
+    
+    userState.lastPage = 'screen-mecelle-card';
+    saveUserState();
 }
 
 function goBackFromMecelle() {
@@ -713,6 +843,8 @@ function goBackFromMecelleCard() {
     hideAllScreens();
     document.getElementById("screen-mecelle").classList.remove("hidden");
     renderMecelleGroups();
+    userState.lastPage = 'screen-mecelle';
+    saveUserState();
 }
 
 function saveMecelleProgress() {
@@ -760,6 +892,8 @@ function openCategoryMenu(categoryName) {
         document.getElementById("unit-title").innerText = "📚 GENEL TEKRAR";
         hideAllScreens();
         document.getElementById("screen-game").classList.remove("hidden");
+        userState.lastPage = 'screen-game';
+        saveUserState();
         renderQuestion();
         return;
     }
@@ -774,6 +908,8 @@ function openCategoryMenu(categoryName) {
     renderUnits();
     hideAllScreens();
     document.getElementById("screen-units").classList.remove("hidden");
+    userState.lastPage = 'screen-units';
+    saveUserState();
 }
 
 function renderUnits() {
@@ -860,6 +996,8 @@ function goBackFromUnits() {
         hideAllScreens();
         document.getElementById("screen-categories").classList.remove("hidden");
         setActiveNav('home');
+        userState.lastPage = 'screen-categories';
+        saveUserState();
     }
 }
 
@@ -1262,22 +1400,22 @@ function updateHeartsAndHints() {
     if (hintsEl) hintsEl.textContent = userState.hintCount || 0;
 }
 
-// ===== GÜNLÜK 2. GİRİŞ HEDİYESİ =====
+// ===== GÜNLÜK GİRİŞ ÖDÜLÜ (Artık ilk girişte veriyor) =====
 function checkDailyLaunchAd() {
     const today = new Date().toISOString().slice(0,10);
+    // Eğer bugün ilk kez giriş yapıyorsa
     if (userState.lastLaunchDate !== today) {
         userState.lastLaunchDate = today;
         userState.dailyLaunchCount = 1;
+        // İlk girişte +1 Can hediye et
+        addHearts(1);
+        showToast('🎁 Günlük giriş hediyesi: +1 Can kazandın!');
+        updateHeartsAndHints();
         saveUserState();
     } else {
+        // Aynı gün içinde tekrar giriş yapıyorsa sayaç artsın ama ödül vermesin
         userState.dailyLaunchCount = (userState.dailyLaunchCount || 0) + 1;
         saveUserState();
-        
-        if (userState.dailyLaunchCount === 2) {
-            addHearts(1);
-            showToast('🎁 Günde 2. giriş hediyesi: +1 Can kazandın!');
-            updateHeartsAndHints();
-        }
     }
 }
 
@@ -1420,11 +1558,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (rememberCheck) rememberCheck.checked = false;
     }
 
-    // Giriş yapılmışsa can/ipucu güncelle ve sayfayı göster
+    // Kullanıcı giriş yapmışsa ve oturum geri yüklenebiliyorsa
     if (userState && userState.email) {
-        updateHeartsAndHints();
-        checkDailyLaunchAd();
-        if (document.getElementById("screen-login") && !document.getElementById("screen-login").classList.contains('hidden')) {
+        const restored = restoreUserSession();
+        if (!restored) {
+            // Eğer geri yüklenemezse ana sayfaya git
             hideAllScreens();
             document.getElementById("screen-categories").classList.remove("hidden");
             document.getElementById("bottom-nav-bar").classList.remove("hidden");
@@ -1432,7 +1570,9 @@ document.addEventListener('DOMContentLoaded', function() {
             initCategoryButtons();
             updateStreakDisplay();
             showBannerAd();
+            updateHeartsAndHints();
         }
+        checkDailyLaunchAd(); // Günlük giriş ödülünü kontrol et
     } else {
         hideAllScreens();
         document.getElementById("screen-login").classList.remove("hidden");
@@ -1454,7 +1594,7 @@ document.addEventListener('DOMContentLoaded', function() {
         soundSelect.value = userState.soundMode;
     }
 
-    // Banner reklam göster
+    // Banner reklam göster (gizli olduğu için etkisiz)
     if (userState && userState.email) {
         showBannerAd();
     }
