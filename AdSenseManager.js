@@ -123,26 +123,29 @@ googletag.cmd.push(function () {
   }
 });
 
-function gosterRewardedAd(tip) {
+function gosterRewardedAd(tip, callback) {
   window.currentRewardType = tip;
   googletag.cmd.push(function () {
     if (rewardedSlot) {
       googletag.display(rewardedSlot);
     } else {
-      if (typeof window.showToast === 'function') {
-        window.showToast("Reklam şu an hazır değil, lütfen tekrar deneyin.");
-      }
+      console.warn("Ödüllü reklam hazır değil, içerik doğrudan açılıyor.");
+      // Reklam olmasa dahi takılmayı önlemek için ödülü/içeriği doğrudan ver veya geç
+      if (typeof callback === 'function') callback();
     }
   });
 }
 
 function gosterInterstitialAd(callback) {
   googletag.cmd.push(function () {
+    let adDisplayed = false;
     if (interstitialSlot) {
-      googletag.display(interstitialSlot);
+      adDisplayed = googletag.display(interstitialSlot);
     }
+    
+    // Reklam yüklense de yüklenmese de ünite açılışının devam etmesini garantiliyoruz
     if (typeof callback === "function") {
-      setTimeout(callback, 500);
+      setTimeout(callback, adDisplayed ? 500 : 50);
     }
   });
 }
@@ -182,10 +185,9 @@ function showAdSimulation(callback) {
     if (adDeposu.length === 0) {
         reklamlariDepola();
         if (adDeposu.length === 0) {
-            if (typeof window.showCustomModal === 'function') {
-                window.showCustomModal("Uyarı", "📡 Reklamlar yüklenemedi. Lütfen internet bağlantınızı kontrol edin.");
-            }
-            if (callback) callback();
+            // Reklam olmasa bile uyarı modalı ÇIKARMADAN doğrudan üniteye/içeriğe geçiş yapıyoruz
+            console.warn("📡 Reklam deposu boş. İçeriğe doğrudan yönlendiriliyor.");
+            if (typeof callback === 'function') callback();
             return;
         }
     }
@@ -223,7 +225,7 @@ function showAdSimulationWithContent(ad, callback) {
         if (progress >= 100) {
             clearInterval(interval);
             if (modal.parentNode) modal.remove();
-            if (callback) callback();
+            if (typeof callback === 'function') callback();
         }
     }, 300);
 }
