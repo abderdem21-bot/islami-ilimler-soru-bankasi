@@ -1,4 +1,5 @@
 // ========== SCREEN MANAGEMENT ==========
+let policySourceScreen = null;
 function hideAllScreens() {
     const screens = [
         "screen-login", "screen-categories", "screen-units", "screen-game",
@@ -441,7 +442,10 @@ function sendContactMessage() {
 }
 
 // ========== NAVIGATION ==========
-function navigateToTab(tabName) {
+function navigateToTab(tabName, source = null) {
+  if (source) {
+    policySourceScreen = source;
+  }
     hideAllScreens();
     if (tabName === 'logout') {
         showCustomModal("Çıkış", `
@@ -1633,3 +1637,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (rememberCheckbox) rememberCheckbox.checked = true;
   }
 });
+function goBackFromPolicy() {
+  if (policySourceScreen === 'register') {
+    hideAllScreens();
+    document.getElementById("screen-register")?.classList.remove("hidden");
+    policySourceScreen = null;
+  } else {
+    navigateToTab('home');
+  }
+}
