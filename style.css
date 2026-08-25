@@ -1235,6 +1235,9 @@ body.dark-mode #banner-ad {
     color: var(--text-main);
     border: 1px solid var(--border);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 body.dark-mode #hearts-hints-display {
     background: rgba(30, 41, 59, 0.9) !important;
@@ -1261,32 +1264,4 @@ body.dark-mode #hearts-hints-display {
     .container { padding:16px; }
     h2 { font-size:1.15rem; }
     .category-btn, .unit-btn { font-size:0.75rem; padding:10px 4px; }
-}/* ===== CAN VE İPUCU GÖSTERGESİ (DAHA ŞIK) ===== */
-#hearts-hints-display {
-    background: rgba(255, 255, 255, 0.8) !important;
-    backdrop-filter: blur(4px);
-    padding: 6px 14px !important;
-    border-radius: 30px !important;
-    font-weight: 700;
-    font-size: 0.85rem;
-    color: var(--text-main);
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-body.dark-mode #hearts-hints-display {
-    background: rgba(30, 41, 59, 0.9) !important;
-    border-color: #334155;
-    color: #f1f5f9;
-}
-#hearts-hints-display span {
-    font-weight: 800;
-}
-#hearts-hints-display .heart-icon {
-    color: #ef4444;
-}
-#hearts-hints-display .hint-icon {
-    color: var(--accent);
 }
