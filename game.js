@@ -273,7 +273,7 @@ function handleOptionClick(selectedIndex, btnElement) {
             generalReviewCorrectCount++;
         }
         updateLeaderboard(1);
-        playSound('success'); // ✅ DOĞRU SESİ
+        playSound('success');
         setTimeout(() => {
             nextQuestion();
         }, 800);
@@ -281,7 +281,7 @@ function handleOptionClick(selectedIndex, btnElement) {
         btnElement.classList.add("wrong");
         allBtns[q.answer].classList.add("correct");
 
-        // ❌ YANLIŞ SESİ (EKLEME)
+        // ❌ YANLIŞ SESİ
         playSound('wrong');
 
         if (!userState.wrongQuestions.some(wq => wq._uid === q._uid)) {
@@ -1038,17 +1038,21 @@ function updateLeaderboard(scoreIncrement) {
 // ===== SES / TİTREŞİM KONTROLÜ =====
 function playSound(type) {
     const mode = userState.soundMode || 'sound';
+    
+    // Sessiz modda hiçbir şey yapma
     if (mode === 'silent') return;
 
     try {
-        // Titreşim modu kontrolü
+        // Titreşim modu
         if (mode === 'vibration' && navigator.vibrate) {
             if (type === 'click') navigator.vibrate(15);
             else if (type === 'success') navigator.vibrate([15, 50, 15]);
-            else if (type === 'wrong') navigator.vibrate([30, 50, 30, 50, 30]); // ✅ YANLIŞ İÇİN TİTREŞİM
-            return;
+            else if (type === 'wrong') navigator.vibrate([30, 50, 30, 50, 30]);
+            return; // Titreşim modunda ses çıkarma
         }
 
+        // ===== SESLİ MOD (mode === 'sound') =====
+        // Web Audio API ile ses oluştur
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
@@ -1056,6 +1060,7 @@ function playSound(type) {
         gainNode.connect(audioCtx.destination);
 
         if (type === 'click') {
+            // Tıklama sesi - kısa ve yumuşak
             oscillator.frequency.value = 800;
             oscillator.type = 'sine';
             gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
@@ -1064,13 +1069,15 @@ function playSound(type) {
             oscillator.stop(audioCtx.currentTime + 0.08);
         } 
         else if (type === 'success') {
-            // ✅ DOĞRU CEVAP: Neşeli, yükselen ses
+            // ✅ DOĞRU CEVAP: Neşeli, yükselen iki ton
             oscillator.frequency.value = 1000;
             oscillator.type = 'sine';
             gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
             oscillator.start(audioCtx.currentTime);
             oscillator.stop(audioCtx.currentTime + 0.15);
+            
+            // İkinci ton (daha yüksek)
             setTimeout(() => {
                 const osc2 = audioCtx.createOscillator();
                 const gain2 = audioCtx.createGain();
@@ -1085,15 +1092,15 @@ function playSound(type) {
             }, 120);
         }
         else if (type === 'wrong') {
-            // ❌ YANLIŞ CEVAP: Üzgün, alçalan ses (düşük frekans)
+            // ❌ YANLIŞ CEVAP: Üzgün, alçalan düşük frekans
             oscillator.frequency.value = 400;
-            oscillator.type = 'sawtooth'; // Daha hüzünlü bir tını
+            oscillator.type = 'sawtooth'; // Hüzünlü tını
             gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
             oscillator.start(audioCtx.currentTime);
             oscillator.stop(audioCtx.currentTime + 0.3);
             
-            // İkinci bir düşük ses (vuruş efekti)
+            // İkinci düşük ton (vuruş efekti)
             setTimeout(() => {
                 const osc2 = audioCtx.createOscillator();
                 const gain2 = audioCtx.createGain();
@@ -1107,5 +1114,8 @@ function playSound(type) {
                 osc2.stop(audioCtx.currentTime + 0.25);
             }, 150);
         }
-    } catch(e) { /* sessiz */ }
+    } catch(e) { 
+        // Ses çalışmazsa sessiz geç - kullanıcıyı rahatsız etme
+        console.log('Ses çalınamadı:', e);
+    }
 }
