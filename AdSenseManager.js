@@ -4,6 +4,14 @@
  */
 
 // ==========================================
+// 0. ADSENSE AKTİVASYON DURUMU
+// ==========================================
+
+// ⚠️ AdSense onayı gelene kadar FALSE olarak kalacak
+// Onay geldikten sonra TRUE yapılacak
+const isAdSenseActive = false;
+
+// ==========================================
 // 1. OYUNCU DURUM YÖNETİMİ (Can / İpucu Mantığı)
 // ==========================================
 
@@ -58,12 +66,18 @@ window.googletag = window.googletag || { cmd: [] };
 const AD_UNITS = {
     REWARDED: '/123456789/rewarded_ad_unit',
     INTERSTITIAL: '/123456789/interstitial_ad_unit',
-    BANNER_BOTTOM: '/123456789/banner_bottom'
+    BANNER_BOTTOM: '/123456789/banner_bottom',
+    QUESTION_BANNER: '/123456789/question_banner', // ✅ Soru altı banner
+    RESULT_BANNER: '/123456789/result_banner',     // ✅ Sonuç ekranı banner
+    STICKY_ANCHOR: '/123456789/sticky_anchor'      // ✅ Sabit alt reklam
 };
 
 let rewardedSlot = null;
 let interstitialSlot = null;
 let bannerBottomSlot = null;
+let questionBannerSlot = null;
+let resultBannerSlot = null;
+let stickyAnchorSlot = null;
 window.currentRewardType = null;
 
 googletag.cmd.push(function () {
@@ -94,7 +108,7 @@ googletag.cmd.push(function () {
     });
   }
 
-  // Geçiş Reklamı
+  // Geçiş Reklamı (Interstitial)
   interstitialSlot = googletag.defineOutOfPageSlot(
     AD_UNITS.INTERSTITIAL,
     googletag.enums.OutOfPageFormat.INTERSTITIAL
@@ -104,7 +118,7 @@ googletag.cmd.push(function () {
     interstitialSlot.addService(googletag.pubads());
   }
 
-  // Alt Sabit Banner
+  // Alt Sabit Banner (Banner Bottom)
   bannerBottomSlot = googletag.defineSlot(
     AD_UNITS.BANNER_BOTTOM,
     [728, 90],
@@ -116,12 +130,97 @@ googletag.cmd.push(function () {
     googletag.pubads().setTargeting('device', 'desktop');
   }
 
+  // Soru Altı Banner
+  questionBannerSlot = googletag.defineSlot(
+    AD_UNITS.QUESTION_BANNER,
+    [[728, 90], [320, 50], [468, 60]],
+    'question-ad-banner'
+  );
+  if (questionBannerSlot) {
+    questionBannerSlot.addService(googletag.pubads());
+  }
+
+  // Sonuç Ekranı Banner
+  resultBannerSlot = googletag.defineSlot(
+    AD_UNITS.RESULT_BANNER,
+    [[728, 90], [320, 50], [468, 60]],
+    'result-ad-banner'
+  );
+  if (resultBannerSlot) {
+    resultBannerSlot.addService(googletag.pubads());
+  }
+
+  // Sticky Anchor (Sabit Alt Reklam)
+  stickyAnchorSlot = googletag.defineSlot(
+    AD_UNITS.STICKY_ANCHOR,
+    [[320, 50], [728, 90]],
+    'sticky-anchor-ad'
+  );
+  if (stickyAnchorSlot) {
+    stickyAnchorSlot.addService(googletag.pubads());
+  }
+
   googletag.enableServices();
 
-  if (document.getElementById('banner-ad-bottom')) {
-    googletag.display('banner-ad-bottom');
+  // Sadece AdSense aktifse reklamları göster
+  if (isAdSenseActive) {
+    if (document.getElementById('banner-ad-bottom')) {
+      googletag.display('banner-ad-bottom');
+    }
+    if (document.getElementById('question-ad-banner')) {
+      googletag.display('question-ad-banner');
+    }
+    if (document.getElementById('result-ad-banner')) {
+      googletag.display('result-ad-banner');
+    }
+    if (document.getElementById('sticky-anchor-ad')) {
+      googletag.display('sticky-anchor-ad');
+    }
   }
 });
+
+function showQuestionAd() {
+  if (!isAdSenseActive) {
+    console.log('🔒 AdSense aktif değil, soru altı reklam gizli.');
+    return;
+  }
+  googletag.cmd.push(function () {
+    if (questionBannerSlot) {
+      googletag.display('question-ad-banner');
+      document.getElementById('question-ad-banner').style.display = 'block';
+    }
+  });
+}
+
+function showResultAd() {
+  if (!isAdSenseActive) {
+    console.log('🔒 AdSense aktif değil, sonuç reklamı gizli.');
+    return;
+  }
+  googletag.cmd.push(function () {
+    if (resultBannerSlot) {
+      googletag.display('result-ad-banner');
+      document.getElementById('result-ad-banner').style.display = 'block';
+    }
+  });
+}
+
+function showStickyAnchorAd() {
+  if (!isAdSenseActive) {
+    console.log('🔒 AdSense aktif değil, sticky anchor reklamı gizli.');
+    return;
+  }
+  googletag.cmd.push(function () {
+    if (stickyAnchorSlot) {
+      googletag.display('sticky-anchor-ad');
+      document.getElementById('sticky-anchor-ad').style.display = 'block';
+    }
+  });
+}
+
+function hideStickyAnchorAd() {
+  document.getElementById('sticky-anchor-ad').style.display = 'none';
+}
 
 function gosterRewardedAd(tip, callback) {
   window.currentRewardType = tip;
@@ -130,7 +229,6 @@ function gosterRewardedAd(tip, callback) {
       googletag.display(rewardedSlot);
     } else {
       console.warn("Ödüllü reklam hazır değil, içerik doğrudan açılıyor.");
-      // Reklam olmasa dahi takılmayı önlemek için ödülü/içeriği doğrudan ver veya geç
       if (typeof callback === 'function') callback();
     }
   });
@@ -264,5 +362,11 @@ window.ekleCan = ekleCan;
 window.ekleIpucu = ekleIpucu;
 window.getCan = getCan;
 window.getIpucu = getIpucu;
+window.showQuestionAd = showQuestionAd;
+window.showResultAd = showResultAd;
+window.showStickyAnchorAd = showStickyAnchorAd;
+window.hideStickyAnchorAd = hideStickyAnchorAd;
+window.isAdSenseActive = isAdSenseActive;
 
 console.log('✅ AdSenseManager.js yüklendi - Web Reklam Yönetimi Aktif');
+console.log(`🔒 AdSense Durumu: ${isAdSenseActive ? 'AKTİF' : 'PASİF (Onay Bekleniyor)'}`);
