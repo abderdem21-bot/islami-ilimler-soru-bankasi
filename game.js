@@ -273,13 +273,16 @@ function handleOptionClick(selectedIndex, btnElement) {
             generalReviewCorrectCount++;
         }
         updateLeaderboard(1);
-        playSound('success');
+        playSound('success'); // ✅ DOĞRU SESİ
         setTimeout(() => {
             nextQuestion();
         }, 800);
     } else {
         btnElement.classList.add("wrong");
         allBtns[q.answer].classList.add("correct");
+
+        // ❌ YANLIŞ SESİ (EKLEME)
+        playSound('wrong');
 
         if (!userState.wrongQuestions.some(wq => wq._uid === q._uid)) {
             userState.wrongQuestions.push({ ...q });
@@ -1030,4 +1033,79 @@ function updateLeaderboard(scoreIncrement) {
                 console.warn('⚠️ Firebase güncelleme hatası:', err);
             });
     }
+}
+
+// ===== SES / TİTREŞİM KONTROLÜ =====
+function playSound(type) {
+    const mode = userState.soundMode || 'sound';
+    if (mode === 'silent') return;
+
+    try {
+        // Titreşim modu kontrolü
+        if (mode === 'vibration' && navigator.vibrate) {
+            if (type === 'click') navigator.vibrate(15);
+            else if (type === 'success') navigator.vibrate([15, 50, 15]);
+            else if (type === 'wrong') navigator.vibrate([30, 50, 30, 50, 30]); // ✅ YANLIŞ İÇİN TİTREŞİM
+            return;
+        }
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        if (type === 'click') {
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.08);
+        } 
+        else if (type === 'success') {
+            // ✅ DOĞRU CEVAP: Neşeli, yükselen ses
+            oscillator.frequency.value = 1000;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.15);
+            setTimeout(() => {
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                osc2.frequency.value = 1200;
+                osc2.type = 'sine';
+                gain2.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+                osc2.start(audioCtx.currentTime);
+                osc2.stop(audioCtx.currentTime + 0.12);
+            }, 120);
+        }
+        else if (type === 'wrong') {
+            // ❌ YANLIŞ CEVAP: Üzgün, alçalan ses (düşük frekans)
+            oscillator.frequency.value = 400;
+            oscillator.type = 'sawtooth'; // Daha hüzünlü bir tını
+            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.3);
+            
+            // İkinci bir düşük ses (vuruş efekti)
+            setTimeout(() => {
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                osc2.frequency.value = 250;
+                osc2.type = 'sawtooth';
+                gain2.gain.setValueAtTime(0.06, audioCtx.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+                osc2.start(audioCtx.currentTime);
+                osc2.stop(audioCtx.currentTime + 0.25);
+            }, 150);
+        }
+    } catch(e) { /* sessiz */ }
 }
