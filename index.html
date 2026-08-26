@@ -96,32 +96,6 @@
                     <button type="button" class="auth-link-btn forgot" onclick="openForgotPasswordModal()">Şifremi Unuttum</button>
                 </div>
             </form>
-            <!-- ===== UYGULAMAYI İNDİR BUTONU ===== -->
-            <div id="web-download-btn" style="position:fixed; bottom:20px; right:20px; z-index:10; display:none;">
-                <button onclick="downloadApp()" style="
-                    background: linear-gradient(135deg, #0f2c59, #1b3b75);
-                    color: white;
-                    border: none;
-                    border-radius: 50px;
-                    padding: 6px 14px;
-                    font-size: 0.75rem;
-                    font-weight: 700;
-                    box-shadow: 0 4px 12px rgba(15,44,89,0.4);
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    gap: 4px;
-                    transition: transform 0.2s, box-shadow 0.2s;
-                    font-family: 'Plus Jakarta Sans', sans-serif;
-                "
-                onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 20px rgba(15,44,89,0.6)';"
-                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(15,44,89,0.4)';"
-                onmousedown="this.style.transform='scale(0.95)';"
-                onmouseup="this.style.transform='scale(1)';"
-                >
-                    <span style="font-size:0.9rem;">📱</span> Uygulamayı İndir
-                </button>
-            </div>
         </div>
 
         <!-- ===== KAYIT ===== -->
@@ -182,8 +156,8 @@
             <div class="category-grid" id="category-grid"></div>
             <button class="btn-primary" style="margin-top:20px; background:var(--accent);" onclick="navigateToTab('favorites')">⭐ Favori Sorularım</button>
 
-            <!-- ===== YATAY BANNER REKLAM (Ana Sayfa) ===== -->
-            <div class="banner-ad-horizontal" id="banner-ad-home" style="margin-top:16px;">
+            <!-- ===== SORU ALTI BANNER REKLAM (Ana Sayfa) ===== -->
+            <div class="banner-ad-horizontal" id="banner-ad-home" style="margin-top:16px; display:none;">
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="ca-pub-5165596538310622"
@@ -223,7 +197,7 @@
             </div>
             <p id="unit-info-text">Toplam ünite: 0</p>
             <div class="unit-grid" id="unit-grid-container"></div>
-            <div class="banner-ad-horizontal" id="banner-ad-units" style="margin-top:16px;">
+            <div class="banner-ad-horizontal" id="banner-ad-units" style="margin-top:16px; display:none;">
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="ca-pub-5165596538310622"
@@ -296,6 +270,18 @@
             <h2 id="unit-title" style="font-size:0.95rem; color:var(--text-muted); margin-bottom:8px;">Ünite Adı</h2>
             <div class="question" id="question-text">Soru metni yükleniyor...</div>
             <div class="options" id="options-container"></div>
+            
+            <!-- ===== SORU ALTI BANNER REKLAM ===== -->
+            <div class="question-ad-banner" id="question-ad-banner" style="margin-top:12px; display:none; min-height:90px;">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-5165596538310622"
+                     data-ad-slot="1234567890"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            </div>
+            
             <div style="display:flex; gap:8px; margin-top:12px;">
                 <button id="favorite-btn" class="btn-primary muted" style="flex:1;">⭐ Favorilere Ekle</button>
                 <button id="prev-question-btn" class="btn-primary muted" style="flex:1;">⏪ Önceki Soru</button>
@@ -349,7 +335,9 @@
                 <h2 class="title">📊 Sonuç</h2>
             </div>
             <div id="test-result-text" class="profile-card" style="font-size:1.2rem;"></div>
-            <div class="banner-ad-horizontal" id="banner-ad-testresult" style="margin-top:16px;">
+            
+            <!-- ===== SONUÇ EKRANI REKLAMI ===== -->
+            <div class="result-ad-banner" id="result-ad-banner" style="margin-top:16px; display:none;">
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="ca-pub-5165596538310622"
@@ -567,7 +555,7 @@
                 <button class="btn-primary" style="background:var(--accent);" onclick="openBilgicCategory('kart')">📇 Bilgi Kartları (1 Can)</button>
             </div>
             <div id="bilgic-content" style="margin-top:24px;"></div>
-            <div class="banner-ad-horizontal" id="banner-ad-bilgic" style="margin-top:16px;">
+            <div class="banner-ad-horizontal" id="banner-ad-bilgic" style="margin-top:16px; display:none;">
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="ca-pub-5165596538310622"
@@ -685,10 +673,10 @@
             </div>
         </div>
 
-        <!-- ===== BANNER REKLAM (Alt Bilgi) ===== -->
-        <div id="banner-ad" style="background:#f1f5f9; text-align:center; padding:8px; border-radius:8px; margin-top:8px;">
+        <!-- ===== STICKY ANCHOR REKLAM (Mobil) ===== -->
+        <div id="sticky-anchor-ad" style="position:fixed; bottom:0; left:0; width:100%; background:#f1f5f9; text-align:center; padding:4px 0; z-index:40; border-top:2px solid var(--border); display:none;">
             <ins class="adsbygoogle"
-                 style="display:block"
+                 style="display:block; min-height:60px;"
                  data-ad-client="ca-pub-5165596538310622"
                  data-ad-slot="1234567890"
                  data-ad-format="auto"
@@ -806,15 +794,6 @@
             navigateToTab('logout');
         }
     };
-
-    function downloadApp() {
-        showCustomModal("📱 Uygulama Yakında!", `
-            <p style="font-size:1.2rem; margin:16px 0;">Uygulama şu an geliştirme aşamasındadır.</p>
-            <p style="font-size:1.1rem; color:var(--accent); font-weight:700;">📲 Yakında mobil mağazalarda yayınlanacaktır.</p>
-            <p style="font-size:0.9rem; color:var(--text-muted);">Bizi takipte kalın!</p>
-            <button class="btn-primary" style="background:var(--accent); margin-top:16px;" onclick="closeCustomModal()">Tamam</button>
-        `);
-    }
 
     document.addEventListener('DOMContentLoaded', function() {
         const downloadBtn = document.getElementById('web-download-btn');
