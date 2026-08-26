@@ -54,7 +54,7 @@ let userState = {
   remainingUnitsForChest: 0,
   dailyLaunchCount: 0,
   lastLaunchDate: null,
-  rememberMe: false,
+  rememberMe: false, // ✅ EKLENDİ
   hearts: 3,
   lastHeartReset: null,
   shareRewardClaimed: false,
@@ -64,11 +64,15 @@ let userState = {
   lastStreakDate: null,
   leaderboardScore: 0,
   soundMode: 'sound',
-  lastPage: 'screen-categories' // Varsayılan ana sayfa
+  lastPage: 'screen-categories'
 };
 
 function saveUserState() {
   localStorage.setItem('islami_user_state', JSON.stringify(userState));
+  // Son sayfayı da ayrıca kaydet
+  if (userState.lastPage) {
+    localStorage.setItem('last_page', userState.lastPage);
+  }
 }
 
 function loadUserState() {
@@ -91,7 +95,7 @@ function loadUserState() {
       if (userState.remainingUnitsForChest === undefined) userState.remainingUnitsForChest = 0;
       if (userState.dailyLaunchCount === undefined) userState.dailyLaunchCount = 0;
       if (userState.lastLaunchDate === undefined) userState.lastLaunchDate = null;
-      if (userState.rememberMe === undefined) userState.rememberMe = false;
+      if (userState.rememberMe === undefined) userState.rememberMe = false; // ✅ EKLENDİ
       if (userState.hearts === undefined) userState.hearts = 3;
       if (userState.shareRewardClaimed === undefined) userState.shareRewardClaimed = false;
       if (userState.statsAdWatchedToday === undefined) userState.statsAdWatchedToday = false;
@@ -104,7 +108,12 @@ function loadUserState() {
       if (userState.isAdmin === undefined) userState.isAdmin = false;
       if (userState.lastPage === undefined) userState.lastPage = 'screen-categories';
       
-      // 🔥 ÖNEMLİ: Hearts değerini userState'ten al
+      // localStorage'dan son sayfayı oku (öncelikli)
+      const lastPageFromStorage = localStorage.getItem('last_page');
+      if (lastPageFromStorage) {
+        userState.lastPage = lastPageFromStorage;
+      }
+      
       hearts = userState.hearts;
     } catch (e) { console.warn('User state parse error', e); }
   }
