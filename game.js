@@ -30,7 +30,8 @@ function depodanReklamGoster(callback) {
     if (adDeposu.length === 0) {
         reklamlariDepola();
         if (adDeposu.length === 0) {
-            showCustomModal("Uyarı", "📡 Reklamlar yüklenemedi. Lütfen internet bağlantınızı kontrol edin.");
+            // ❌ UYARI KALDIRILDI - Reklam yoksa doğrudan devam et
+            console.warn("📡 Reklam deposu boş. İçeriğe doğrudan yönlendiriliyor.");
             if (callback) callback();
             return;
         }
@@ -40,10 +41,7 @@ function depodanReklamGoster(callback) {
     setTimeout(() => reklamlariDepola(), 1000);
 }
 
-function showFallbackAd(callback) {
-    showCustomModal("Uyarı", "Reklam gösterilemedi. Lütfen internet bağlantınızı kontrol edin.");
-    if (callback) callback();
-}
+// ❌ showFallbackAd fonksiyonu TAMAMEN KALDIRILDI
 
 function showAdSimulationWithContent(ad, callback) {
     const modal = document.createElement('div');
@@ -142,6 +140,7 @@ function startUnit(unitNum, forceStart = false) {
         document.getElementById("unit-title").innerText = `${currentCategory} - Ünite ${unitNum}`;
         hideAllScreens();
         document.getElementById("screen-game").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
         renderQuestion();
         return;
     }
@@ -151,6 +150,7 @@ function startUnit(unitNum, forceStart = false) {
         window._pendingUnit = unitNum;
         hideAllScreens();
         document.getElementById("screen-victory").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
         document.getElementById("victory-text").innerHTML = `
             📢 ${currentCategory} - Ünite ${unitNum} için reklam izleyerek açın!<br>
             <span class="subtitle-text">Reklam izledikten sonra ünite açılacaktır.</span>
@@ -228,6 +228,11 @@ function renderQuestion() {
     }
 
     updateHintBadge();
+    
+    // Soru altı reklamı göster (AdSense aktifse)
+    if (typeof window.showQuestionAd === 'function') {
+        window.showQuestionAd();
+    }
 }
 
 function goToPreviousQuestion() {
@@ -349,6 +354,7 @@ function nextQuestion() {
 
         hideAllScreens();
         document.getElementById("screen-victory").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
         document.getElementById("victory-text").innerHTML = `
             🎉 Tebrikler! ${currentCategory} - Ünite ${currentUnit} tamamlandı!<br>
             <span class="subtitle-text">Bir sonraki üniteye geçmek için reklam izleyin.</span>
@@ -383,6 +389,7 @@ function showGeneralReviewResult() {
 
     hideAllScreens();
     document.getElementById("screen-test-result").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
     document.getElementById("test-result-text").innerHTML = `
         <p style="font-size:1.5rem; font-weight:800; margin-bottom:16px;">📚 Genel Tekrar Tamamlandı!</p>
         <p>✅ Doğru: <strong>${correct}</strong></p>
@@ -394,6 +401,10 @@ function showGeneralReviewResult() {
         <button class="btn-primary" onclick="restartGeneralReview()" style="margin-top:20px;">🔄 Tekrar Dene (reklam)</button>
         <button class="btn-primary muted" onclick="navigateToTab('home')" style="margin-top:10px;">Ana Sayfaya Dön</button>
     `;
+    // Sonuç ekranı reklamını göster
+    if (typeof window.showResultAd === 'function') {
+        window.showResultAd();
+    }
     generalReviewCorrectCount = 0;
     playSound('success');
 }
@@ -439,6 +450,7 @@ function startTestInternal(timeLimit) {
     document.getElementById("unit-title").innerText = "📝 GENEL TEST";
     hideAllScreens();
     document.getElementById("screen-game").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
     startTimer(timeLimit);
     renderQuestion();
 }
@@ -482,6 +494,7 @@ function showTestResult(correct, total, wrong, percent, timeUp) {
 
     hideAllScreens();
     document.getElementById("screen-test-result").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
 
     document.getElementById("test-result-text").innerHTML = `
         <p style="font-size: 1.5rem; font-weight: 800; margin-bottom: 16px;">${timeUp ? '⏰ Süre Bitti!' : '🎉 Test Tamamlandı!'}</p>
@@ -495,6 +508,11 @@ function showTestResult(correct, total, wrong, percent, timeUp) {
         <button class="btn-primary" onclick="watchAdForFeature('wrongRetry')">🔄 Hatalı Soru Tekrarı (reklam)</button>
         <button class="btn-primary muted" onclick="navigateToTab('home')" style="margin-top:10px;">Ana Sayfaya Dön</button>
     `;
+    
+    // Sonuç ekranı reklamını göster
+    if (typeof window.showResultAd === 'function') {
+        window.showResultAd();
+    }
 }
 
 function showWrongAnalysisUI() {
@@ -514,6 +532,7 @@ function showWrongAnalysisUI() {
     document.getElementById('test-result-text').innerHTML = html;
     hideAllScreens();
     document.getElementById('screen-test-result').classList.remove('hidden');
+    document.getElementById('bottom-nav-bar').classList.remove('hidden');
     playSound('click');
 }
 
@@ -534,6 +553,7 @@ function resumeGameAfterAd() {
 
     hideAllScreens();
     document.getElementById("screen-game").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
     document.getElementById("unit-title").innerText = isTestMode ? "📝 GENEL TEST" : `${currentCategory} - Ünite ${currentUnit}`;
     renderQuestion();
 
@@ -615,6 +635,7 @@ function startHardQuestion() {
     document.getElementById("timer-display").innerText = '';
     hideAllScreens();
     document.getElementById("screen-game").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
     document.getElementById("unit-title").innerText = '⚡ ZOR SORU';
     renderQuestion();
     playSound('click');
@@ -675,6 +696,7 @@ function startWrongRetry() {
     }
     hideAllScreens();
     document.getElementById("screen-game").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
     document.getElementById("unit-title").innerText = '🔄 Hatalı Soru Tekrarı';
     renderQuestion();
     playSound('click');
@@ -738,6 +760,7 @@ function startYanlislarimTest() {
     document.getElementById("unit-title").innerText = "🤔 Yanlışlarım (5 Soru)";
     hideAllScreens();
     document.getElementById("screen-game").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
     document.getElementById("timer-display").innerText = '';
     clearInterval(timerInterval);
     renderQuestion();
@@ -832,6 +855,7 @@ function openZorSoruContentDirect() {
     document.getElementById("timer-display").innerText = '';
     hideAllScreens();
     document.getElementById("screen-game").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
     document.getElementById("unit-title").innerText = '⚡ Zor Soru (Bilgiç)';
     renderQuestion();
     showToast('⚡ Zor soru başladı!');
@@ -967,6 +991,7 @@ function showGameOverScreen() {
     clearInterval(timerInterval);
     hideAllScreens();
     document.getElementById("screen-gameover").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
 }
 
 function goBackFromGame() {
@@ -978,6 +1003,7 @@ function goBackFromGame() {
         isFromBilgic = false;
         hideAllScreens();
         document.getElementById("screen-bilgic").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
         return;
     }
     if (isTestMode) {
@@ -985,10 +1011,12 @@ function goBackFromGame() {
         isTestMode = false;
         hideAllScreens();
         document.getElementById("screen-categories").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
         setActiveNav('home');
     } else {
         hideAllScreens();
         document.getElementById("screen-units").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
         setActiveNav('home');
     }
     playSound('click');
