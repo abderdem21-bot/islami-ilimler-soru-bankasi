@@ -5,6 +5,86 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5165596538310622" crossorigin="anonymous"></script>
     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
     
+    <!-- ===== FIREBASE SDK ===== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, get, set, update, push, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyBNAgdFlkdkNLEO-fG_QNjU-xKpL1X4HJw",
+            authDomain: "islamiilimlersorubankasi.firebaseapp.com",
+            databaseURL: "https://islamiilimlersorubankasi-default-rtdb.europe-west1.firebasedatabase.app/",
+            projectId: "islamiilimlersorubankasi",
+            storageBucket: "islamiilimlersorubankasi.firebasestorage.app",
+            messagingSenderId: "239296154537",
+            appId: "1:239296154537:web:f18881789f9f94c5dcb8",
+            measurementId: "G-0WE1ESX4TM"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        
+        window.firebaseDB = {
+            database: database,
+            ref: ref,
+            get: get,
+            set: set,
+            update: update,
+            push: push,
+            query: query,
+            orderByChild: orderByChild,
+            limitToLast: limitToLast,
+            getLeaderboard: async function(limit = 100) {
+                try {
+                    const leaderboardRef = ref(database, 'leaderboard');
+                    const snapshot = await get(leaderboardRef);
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        const users = Object.keys(data).map(key => ({
+                            id: key,
+                            email: data[key].email || key,
+                            nickname: data[key].nickname || 'İsimsiz',
+                            score: data[key].score || 0,
+                            lastUpdated: data[key].lastUpdated || new Date().toISOString()
+                        }));
+                        users.sort((a, b) => b.score - a.score);
+                        return users.slice(0, limit);
+                    }
+                    return [];
+                } catch (error) {
+                    console.error('❌ Liderlik okuma hatası:', error);
+                    return [];
+                }
+            },
+            addScore: async function(email, nickname, points = 1) {
+                try {
+                    const sanitizedEmail = email.replace(/[.#$\/\[\]]/g, '_');
+                    const userRef = ref(database, 'leaderboard/' + sanitizedEmail);
+                    const snapshot = await get(userRef);
+                    let currentScore = 0;
+                    let currentNickname = nickname || 'İsimsiz';
+                    if (snapshot.exists()) {
+                        currentScore = snapshot.val().score || 0;
+                        currentNickname = snapshot.val().nickname || nickname || 'İsimsiz';
+                    }
+                    const newScore = currentScore + points;
+                    await set(userRef, {
+                        email: email,
+                        nickname: currentNickname,
+                        score: newScore,
+                        lastUpdated: new Date().toISOString()
+                    });
+                    return newScore;
+                } catch (error) {
+                    console.error('❌ Puan ekleme hatası:', error);
+                    return 0;
+                }
+            }
+        };
+        
+        console.log('✅ Firebase bağlantısı başarılı!');
+    </script>
+    
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#0f2c59" />
