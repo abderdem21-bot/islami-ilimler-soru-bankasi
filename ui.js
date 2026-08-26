@@ -17,24 +17,17 @@ function hideAllScreens() {
 
 // ========== OTURUM KALICILIĞI (Sayfa Yenileme) ==========
 function restoreUserSession() {
-    // Önce userState'i yeniden yükle
     loadUserState();
     
-    // Eğer kullanıcı giriş yapmışsa ve bir sayfada kaydı varsa
     if (userState && userState.email) {
         const lastPage = userState.lastPage || 'screen-categories';
-        // Eğer kayıtlı sayfa geçerli bir ekran ID'siyse
         const validScreens = ['screen-categories', 'screen-units', 'screen-game', 'screen-bilgic', 'screen-rewards', 'screen-favorites', 'screen-results', 'screen-settings', 'screen-leaderboard', 'screen-mecelle', 'screen-mecelle-card', 'screen-fiqh-submenu'];
         if (validScreens.includes(lastPage)) {
-            // Tüm ekranları gizle
             hideAllScreens();
-            // Kayıtlı ekranı göster
             const screenElement = document.getElementById(lastPage);
             if (screenElement) {
                 screenElement.classList.remove('hidden');
-                // Alt navigasyonu göster
                 document.getElementById("bottom-nav-bar").classList.remove("hidden");
-                // Doğru sekme aktif olsun
                 const navMap = {
                     'screen-categories': 'home',
                     'screen-units': 'home',
@@ -51,15 +44,11 @@ function restoreUserSession() {
                 };
                 setActiveNav(navMap[lastPage] || 'home');
                 
-                // Eğer son sayfa units ise, içeriği yeniden oluştur
                 if (lastPage === 'screen-units' && currentCategory) {
                     renderUnits();
                 }
                 if (lastPage === 'screen-game' && currentQuestions.length > 0) {
                     renderQuestion();
-                }
-                if (lastPage === 'screen-bilgic') {
-                    // Bilgiç sayfası içeriği varsa yeniden oluştur
                 }
                 if (lastPage === 'screen-rewards') {
                     renderRewardScreen();
@@ -76,17 +65,14 @@ function restoreUserSession() {
                 if (lastPage === 'screen-mecelle') {
                     renderMecelleGroups();
                 }
-                if (lastPage === 'screen-fiqh-submenu') {
-                    // Fıkıh alt menüsü zaten açık
-                }
                 updateHeartsAndHints();
                 updateStreakDisplay();
                 showBannerAd();
-                return true; // Başarıyla geri yüklendi
+                return true;
             }
         }
     }
-    return false; // Geri yüklenemedi
+    return false;
 }
 
 // ========== BANNER REKLAM ==========
@@ -166,7 +152,6 @@ function playSound(type) {
     } catch(e) { /* sessiz */ }
 }
 
-// Butonlara ses ekleme (global click listener)
 document.addEventListener('click', function(e) {
     if (e.target.closest('.btn-primary') || e.target.closest('.btn-danger') || 
         e.target.closest('.category-btn') || e.target.closest('.unit-btn') ||
@@ -181,7 +166,6 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// ===== SES MODU DEĞİŞTİRME =====
 function changeSoundMode(mode) {
     userState.soundMode = mode;
     saveUserState();
@@ -286,10 +270,8 @@ function performLogin() {
                 userState.isAdmin = user.isAdmin || false;
                 userState.lastPage = 'screen-categories';
                 
-                // E-posta adresini HER ZAMAN hafızada tut
                 localStorage.setItem('saved_email', email);
 
-                // Şifreyi sadece "Şifreyi Hatırla" seçiliyse tut
                 if (remember) {
                     userState.rememberMe = true;
                     localStorage.setItem('saved_password', pass);
@@ -378,28 +360,23 @@ function performRegister() {
 }
 
 function openRegister() {
-    // Kayıt sayfasına geçmeden önce mevcut ekranı kaydet
     userState._previousScreen = 'screen-login';
     saveUserState();
     hideAllScreens();
     document.getElementById("screen-register").classList.remove("hidden");
-    // Auth sayfası olduğu için bottom nav'ı gizle
     document.getElementById("bottom-nav-bar").classList.add("hidden");
 }
 
 function closeRegister() {
     hideAllScreens();
-    // Kayıt sayfasından geri dönüş
     const prevScreen = userState._previousScreen || 'screen-login';
     document.getElementById(prevScreen).classList.remove("hidden");
-    // Eğer giriş sayfasına dönüyorsa, formları temizleme
     if (prevScreen === 'screen-login') {
         document.getElementById("reg-nick").value = '';
         document.getElementById("reg-email").value = '';
         document.getElementById("reg-password").value = '';
         document.getElementById("reg-password-confirm").value = '';
         document.getElementById("terms-checkbox").checked = false;
-        // Auth sayfası olduğu için bottom nav'ı gizle
         document.getElementById("bottom-nav-bar").classList.add("hidden");
     } else {
         document.getElementById("bottom-nav-bar").classList.remove("hidden");
@@ -475,7 +452,6 @@ function navigateToTab(tabName, source = null) {
         return;
     }
     
-    // Auth sayfalarında bottom nav'ı gizle
     const authPages = ['login', 'register', 'privacy', 'terms'];
     if (authPages.includes(tabName)) {
         document.getElementById("bottom-nav-bar").classList.add("hidden");
@@ -485,7 +461,6 @@ function navigateToTab(tabName, source = null) {
     
     setActiveNav(tabName);
 
-    // Sayfa değişiminde son sayfayı kaydet
     const screenMap = {
         'home': 'screen-categories',
         'results': 'screen-results',
@@ -505,7 +480,6 @@ function navigateToTab(tabName, source = null) {
         saveUserState();
     }
 
-    // Ekranları göster
     if (tabName === 'home') {
         document.getElementById("screen-categories").classList.remove("hidden");
         updateStreakDisplay();
@@ -584,16 +558,12 @@ function confirmLogout() {
     if (modal) modal.classList.add('hidden');
     
     const rememberCheck = document.getElementById("remember-me");
-    // NOT: "Şifreyi Hatırla" işaretli olsun veya olmasın, email her zaman saklansın
-    // Şifre sadece "Şifreyi Hatırla" işaretliyse saklansın
     if (rememberCheck && !rememberCheck.checked) {
         localStorage.removeItem('saved_password');
         userState.rememberMe = false;
     } else if (rememberCheck && rememberCheck.checked) {
-        // Şifreyi kaydet (zaten kayıtlı)
         userState.rememberMe = true;
     }
-    // E-posta her zaman saklansın
     const emailInput = document.getElementById("login-email");
     if (emailInput && emailInput.value) {
         localStorage.setItem('saved_email', emailInput.value);
@@ -601,19 +571,15 @@ function confirmLogout() {
     
     saveUserState();
     
-    // Oturum bilgilerini temizle (ama email ve şifre localStorage'da kalır)
     userState.email = '';
     userState.uid = null;
     userState.isAdmin = false;
     userState.lastPage = 'screen-login';
     saveUserState();
     
-    // Login ekranını göster
     document.getElementById("screen-login").classList.remove("hidden");
     document.getElementById("bottom-nav-bar").classList.add("hidden");
     
-    // Inputları temizleme (ama email ve şifre zaten localStorage'dan doldurulacak)
-    // Tekrar doldur
     const savedEmail = localStorage.getItem('saved_email');
     const savedPass = localStorage.getItem('saved_password');
     if (savedEmail) {
@@ -1414,28 +1380,89 @@ function giveShareReward() {
 }
 
 // ========== LİDERLİK ==========
-function renderLeaderboard() {
+async function renderLeaderboard() {
     const container = document.getElementById('leaderboard-container');
     if (!container) return;
-    const data = getLeaderboardData();
-    if (!data || data.length === 0) {
-        container.innerHTML = '<p class="profile-card">Henüz liderlik verisi yok.</p>';
-        return;
-    }
-    let html = '<div style="margin-top:16px;">';
-    data.forEach((item, index) => {
-        const rank = index + 1;
-        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
-        html += `
-            <div class="leaderboard-item">
-                <span class="rank">${medal}</span>
-                <span class="name">${item.name}</span>
-                <span class="score">${item.score} puan</span>
+    
+    container.innerHTML = `
+        <div style="text-align:center; padding:20px;">
+            <div class="spinner">⏳ Liderlik tablosu yükleniyor...</div>
+        </div>
+    `;
+    
+    try {
+        let data = [];
+        if (typeof window.firebaseDB !== 'undefined') {
+            data = await window.firebaseDB.getLeaderboard(100);
+        } else {
+            data = getLocalLeaderboardData();
+        }
+        
+        if (!data || data.length === 0) {
+            container.innerHTML = `
+                <div class="profile-card" style="text-align:center; padding:30px;">
+                    <p style="font-size:2rem; margin-bottom:10px;">🏆</p>
+                    <p>Henüz liderlik verisi yok.</p>
+                    <p style="font-size:0.8rem; color:var(--text-muted);">İlk puanı sen kazan!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const myEmail = userState.email;
+        let myRank = -1;
+        let myScore = 0;
+        
+        data.forEach((item, index) => {
+            if (item.email === myEmail) {
+                myRank = index + 1;
+                myScore = item.score || 0;
+            }
+        });
+        
+        let html = `
+            <div style="margin-top:16px;">
+                <div style="display:flex; justify-content:space-between; padding:10px 16px; background:var(--accent-glow); border-radius:12px; margin-bottom:16px;">
+                    <span style="font-weight:700;">🏆 Sıralama</span>
+                    <span style="font-weight:700;">👤 Kullanıcı</span>
+                    <span style="font-weight:700;">⭐ Puan</span>
+                </div>
+        `;
+        
+        data.forEach((item, index) => {
+            const rank = index + 1;
+            const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+            const isMe = item.email === myEmail;
+            
+            html += `
+                <div class="leaderboard-item" style="${isMe ? 'background:var(--accent-glow); border-radius:8px; margin:2px 0;' : ''}">
+                    <span class="rank">${medal}</span>
+                    <span class="name" style="${isMe ? 'font-weight:800;' : ''}">${item.nickname || 'İsimsiz'} ${isMe ? '👈' : ''}</span>
+                    <span class="score">${item.score || 0}</span>
+                </div>
+            `;
+        });
+        
+        if (myRank === -1 && userState.leaderboardScore > 0) {
+            html += `
+                <div style="margin-top:16px; padding:12px; background:var(--accent-glow); border-radius:12px; text-align:center;">
+                    <p style="margin:0; font-weight:700;">👤 Sen: ${userState.nickname || 'İsimsiz'} - ⭐ ${userState.leaderboardScore} puan</p>
+                </div>
+            `;
+        }
+        
+        html += '</div>';
+        container.innerHTML = html;
+        
+    } catch (error) {
+        console.error('❌ Liderlik tablosu hatası:', error);
+        container.innerHTML = `
+            <div class="profile-card" style="text-align:center; padding:20px;">
+                <p>⚠️ Liderlik tablosu yüklenirken hata oluştu.</p>
+                <button class="btn-primary muted" onclick="renderLeaderboard()" style="margin-top:10px;">🔄 Tekrar Dene</button>
             </div>
         `;
-    });
-    html += '</div>';
-    container.innerHTML = html;
+    }
 }
 
 // ========== SORU BİLDİR ==========
@@ -1469,20 +1496,17 @@ function updateHeartsAndHints() {
     if (hintsEl) hintsEl.textContent = userState.hintCount || 0;
 }
 
-// ===== GÜNLÜK GİRİŞ ÖDÜLÜ (Artık ilk girişte veriyor) =====
+// ===== GÜNLÜK GİRİŞ ÖDÜLÜ =====
 function checkDailyLaunchAd() {
     const today = new Date().toISOString().slice(0,10);
-    // Eğer bugün ilk kez giriş yapıyorsa
     if (userState.lastLaunchDate !== today) {
         userState.lastLaunchDate = today;
         userState.dailyLaunchCount = 1;
-        // İlk girişte +1 Can hediye et
         addHearts(1);
         showToast('🎁 Günlük giriş hediyesi: +1 Can kazandın!');
         updateHeartsAndHints();
         saveUserState();
     } else {
-        // Aynı gün içinde tekrar giriş yapıyorsa sayaç artsın ama ödül vermesin
         userState.dailyLaunchCount = (userState.dailyLaunchCount || 0) + 1;
         saveUserState();
     }
@@ -1606,11 +1630,9 @@ function closeRewardClaimModalOutside(e) {
 
 // ========== DOMCONTENTLOADED ==========
 document.addEventListener('DOMContentLoaded', function() {
-    // Önce state'i yükle
     loadUserState();
     loadProgress();
     
-    // Hatırlanan şifreyi doldur
     const savedEmail = localStorage.getItem('saved_email');
     const savedPass = localStorage.getItem('saved_password');
     const rememberMe = userState.rememberMe;
@@ -1624,11 +1646,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (rememberCheck) rememberCheck.checked = true;
     }
 
-    // Kullanıcı giriş yapmışsa ve oturum geri yüklenebiliyorsa
     if (userState && userState.email) {
         const restored = restoreUserSession();
         if (!restored) {
-            // Eğer geri yüklenemezse ana sayfaya git
             hideAllScreens();
             document.getElementById("screen-categories").classList.remove("hidden");
             document.getElementById("bottom-nav-bar").classList.remove("hidden");
@@ -1638,14 +1658,13 @@ document.addEventListener('DOMContentLoaded', function() {
             showBannerAd();
             updateHeartsAndHints();
         }
-        checkDailyLaunchAd(); // Günlük giriş ödülünü kontrol et
+        checkDailyLaunchAd();
     } else {
         hideAllScreens();
         document.getElementById("screen-login").classList.remove("hidden");
         document.getElementById("bottom-nav-bar").classList.add("hidden");
     }
 
-    // İletişim formu karakter sayacı
     const textarea = document.getElementById('contact-message');
     if (textarea) {
         textarea.addEventListener('input', function() {
@@ -1654,18 +1673,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Ses modu seçici
     const soundSelect = document.getElementById('sound-mode-select');
     if (soundSelect && userState.soundMode) {
         soundSelect.value = userState.soundMode;
     }
 
-    // Banner reklam göster (gizli olduğu için etkisiz)
     if (userState && userState.email) {
         showBannerAd();
     }
 
-    // Web indir butonu kontrolü
     const downloadBtn = document.getElementById('web-download-btn');
     if (downloadBtn) {
         if (!window.Capacitor || !window.Capacitor.isNativePlatform()) {
@@ -1676,22 +1692,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Mecelle ilerlemesini yükle
 loadMecelleProgress();
-// Sayfa yüklendiğinde hafızadaki mail ve şifreyi otomatik doldurur
-// Sayfa yüklendiğinde kaydedilen bilgileri alanlara doldur
+
 document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('login-email');
     const passInput = document.getElementById('login-password');
     const rememberCheckbox = document.getElementById('remember-me');
 
-    // E-postayı her zaman getir ve yaz
     const savedEmail = localStorage.getItem('saved_email');
     if (savedEmail && emailInput) {
         emailInput.value = savedEmail;
     }
 
-    // Şifreyi sadece daha önce "Şifreyi Hatırla" seçildiyse getir
     const savedPass = localStorage.getItem('saved_password');
     if (savedPass && passInput) {
         passInput.value = savedPass;
