@@ -1238,19 +1238,46 @@ body.dark-mode #hearts-hints-display .badge-item {
     line-height: 1;
 }
 
-/* Mobilde daha belirgin */
+/* Mobilde daha belirgin ve hizalı */
 @media (max-width: 480px) {
     #hearts-hints-display {
         padding: 4px 10px;
         font-size: 0.75rem;
         gap: 6px;
         border-radius: 20px;
+        flex-wrap: nowrap;
     }
     #hearts-hints-display .badge-item {
         padding: 1px 6px 1px 3px;
+        gap: 3px;
     }
     #hearts-hints-display .badge-item span {
         font-size: 0.8rem;
+        min-width: 14px;
+    }
+    .header {
+        flex-wrap: nowrap !important;
+        gap: 4px;
+    }
+    .header-left {
+        gap: 4px;
+    }
+    .hearts {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+    .score {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+    #hint-btn-header {
+        font-size: 1rem !important;
+        padding: 2px 6px !important;
+    }
+    .timer-display {
+        font-size: 0.8rem !important;
+        padding: 2px 8px !important;
+        margin-left: 4px !important;
     }
 }
 
