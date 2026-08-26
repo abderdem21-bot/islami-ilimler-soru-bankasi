@@ -30,7 +30,6 @@ function depodanReklamGoster(callback) {
     if (adDeposu.length === 0) {
         reklamlariDepola();
         if (adDeposu.length === 0) {
-            // ❌ UYARI KALDIRILDI - Reklam yoksa doğrudan devam et
             console.warn("📡 Reklam deposu boş. İçeriğe doğrudan yönlendiriliyor.");
             if (callback) callback();
             return;
@@ -40,8 +39,6 @@ function depodanReklamGoster(callback) {
     showAdSimulationWithContent(ad, callback);
     setTimeout(() => reklamlariDepola(), 1000);
 }
-
-// ❌ showFallbackAd fonksiyonu TAMAMEN KALDIRILDI
 
 function showAdSimulationWithContent(ad, callback) {
     const modal = document.createElement('div');
@@ -96,7 +93,6 @@ function startUnit(unitNum, forceStart = false) {
         showToast('Bu kategoride henüz soru yok.');
         return;
     }
-    // Döngü: eğer unitNum > totalUnits ise reklam izleyip 1. üniteye dön
     if (unitNum > totalUnits) {
         showAdSimulation(() => {
             startUnit(1, true);
@@ -229,7 +225,6 @@ function renderQuestion() {
 
     updateHintBadge();
     
-    // Soru altı reklamı göster (AdSense aktifse)
     if (typeof window.showQuestionAd === 'function') {
         window.showQuestionAd();
     }
@@ -401,7 +396,6 @@ function showGeneralReviewResult() {
         <button class="btn-primary" onclick="restartGeneralReview()" style="margin-top:20px;">🔄 Tekrar Dene (reklam)</button>
         <button class="btn-primary muted" onclick="navigateToTab('home')" style="margin-top:10px;">Ana Sayfaya Dön</button>
     `;
-    // Sonuç ekranı reklamını göster
     if (typeof window.showResultAd === 'function') {
         window.showResultAd();
     }
@@ -509,7 +503,6 @@ function showTestResult(correct, total, wrong, percent, timeUp) {
         <button class="btn-primary muted" onclick="navigateToTab('home')" style="margin-top:10px;">Ana Sayfaya Dön</button>
     `;
     
-    // Sonuç ekranı reklamını göster
     if (typeof window.showResultAd === 'function') {
         window.showResultAd();
     }
@@ -1020,4 +1013,21 @@ function goBackFromGame() {
         setActiveNav('home');
     }
     playSound('click');
+}
+
+// ========== LİDERLİK ==========
+function updateLeaderboard(scoreIncrement) {
+    userState.leaderboardScore = (userState.leaderboardScore || 0) + scoreIncrement;
+    saveUserState();
+    
+    // ✅ Firebase'e de kaydet
+    if (userState.email && typeof window.firebaseDB !== 'undefined' && window.firebaseDB.addScore) {
+        window.firebaseDB.addScore(userState.email, userState.nickname || 'İsimsiz', scoreIncrement)
+            .then(newScore => {
+                console.log('📊 Firebase liderlik güncellendi:', newScore);
+            })
+            .catch(err => {
+                console.warn('⚠️ Firebase güncelleme hatası:', err);
+            });
+    }
 }
