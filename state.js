@@ -54,7 +54,7 @@ let userState = {
   remainingUnitsForChest: 0,
   dailyLaunchCount: 0,
   lastLaunchDate: null,
-  rememberMe: false, // ✅ EKLENDİ
+  rememberMe: false,
   hearts: 3,
   lastHeartReset: null,
   shareRewardClaimed: false,
@@ -69,7 +69,6 @@ let userState = {
 
 function saveUserState() {
   localStorage.setItem('islami_user_state', JSON.stringify(userState));
-  // Son sayfayı da ayrıca kaydet
   if (userState.lastPage) {
     localStorage.setItem('last_page', userState.lastPage);
   }
@@ -95,7 +94,7 @@ function loadUserState() {
       if (userState.remainingUnitsForChest === undefined) userState.remainingUnitsForChest = 0;
       if (userState.dailyLaunchCount === undefined) userState.dailyLaunchCount = 0;
       if (userState.lastLaunchDate === undefined) userState.lastLaunchDate = null;
-      if (userState.rememberMe === undefined) userState.rememberMe = false; // ✅ EKLENDİ
+      if (userState.rememberMe === undefined) userState.rememberMe = false;
       if (userState.hearts === undefined) userState.hearts = 3;
       if (userState.shareRewardClaimed === undefined) userState.shareRewardClaimed = false;
       if (userState.statsAdWatchedToday === undefined) userState.statsAdWatchedToday = false;
@@ -108,7 +107,6 @@ function loadUserState() {
       if (userState.isAdmin === undefined) userState.isAdmin = false;
       if (userState.lastPage === undefined) userState.lastPage = 'screen-categories';
       
-      // localStorage'dan son sayfayı oku (öncelikli)
       const lastPageFromStorage = localStorage.getItem('last_page');
       if (lastPageFromStorage) {
         userState.lastPage = lastPageFromStorage;
@@ -184,11 +182,45 @@ function updateStreakDisplay() {
 function updateLeaderboard(scoreIncrement) {
   userState.leaderboardScore = (userState.leaderboardScore || 0) + scoreIncrement;
   saveUserState();
+  
+  // ✅ Firebase'e de kaydet
+  if (userState.email && typeof window.firebaseDB !== 'undefined') {
+    window.firebaseDB.addScore(userState.email, userState.nickname || 'İsimsiz', scoreIncrement)
+      .then(newScore => {
+        console.log('📊 Firebase liderlik güncellendi:', newScore);
+      })
+      .catch(err => {
+        console.warn('⚠️ Firebase güncelleme hatası:', err);
+      });
+  }
+}
+
+// ========== LİDERLİK TABLOSUNU YENİLE ==========
+async function refreshLeaderboard() {
+  if (typeof window.firebaseDB === 'undefined') {
+    console.warn('⚠️ Firebase yüklenmedi, yerel liderlik gösteriliyor.');
+    return getLocalLeaderboardData();
+  }
+  
+  try {
+    const data = await window.firebaseDB.getLeaderboard(100);
+    return data;
+  } catch (error) {
+    console.error('❌ Liderlik okuma hatası:', error);
+    return getLocalLeaderboardData();
+  }
+}
+
+// Yedek: Local liderlik verisi
+function getLocalLeaderboardData() {
+  const myName = userState.nickname && userState.nickname.trim() !== '' ? userState.nickname : 'İsimsiz';
+  return [
+    { id: 'local', nickname: myName, score: userState.leaderboardScore || 0 }
+  ];
 }
 
 function getLeaderboardData() {
-  const myName = userState.nickname && userState.nickname.trim() !== '' ? userState.nickname : 'İsimsiz';
-  return [
-    { name: myName, score: userState.leaderboardScore || 0 }
-  ];
+  // Bu fonksiyon artık async olarak çalışacak
+  // ui.js'deki renderLeaderboard() fonksiyonu bunu kullanacak
+  return refreshLeaderboard();
 }
