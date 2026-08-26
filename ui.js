@@ -383,6 +383,8 @@ function openRegister() {
     saveUserState();
     hideAllScreens();
     document.getElementById("screen-register").classList.remove("hidden");
+    // Auth sayfası olduğu için bottom nav'ı gizle
+    document.getElementById("bottom-nav-bar").classList.add("hidden");
 }
 
 function closeRegister() {
@@ -397,6 +399,10 @@ function closeRegister() {
         document.getElementById("reg-password").value = '';
         document.getElementById("reg-password-confirm").value = '';
         document.getElementById("terms-checkbox").checked = false;
+        // Auth sayfası olduğu için bottom nav'ı gizle
+        document.getElementById("bottom-nav-bar").classList.add("hidden");
+    } else {
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
     }
 }
 
@@ -468,7 +474,15 @@ function navigateToTab(tabName, source = null) {
         window.location.href = 'admin.html?from=admin';
         return;
     }
-    document.getElementById("bottom-nav-bar").classList.remove("hidden");
+    
+    // Auth sayfalarında bottom nav'ı gizle
+    const authPages = ['login', 'register', 'privacy', 'terms'];
+    if (authPages.includes(tabName)) {
+        document.getElementById("bottom-nav-bar").classList.add("hidden");
+    } else {
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
+    }
+    
     setActiveNav(tabName);
 
     // Sayfa değişiminde son sayfayı kaydet
@@ -491,10 +505,18 @@ function navigateToTab(tabName, source = null) {
         saveUserState();
     }
 
+    // Ekranları göster
     if (tabName === 'home') {
         document.getElementById("screen-categories").classList.remove("hidden");
         updateStreakDisplay();
         updateHeartsAndHints();
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
+    } else if (tabName === 'login') {
+        document.getElementById("screen-login").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.add("hidden");
+    } else if (tabName === 'register') {
+        document.getElementById("screen-register").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.add("hidden");
     } else if (tabName === 'results') {
         if (!userState.statsAdWatchedToday) {
             showAdSimulation(() => {
@@ -515,8 +537,10 @@ function navigateToTab(tabName, source = null) {
         }
     } else if (tabName === 'privacy') {
         document.getElementById("screen-privacy").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.add("hidden");
     } else if (tabName === 'terms') {
         document.getElementById("screen-terms").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.add("hidden");
     } else if (tabName === 'user-guide') {
         document.getElementById("screen-user-guide").classList.remove("hidden");
     } else if (tabName === 'about') {
@@ -560,26 +584,48 @@ function confirmLogout() {
     if (modal) modal.classList.add('hidden');
     
     const rememberCheck = document.getElementById("remember-me");
+    // NOT: "Şifreyi Hatırla" işaretli olsun veya olmasın, email her zaman saklansın
+    // Şifre sadece "Şifreyi Hatırla" işaretliyse saklansın
     if (rememberCheck && !rememberCheck.checked) {
-        localStorage.removeItem('saved_email');
         localStorage.removeItem('saved_password');
         userState.rememberMe = false;
-        saveUserState();
+    } else if (rememberCheck && rememberCheck.checked) {
+        // Şifreyi kaydet (zaten kayıtlı)
+        userState.rememberMe = true;
+    }
+    // E-posta her zaman saklansın
+    const emailInput = document.getElementById("login-email");
+    if (emailInput && emailInput.value) {
+        localStorage.setItem('saved_email', emailInput.value);
     }
     
-    // Oturum bilgilerini temizle
+    saveUserState();
+    
+    // Oturum bilgilerini temizle (ama email ve şifre localStorage'da kalır)
     userState.email = '';
     userState.uid = null;
     userState.isAdmin = false;
     userState.lastPage = 'screen-login';
     saveUserState();
     
+    // Login ekranını göster
     document.getElementById("screen-login").classList.remove("hidden");
     document.getElementById("bottom-nav-bar").classList.add("hidden");
     
-    document.getElementById("login-email").value = '';
-    document.getElementById("login-password").value = '';
-    if (rememberCheck) rememberCheck.checked = false;
+    // Inputları temizleme (ama email ve şifre zaten localStorage'dan doldurulacak)
+    // Tekrar doldur
+    const savedEmail = localStorage.getItem('saved_email');
+    const savedPass = localStorage.getItem('saved_password');
+    if (savedEmail) {
+        document.getElementById("login-email").value = savedEmail;
+    }
+    if (savedPass && userState.rememberMe) {
+        document.getElementById("login-password").value = savedPass;
+        if (rememberCheck) rememberCheck.checked = true;
+    } else {
+        document.getElementById("login-password").value = '';
+        if (rememberCheck) rememberCheck.checked = false;
+    }
     
     hideAllScreens();
     document.getElementById("screen-login").classList.remove("hidden");
@@ -640,6 +686,7 @@ function openFiqhSubmenu() {
     document.getElementById("screen-fiqh-submenu").classList.remove("hidden");
     userState.lastPage = 'screen-fiqh-submenu';
     saveUserState();
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
 }
 
 function goBackFromFiqhSubmenu() {
@@ -648,6 +695,7 @@ function goBackFromFiqhSubmenu() {
     setActiveNav('home');
     userState.lastPage = 'screen-categories';
     saveUserState();
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
 }
 
 function openFiqhUnits() {
@@ -663,6 +711,7 @@ function openFiqhUnits() {
     document.getElementById("screen-units").classList.remove("hidden");
     userState.lastPage = 'screen-units';
     saveUserState();
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
 }
 
 // ===== MECELLE =====
@@ -684,6 +733,7 @@ function openMecelle() {
                 document.getElementById("mecelle-info-text").innerText = `Toplam kaide: ${mecelleData.length} (10 grup)`;
                 userState.lastPage = 'screen-mecelle';
                 saveUserState();
+                document.getElementById("bottom-nav-bar").classList.remove("hidden");
             } else {
                 showToast('Mecelle verisi yüklenemedi.');
             }
@@ -697,6 +747,7 @@ function openMecelle() {
     document.getElementById("mecelle-info-text").innerText = `Toplam kaide: ${mecelleData.length} (10 grup)`;
     userState.lastPage = 'screen-mecelle';
     saveUserState();
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
 }
 
 function renderMecelleGroups() {
@@ -844,6 +895,7 @@ function openMecelleCard(index) {
     
     userState.lastPage = 'screen-mecelle-card';
     saveUserState();
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
 }
 
 function goBackFromMecelle() {
@@ -857,6 +909,7 @@ function goBackFromMecelleCard() {
     renderMecelleGroups();
     userState.lastPage = 'screen-mecelle';
     saveUserState();
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
 }
 
 function saveMecelleProgress() {
@@ -906,6 +959,7 @@ function openCategoryMenu(categoryName) {
         document.getElementById("screen-game").classList.remove("hidden");
         userState.lastPage = 'screen-game';
         saveUserState();
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
         renderQuestion();
         return;
     }
@@ -922,6 +976,7 @@ function openCategoryMenu(categoryName) {
     document.getElementById("screen-units").classList.remove("hidden");
     userState.lastPage = 'screen-units';
     saveUserState();
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
 }
 
 function renderUnits() {
@@ -976,6 +1031,7 @@ function renderUnits() {
                         });
                     };
                 }
+                document.getElementById("bottom-nav-bar").classList.remove("hidden");
             };
         } else {
             btn.classList.add("locked");
@@ -1010,6 +1066,7 @@ function goBackFromUnits() {
         setActiveNav('home');
         userState.lastPage = 'screen-categories';
         saveUserState();
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
     }
 }
 
@@ -1646,6 +1703,7 @@ function goBackFromPolicy() {
     if (policySourceScreen === 'register') {
         hideAllScreens();
         document.getElementById("screen-register")?.classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.add("hidden");
         policySourceScreen = null;
     } else {
         navigateToTab('home');
