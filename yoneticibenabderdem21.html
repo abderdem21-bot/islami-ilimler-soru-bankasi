@@ -15,26 +15,27 @@
             color: #1e293b;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             padding: 24px;
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            position: relative;
         }
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .back-btn-admin {
             background: none;
             border: none;
             font-size: 1.2rem;
             cursor: pointer;
-            color: var(--primary, #0f2c59);
+            color: #0f2c59;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -47,6 +48,35 @@
             background: #e2e8f0;
         }
         h1 { margin-top: 0; }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .tabs button {
+            padding: 8px 20px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            background: #f1f5f9;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .tabs button.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            color: #2563eb;
+        }
+        .tabs button:hover {
+            background: #e2e8f0;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
         .category-selector {
             display: flex;
             gap: 10px;
@@ -54,13 +84,14 @@
             margin-bottom: 20px;
         }
         .category-selector button {
-            padding: 8px 16px;
+            padding: 6px 14px;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
+            border-radius: 10px;
             background: white;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 0.85rem;
         }
         .category-selector button.active {
             border-color: #3b82f6;
@@ -95,6 +126,7 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
+            font-family: inherit;
         }
         .btn-primary { background: #3b82f6; color: white; }
         .btn-primary:hover { background: #2563eb; }
@@ -102,6 +134,10 @@
         .btn-danger:hover { background: #dc2626; }
         .btn-success { background: #22c55e; color: white; }
         .btn-success:hover { background: #16a34a; }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+        
         .list-item {
             background: #f8fafc;
             padding: 12px 16px;
@@ -111,11 +147,53 @@
             justify-content: space-between;
             align-items: center;
             border-left: 4px solid #3b82f6;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .list-item .text { flex: 1; font-weight: 600; }
         .list-item .actions button { margin-left: 8px; }
         .hidden { display: none !important; }
         .info-text { color: #64748b; font-size: 0.9rem; margin: 6px 0; }
+        
+        .message-item {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #f59e0b;
+        }
+        .message-item .meta { font-size: 0.8rem; color: #64748b; }
+        .message-item .content { margin: 8px 0; font-weight: 500; }
+        .message-item .status-pending { color: #f59e0b; font-weight: 600; }
+        .message-item .status-read { color: #22c55e; font-weight: 600; }
+        
+        .badge-count {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            margin-left: 6px;
+        }
+        .refresh-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #3b82f6;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .refresh-btn:hover {
+            background: #eff6ff;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+        .empty-state .icon { font-size: 3rem; display: block; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -125,50 +203,106 @@
             ← Geri Dön
         </button>
         <h1>🛠️ Admin Panel</h1>
-        <div style="width: 100px;"></div>
+        <button class="refresh-btn" onclick="loadAllData()" title="Yenile">🔄</button>
     </div>
-    <p>Kategori seç, soru veya bilgi kartı ekle/düzenle/sil.</p>
 
-    <div class="category-selector" id="category-selector"></div>
+    <div class="tabs">
+        <button class="active" onclick="switchTab('questions')">📝 Sorular</button>
+        <button onclick="switchTab('messages')">📧 Mesajlar <span id="message-badge" class="badge-count">0</span></button>
+        <button onclick="switchTab('reports')">🚨 Bildirimler <span id="report-badge" class="badge-count">0</span></button>
+        <button onclick="switchTab('cards')">📇 Bilgi Kartları</button>
+    </div>
 
-    <!-- SORU FORMU -->
-    <div id="question-form-box" class="form-box">
-        <h3>Yeni Soru Ekle</h3>
-        <input type="text" id="new-q" placeholder="Soru metni" />
-        <div class="options-group">
-            <input type="text" id="new-opt0" placeholder="A seçeneği" />
-            <input type="text" id="new-opt1" placeholder="B seçeneği" />
-            <input type="text" id="new-opt2" placeholder="C seçeneği" />
-            <input type="text" id="new-opt3" placeholder="D seçeneği" />
+    <!-- ===== SORULAR TABI ===== -->
+    <div id="tab-questions" class="tab-content active">
+        <div class="category-selector" id="category-selector"></div>
+
+        <div id="question-form-box" class="form-box">
+            <h3>Yeni Soru Ekle</h3>
+            <input type="text" id="new-q" placeholder="Soru metni" />
+            <div class="options-group">
+                <input type="text" id="new-opt0" placeholder="A seçeneği" />
+                <input type="text" id="new-opt1" placeholder="B seçeneği" />
+                <input type="text" id="new-opt2" placeholder="C seçeneği" />
+                <input type="text" id="new-opt3" placeholder="D seçeneği" />
+            </div>
+            <select id="new-answer">
+                <option value="0">A</option>
+                <option value="1">B</option>
+                <option value="2">C</option>
+                <option value="3">D</option>
+            </select>
+            <button class="btn btn-primary" onclick="addQuestion()">➕ Soru Ekle</button>
         </div>
-        <select id="new-answer">
-            <option value="0">A</option>
-            <option value="1">B</option>
-            <option value="2">C</option>
-            <option value="3">D</option>
-        </select>
-        <button class="btn btn-primary" onclick="addQuestion()">➕ Soru Ekle</button>
+
+        <button class="btn btn-success" onclick="saveAndDownload()">💾 JSON'u İndir</button>
+        <button class="btn btn-primary" onclick="loadFromLocal()">📂 Yerelden Yükle</button>
+
+        <div id="question-list" class="list-container"></div>
     </div>
 
-    <!-- BİLGİ KARTI FORMU -->
-    <div id="kart-form-box" class="form-box hidden">
-        <h3>Yeni Bilgi Kartı Ekle</h3>
-        <input type="text" id="new-kart-title" placeholder="Başlık" />
-        <textarea id="new-kart-content" placeholder="Bilgi içeriği" rows="4"></textarea>
-        <button class="btn btn-primary" onclick="addKnowledgeCard()">📇 Bilgi Kartı Ekle</button>
+    <!-- ===== MESAJLAR TABI ===== -->
+    <div id="tab-messages" class="tab-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h3>📧 Gelen Mesajlar</h3>
+            <button class="btn btn-primary btn-sm" onclick="loadMessages()">🔄 Yenile</button>
+        </div>
+        <div id="messages-container">
+            <div class="empty-state">
+                <span class="icon">📭</span>
+                <p>Henüz mesaj yok.</p>
+            </div>
+        </div>
     </div>
 
-    <button class="btn btn-success" onclick="saveAndDownload()">💾 JSON'u İndir</button>
-    <button class="btn btn-primary" onclick="loadFromLocal()">📂 Yerelden Yükle</button>
+    <!-- ===== BİLDİRİMLER TABI ===== -->
+    <div id="tab-reports" class="tab-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h3>🚨 Soru Bildirimleri</h3>
+            <button class="btn btn-primary btn-sm" onclick="loadReports()">🔄 Yenile</button>
+        </div>
+        <div id="reports-container">
+            <div class="empty-state">
+                <span class="icon">✅</span>
+                <p>Henüz bildirim yok.</p>
+            </div>
+        </div>
+    </div>
 
-    <!-- SORU LİSTESİ -->
-    <div id="question-list" class="list-container"></div>
+    <!-- ===== BİLGİ KARTLARI TABI ===== -->
+    <div id="tab-cards" class="tab-content">
+        <div id="kart-form-box" class="form-box">
+            <h3>Yeni Bilgi Kartı Ekle</h3>
+            <input type="text" id="new-kart-title" placeholder="Başlık" />
+            <textarea id="new-kart-content" placeholder="Bilgi içeriği" rows="4"></textarea>
+            <button class="btn btn-primary" onclick="addKnowledgeCard()">📇 Bilgi Kartı Ekle</button>
+        </div>
 
-    <!-- BİLGİ KARTI LİSTESİ -->
-    <div id="kart-list" class="list-container hidden"></div>
+        <div id="kart-list" class="list-container"></div>
+    </div>
 </div>
 
 <script>
+    // ========== FIREBASE KONFIGURASYONU ==========
+    const firebaseConfig = {
+        apiKey: "AIzaSyBNAgdFlkdkNLEO-fG_QNjU-xKpL1X4HJw",
+        authDomain: "islamiilimlersorubankasi.firebaseapp.com",
+        databaseURL: "https://islamiilimlersorubankasi-default-rtdb.europe-west1.firebasedatabase.app/",
+        projectId: "islamiilimlersorubankasi",
+        storageBucket: "islamiilimlersorubankasi.firebasestorage.app",
+        messagingSenderId: "239296154537",
+        appId: "1:239296154537:web:f18881789f9f94c5dcb8",
+        measurementId: "G-0WE1ESX4TM"
+    };
+
+    // Firebase SDK'ları import et
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, query as firestoreQuery, orderBy, limit, doc, updateDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const app = initializeApp(firebaseConfig);
+    const firestore = getFirestore(app);
+
+    // ========== DEĞİŞKENLER ==========
     const ALLOWED_CATEGORIES = [
         'TEFSİR','HADİS','KELAM','TASAVVUF','FIKIH',
         'MEZHEPLER TARİHİ','KURAN VE TECVİT','SİYER',
@@ -178,6 +312,181 @@
     let questions = {};
     let knowledgeCards = [];
 
+    // ========== SEKME DEĞİŞTİRME ==========
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById('tab-' + tab).classList.add('active');
+        document.querySelector(`.tabs button[onclick*="${tab}"]`).classList.add('active');
+        
+        if (tab === 'messages') loadMessages();
+        if (tab === 'reports') loadReports();
+    }
+
+    // ========== MESAJLARI YÜKLE ==========
+    async function loadMessages() {
+        const container = document.getElementById('messages-container');
+        container.innerHTML = '<p style="text-align:center; padding:20px;">⏳ Yükleniyor...</p>';
+        
+        try {
+            const q = firestoreQuery(collection(firestore, "messages"), orderBy("timestamp", "desc"), limit(100));
+            const snapshot = await getDocs(q);
+            
+            if (snapshot.empty) {
+                container.innerHTML = `<div class="empty-state"><span class="icon">📭</span><p>Henüz mesaj yok.</p></div>`;
+                document.getElementById('message-badge').textContent = '0';
+                return;
+            }
+            
+            let html = '';
+            let pendingCount = 0;
+            
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const isPending = data.status === 'pending';
+                if (isPending) pendingCount++;
+                
+                const date = data.timestamp ? data.timestamp.toDate().toLocaleString('tr-TR') : 'Tarih yok';
+                const statusClass = isPending ? 'status-pending' : 'status-read';
+                const statusText = isPending ? '⏳ Bekliyor' : '✅ Okundu';
+                
+                html += `
+                    <div class="message-item">
+                        <div class="meta">
+                            👤 ${data.nickname || 'İsimsiz'} | 📧 ${data.email || 'Belirtilmemiş'} | 🕐 ${date}
+                            <span class="${statusClass}" style="margin-left:12px;">${statusText}</span>
+                        </div>
+                        <div class="content">${data.message || 'Mesaj içeriği yok'}</div>
+                        <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                            ${isPending ? `<button class="btn btn-success btn-sm" onclick="markMessageRead('${doc.id}')">✅ Okundu İşaretle</button>` : ''}
+                            <button class="btn btn-danger btn-sm" onclick="deleteMessage('${doc.id}')">🗑️ Sil</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            document.getElementById('message-badge').textContent = pendingCount;
+            
+        } catch (error) {
+            console.error('Mesaj yükleme hatası:', error);
+            container.innerHTML = `<div class="empty-state"><span class="icon">❌</span><p>Mesajlar yüklenirken hata oluştu.</p></div>`;
+        }
+    }
+
+    // ========== BİLDİRİMLERİ YÜKLE ==========
+    async function loadReports() {
+        const container = document.getElementById('reports-container');
+        container.innerHTML = '<p style="text-align:center; padding:20px;">⏳ Yükleniyor...</p>';
+        
+        try {
+            const q = firestoreQuery(collection(firestore, "reports"), orderBy("timestamp", "desc"), limit(100));
+            const snapshot = await getDocs(q);
+            
+            if (snapshot.empty) {
+                container.innerHTML = `<div class="empty-state"><span class="icon">✅</span><p>Henüz bildirim yok.</p></div>`;
+                document.getElementById('report-badge').textContent = '0';
+                return;
+            }
+            
+            let html = '';
+            let pendingCount = 0;
+            
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const isPending = data.status === 'pending';
+                if (isPending) pendingCount++;
+                
+                const date = data.timestamp ? data.timestamp.toDate().toLocaleString('tr-TR') : 'Tarih yok';
+                const statusClass = isPending ? 'status-pending' : 'status-read';
+                const statusText = isPending ? '⏳ Bekliyor' : '✅ Okundu';
+                
+                html += `
+                    <div class="message-item" style="border-left-color: #ef4444;">
+                        <div class="meta">
+                            👤 ${data.nickname || 'İsimsiz'} | 📧 ${data.email || 'Belirtilmemiş'} | 📂 ${data.category || 'Bilinmiyor'} | 🕐 ${date}
+                            <span class="${statusClass}" style="margin-left:12px;">${statusText}</span>
+                        </div>
+                        <div class="content"><strong>Soru:</strong> ${data.question || 'Soru metni yok'}</div>
+                        ${data.correctAnswer ? `<div style="font-size:0.85rem; color:#22c55e;">✅ Doğru Cevap: ${data.correctAnswer}</div>` : ''}
+                        <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                            ${isPending ? `<button class="btn btn-success btn-sm" onclick="markReportRead('${doc.id}')">✅ Okundu İşaretle</button>` : ''}
+                            <button class="btn btn-danger btn-sm" onclick="deleteReport('${doc.id}')">🗑️ Sil</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            document.getElementById('report-badge').textContent = pendingCount;
+            
+        } catch (error) {
+            console.error('Bildirim yükleme hatası:', error);
+            container.innerHTML = `<div class="empty-state"><span class="icon">❌</span><p>Bildirimler yüklenirken hata oluştu.</p></div>`;
+        }
+    }
+
+    // ========== MESAJ İŞLEMLERİ ==========
+    async function markMessageRead(docId) {
+        try {
+            await updateDoc(doc(firestore, "messages", docId), { status: 'read' });
+            showToast('✅ Mesaj okundu olarak işaretlendi.');
+            loadMessages();
+        } catch (error) {
+            console.error('Hata:', error);
+            showToast('❌ İşlem başarısız.');
+        }
+    }
+
+    async function deleteMessage(docId) {
+        if (!confirm('Bu mesajı silmek istediğinize emin misiniz?')) return;
+        try {
+            await updateDoc(doc(firestore, "messages", docId), { status: 'deleted' });
+            showToast('🗑️ Mesaj silindi.');
+            loadMessages();
+        } catch (error) {
+            console.error('Hata:', error);
+            showToast('❌ Silme işlemi başarısız.');
+        }
+    }
+
+    async function markReportRead(docId) {
+        try {
+            await updateDoc(doc(firestore, "reports", docId), { status: 'read' });
+            showToast('✅ Bildirim okundu olarak işaretlendi.');
+            loadReports();
+        } catch (error) {
+            console.error('Hata:', error);
+            showToast('❌ İşlem başarısız.');
+        }
+    }
+
+    async function deleteReport(docId) {
+        if (!confirm('Bu bildirimi silmek istediğinize emin misiniz?')) return;
+        try {
+            await updateDoc(doc(firestore, "reports", docId), { status: 'deleted' });
+            showToast('🗑️ Bildirim silindi.');
+            loadReports();
+        } catch (error) {
+            console.error('Hata:', error);
+            showToast('❌ Silme işlemi başarısız.');
+        }
+    }
+
+    // ========== TÜM VERİLERİ YENİLE ==========
+    function loadAllData() {
+        if (document.getElementById('tab-messages').classList.contains('active')) {
+            loadMessages();
+        } else if (document.getElementById('tab-reports').classList.contains('active')) {
+            loadReports();
+        } else {
+            loadFromLocal();
+        }
+        showToast('🔄 Veriler yenilendi.');
+    }
+
+    // ========== SORU İŞLEMLERİ ==========
     function loadFromLocal() {
         const data = localStorage.getItem('admin_custom_questions');
         const kartData = localStorage.getItem('admin_bilgi_kartlari');
@@ -215,7 +524,6 @@
     function renderCurrentView() {
         const isKart = (currentCategory === 'BİLGİ KARTLARI');
         document.getElementById('question-form-box').classList.toggle('hidden', isKart);
-        document.getElementById('kart-form-box').classList.toggle('hidden', !isKart);
         document.getElementById('question-list').classList.toggle('hidden', isKart);
         document.getElementById('kart-list').classList.toggle('hidden', !isKart);
 
@@ -239,8 +547,8 @@
                 <div class="list-item">
                     <div class="text">${q.q}</div>
                     <div class="actions">
-                        <button class="btn btn-danger" onclick="deleteQuestion(${idx})">Sil</button>
-                        <button class="btn btn-primary" onclick="editQuestion(${idx})">Düzenle</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteQuestion(${idx})">Sil</button>
+                        <button class="btn btn-primary btn-sm" onclick="editQuestion(${idx})">Düzenle</button>
                     </div>
                 </div>
             `;
@@ -297,6 +605,7 @@
         document.getElementById('new-answer').value = '0';
     }
 
+    // ========== BİLGİ KARTLARI ==========
     function renderKnowledgeCards() {
         const container = document.getElementById('kart-list');
         if (knowledgeCards.length === 0) {
@@ -309,7 +618,7 @@
                 <div class="list-item">
                     <div class="text"><strong>${k.title}</strong><br><span style="font-weight:400;">${k.content}</span></div>
                     <div class="actions">
-                        <button class="btn btn-danger" onclick="deleteKnowledgeCard(${idx})">Sil</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteKnowledgeCard(${idx})">Sil</button>
                     </div>
                 </div>
             `;
@@ -339,6 +648,7 @@
         }
     }
 
+    // ========== JSON İNDİR ==========
     function saveAndDownload() {
         localStorage.setItem('admin_custom_questions', JSON.stringify(questions));
         localStorage.setItem('admin_bilgi_kartlari', JSON.stringify(knowledgeCards));
@@ -355,15 +665,32 @@
         showToast('JSON dosyası indirildi.');
     }
 
+    // ========== TOAST MESAJI ==========
     function showToast(msg) {
         const div = document.createElement('div');
-        div.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1e293b; color:white; padding:12px 24px; border-radius:12px; font-weight:600; z-index:999;';
+        div.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1e293b; color:white; padding:12px 24px; border-radius:12px; font-weight:600; z-index:999; max-width:90%; text-align:center;';
         div.innerText = msg;
         document.body.appendChild(div);
-        setTimeout(() => { div.remove(); }, 2500);
+        setTimeout(() => { div.remove(); }, 3000);
     }
 
-    loadFromLocal();
+    // ========== SAYFA YÜKLENDİ ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFromLocal();
+        // Mesaj ve bildirim sayılarını güncelle
+        loadMessages();
+        loadReports();
+        
+        // Her 30 saniyede bir mesajları yenile
+        setInterval(() => {
+            if (document.getElementById('tab-messages').classList.contains('active')) {
+                loadMessages();
+            }
+            if (document.getElementById('tab-reports').classList.contains('active')) {
+                loadReports();
+            }
+        }, 30000);
+    });
 </script>
 </body>
 </html>
