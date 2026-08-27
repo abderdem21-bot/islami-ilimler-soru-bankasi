@@ -65,6 +65,7 @@
             cursor: pointer;
             transition: all 0.2s;
             font-family: inherit;
+            font-size: 0.9rem;
         }
         .tabs button.active {
             border-color: #3b82f6;
@@ -111,6 +112,7 @@
             border-radius: 10px;
             font-family: inherit;
             margin-bottom: 10px;
+            font-size: 0.95rem;
         }
         .form-box textarea { min-height: 60px; }
         .options-group {
@@ -127,6 +129,7 @@
             cursor: pointer;
             transition: all 0.2s;
             font-family: inherit;
+            font-size: 0.9rem;
         }
         .btn-primary { background: #3b82f6; color: white; }
         .btn-primary:hover { background: #2563eb; }
@@ -194,6 +197,7 @@
             color: #94a3b8;
         }
         .empty-state .icon { font-size: 3rem; display: block; margin-bottom: 10px; }
+        .loading { text-align: center; padding: 20px; color: #64748b; }
     </style>
 </head>
 <body>
@@ -282,8 +286,12 @@
     </div>
 </div>
 
-<script>
+<script type="module">
     // ========== FIREBASE KONFIGURASYONU ==========
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, query as firestoreQuery, orderBy, limit, doc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
     const firebaseConfig = {
         apiKey: "AIzaSyBNAgdFlkdkNLEO-fG_QNjU-xKpL1X4HJw",
         authDomain: "islamiilimlersorubankasi.firebaseapp.com",
@@ -295,12 +303,9 @@
         measurementId: "G-0WE1ESX4TM"
     };
 
-    // Firebase SDK'ları import et
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, query as firestoreQuery, orderBy, limit, doc, updateDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
     const app = initializeApp(firebaseConfig);
     const firestore = getFirestore(app);
+    const database = getDatabase(app);
 
     // ========== DEĞİŞKENLER ==========
     const ALLOWED_CATEGORIES = [
@@ -311,9 +316,11 @@
     let currentCategory = ALLOWED_CATEGORIES[0];
     let questions = {};
     let knowledgeCards = [];
+    let messagesUnsubscribe = null;
+    let reportsUnsubscribe = null;
 
-    // ========== SEKME DEĞİŞTİRME ==========
-    function switchTab(tab) {
+    // ========== GLOBAL FONKSİYONLAR ==========
+    window.switchTab = function(tab) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tabs button').forEach(el => el.classList.remove('active'));
         
@@ -322,12 +329,23 @@
         
         if (tab === 'messages') loadMessages();
         if (tab === 'reports') loadReports();
-    }
+    };
+
+    window.loadAllData = function() {
+        if (document.getElementById('tab-messages').classList.contains('active')) {
+            loadMessages();
+        } else if (document.getElementById('tab-reports').classList.contains('active')) {
+            loadReports();
+        } else {
+            loadFromLocal();
+        }
+        showToast('🔄 Veriler yenilendi.');
+    };
 
     // ========== MESAJLARI YÜKLE ==========
-    async function loadMessages() {
+    window.loadMessages = async function() {
         const container = document.getElementById('messages-container');
-        container.innerHTML = '<p style="text-align:center; padding:20px;">⏳ Yükleniyor...</p>';
+        container.innerHTML = '<div class="loading">⏳ Yükleniyor...</div>';
         
         try {
             const q = firestoreQuery(collection(firestore, "messages"), orderBy("timestamp", "desc"), limit(100));
@@ -371,14 +389,14 @@
             
         } catch (error) {
             console.error('Mesaj yükleme hatası:', error);
-            container.innerHTML = `<div class="empty-state"><span class="icon">❌</span><p>Mesajlar yüklenirken hata oluştu.</p></div>`;
+            container.innerHTML = `<div class="empty-state"><span class="icon">❌</span><p>Mesajlar yüklenirken hata oluştu: ${error.message}</p></div>`;
         }
-    }
+    };
 
     // ========== BİLDİRİMLERİ YÜKLE ==========
-    async function loadReports() {
+    window.loadReports = async function() {
         const container = document.getElementById('reports-container');
-        container.innerHTML = '<p style="text-align:center; padding:20px;">⏳ Yükleniyor...</p>';
+        container.innerHTML = '<div class="loading">⏳ Yükleniyor...</div>';
         
         try {
             const q = firestoreQuery(collection(firestore, "reports"), orderBy("timestamp", "desc"), limit(100));
@@ -423,23 +441,23 @@
             
         } catch (error) {
             console.error('Bildirim yükleme hatası:', error);
-            container.innerHTML = `<div class="empty-state"><span class="icon">❌</span><p>Bildirimler yüklenirken hata oluştu.</p></div>`;
+            container.innerHTML = `<div class="empty-state"><span class="icon">❌</span><p>Bildirimler yüklenirken hata oluştu: ${error.message}</p></div>`;
         }
-    }
+    };
 
     // ========== MESAJ İŞLEMLERİ ==========
-    async function markMessageRead(docId) {
+    window.markMessageRead = async function(docId) {
         try {
             await updateDoc(doc(firestore, "messages", docId), { status: 'read' });
             showToast('✅ Mesaj okundu olarak işaretlendi.');
             loadMessages();
         } catch (error) {
             console.error('Hata:', error);
-            showToast('❌ İşlem başarısız.');
+            showToast('❌ İşlem başarısız: ' + error.message);
         }
-    }
+    };
 
-    async function deleteMessage(docId) {
+    window.deleteMessage = async function(docId) {
         if (!confirm('Bu mesajı silmek istediğinize emin misiniz?')) return;
         try {
             await updateDoc(doc(firestore, "messages", docId), { status: 'deleted' });
@@ -447,22 +465,22 @@
             loadMessages();
         } catch (error) {
             console.error('Hata:', error);
-            showToast('❌ Silme işlemi başarısız.');
+            showToast('❌ Silme işlemi başarısız: ' + error.message);
         }
-    }
+    };
 
-    async function markReportRead(docId) {
+    window.markReportRead = async function(docId) {
         try {
             await updateDoc(doc(firestore, "reports", docId), { status: 'read' });
             showToast('✅ Bildirim okundu olarak işaretlendi.');
             loadReports();
         } catch (error) {
             console.error('Hata:', error);
-            showToast('❌ İşlem başarısız.');
+            showToast('❌ İşlem başarısız: ' + error.message);
         }
-    }
+    };
 
-    async function deleteReport(docId) {
+    window.deleteReport = async function(docId) {
         if (!confirm('Bu bildirimi silmek istediğinize emin misiniz?')) return;
         try {
             await updateDoc(doc(firestore, "reports", docId), { status: 'deleted' });
@@ -470,24 +488,12 @@
             loadReports();
         } catch (error) {
             console.error('Hata:', error);
-            showToast('❌ Silme işlemi başarısız.');
+            showToast('❌ Silme işlemi başarısız: ' + error.message);
         }
-    }
-
-    // ========== TÜM VERİLERİ YENİLE ==========
-    function loadAllData() {
-        if (document.getElementById('tab-messages').classList.contains('active')) {
-            loadMessages();
-        } else if (document.getElementById('tab-reports').classList.contains('active')) {
-            loadReports();
-        } else {
-            loadFromLocal();
-        }
-        showToast('🔄 Veriler yenilendi.');
-    }
+    };
 
     // ========== SORU İŞLEMLERİ ==========
-    function loadFromLocal() {
+    window.loadFromLocal = function() {
         const data = localStorage.getItem('admin_custom_questions');
         const kartData = localStorage.getItem('admin_bilgi_kartlari');
         if (data) {
@@ -503,7 +509,7 @@
         renderCategoryButtons();
         renderCurrentView();
         showToast('Yerel veri yüklendi.');
-    }
+    };
 
     function renderCategoryButtons() {
         const container = document.getElementById('category-selector');
@@ -556,7 +562,7 @@
         container.innerHTML = html;
     }
 
-    function addQuestion() {
+    window.addQuestion = function() {
         const q = document.getElementById('new-q').value.trim();
         const opts = [
             document.getElementById('new-opt0').value.trim(),
@@ -574,17 +580,17 @@
         renderQuestions();
         clearForm();
         showToast('Soru eklendi.');
-    }
+    };
 
-    function deleteQuestion(idx) {
+    window.deleteQuestion = function(idx) {
         if (confirm('Bu soruyu silmek istediğinize emin misiniz?')) {
             questions[currentCategory].splice(idx, 1);
             renderQuestions();
             showToast('Soru silindi.');
         }
-    }
+    };
 
-    function editQuestion(idx) {
+    window.editQuestion = function(idx) {
         const q = questions[currentCategory][idx];
         if (!q) return;
         document.getElementById('new-q').value = q.q;
@@ -594,7 +600,7 @@
         document.getElementById('new-opt3').value = q.options[3] || '';
         document.getElementById('new-answer').value = q.answer;
         deleteQuestion(idx);
-    }
+    };
 
     function clearForm() {
         document.getElementById('new-q').value = '';
@@ -626,7 +632,7 @@
         container.innerHTML = html;
     }
 
-    function addKnowledgeCard() {
+    window.addKnowledgeCard = function() {
         const title = document.getElementById('new-kart-title').value.trim();
         const content = document.getElementById('new-kart-content').value.trim();
         if (!title || !content) {
@@ -638,18 +644,18 @@
         document.getElementById('new-kart-content').value = '';
         renderKnowledgeCards();
         showToast('Bilgi kartı eklendi.');
-    }
+    };
 
-    function deleteKnowledgeCard(idx) {
+    window.deleteKnowledgeCard = function(idx) {
         if (confirm('Bu kartı silmek istediğinize emin misiniz?')) {
             knowledgeCards.splice(idx, 1);
             renderKnowledgeCards();
             showToast('Kart silindi.');
         }
-    }
+    };
 
     // ========== JSON İNDİR ==========
-    function saveAndDownload() {
+    window.saveAndDownload = function() {
         localStorage.setItem('admin_custom_questions', JSON.stringify(questions));
         localStorage.setItem('admin_bilgi_kartlari', JSON.stringify(knowledgeCards));
 
@@ -663,7 +669,7 @@
         a.click();
         URL.revokeObjectURL(url);
         showToast('JSON dosyası indirildi.');
-    }
+    };
 
     // ========== TOAST MESAJI ==========
     function showToast(msg) {
