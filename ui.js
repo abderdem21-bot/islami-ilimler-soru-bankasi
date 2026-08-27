@@ -19,7 +19,7 @@ function hideAllScreens() {
 function restoreUserSession() {
     loadUserState();
     
-    if (userState && userState.email) {
+    if (userState && userState.isLoggedIn && userState.email) {
         const lastPage = userState.lastPage || 'screen-categories';
         const validScreens = ['screen-categories', 'screen-units', 'screen-game', 'screen-bilgic', 'screen-rewards', 'screen-favorites', 'screen-results', 'screen-settings', 'screen-leaderboard', 'screen-mecelle', 'screen-mecelle-card', 'screen-fiqh-submenu'];
         if (validScreens.includes(lastPage)) {
@@ -68,6 +68,12 @@ function restoreUserSession() {
                 updateHeartsAndHints();
                 updateStreakDisplay();
                 showBannerAd();
+                
+                // Ödülleri kontrol et
+                if (typeof checkAndClaimRewards === 'function') {
+                    checkAndClaimRewards();
+                }
+                
                 return true;
             }
         }
@@ -113,6 +119,7 @@ function playSound(type) {
         if (mode === 'vibration' && navigator.vibrate) {
             if (type === 'click') navigator.vibrate(15);
             else if (type === 'success') navigator.vibrate([15, 50, 15]);
+            else if (type === 'wrong') navigator.vibrate([30, 50, 30, 50, 30]);
             return;
         }
 
@@ -148,6 +155,25 @@ function playSound(type) {
                 osc2.start(audioCtx.currentTime);
                 osc2.stop(audioCtx.currentTime + 0.12);
             }, 120);
+        } else if (type === 'wrong') {
+            oscillator.frequency.value = 200;
+            oscillator.type = 'square';
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.3);
+            setTimeout(() => {
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                osc2.frequency.value = 150;
+                osc2.type = 'square';
+                gain2.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+                osc2.start(audioCtx.currentTime);
+                osc2.stop(audioCtx.currentTime + 0.25);
+            }, 250);
         }
     } catch(e) { /* sessiz */ }
 }
@@ -163,6 +189,9 @@ document.addEventListener('click', function(e) {
     if (e.target.closest('.option-btn.correct') || e.target.closest('.btn-success') ||
         e.target.closest('.success-gradient')) {
         playSound('success');
+    }
+    if (e.target.closest('.option-btn.wrong')) {
+        playSound('wrong');
     }
 });
 
@@ -268,6 +297,7 @@ function performLogin() {
                 userState.email = user.email;
                 userState.uid = user.uid;
                 userState.isAdmin = user.isAdmin || false;
+                userState.isLoggedIn = true;
                 userState.lastPage = 'screen-categories';
                 
                 localStorage.setItem('saved_email', email);
@@ -280,6 +310,8 @@ function performLogin() {
                     localStorage.removeItem('saved_password');
                 }
                 
+                saveUserState();
+                
                 hideAllScreens();
                 document.getElementById("screen-categories").classList.remove("hidden");
                 document.getElementById("bottom-nav-bar").classList.remove("hidden");
@@ -289,6 +321,10 @@ function performLogin() {
                 showBannerAd();
                 updateHeartsAndHints();
                 showToast("✅ Giriş başarılı!");
+                
+                if (typeof checkAndClaimRewards === 'function') {
+                    checkAndClaimRewards();
+                }
                 
                 checkDailyLaunchAd();
             })
@@ -334,6 +370,7 @@ function performRegister() {
                 userState.email = user.email;
                 userState.uid = user.uid;
                 userState.isAdmin = user.isAdmin || false;
+                userState.isLoggedIn = true;
                 userState.lastPage = 'screen-categories';
                 saveUserState();
                 showCustomModal("Başarılı", "Kayıt başarılı! Giriş yapılıyor...");
@@ -485,6 +522,9 @@ function navigateToTab(tabName, source = null) {
         updateStreakDisplay();
         updateHeartsAndHints();
         document.getElementById("bottom-nav-bar").classList.remove("hidden");
+        if (userState.email && typeof window.firebaseDB !== 'undefined') {
+            checkAndClaimRewards();
+        }
     } else if (tabName === 'login') {
         document.getElementById("screen-login").classList.remove("hidden");
         document.getElementById("bottom-nav-bar").classList.add("hidden");
@@ -569,13 +609,14 @@ function confirmLogout() {
         localStorage.setItem('saved_email', emailInput.value);
     }
     
-    saveUserState();
-    
+    userState.isLoggedIn = false;
     userState.email = '';
     userState.uid = null;
     userState.isAdmin = false;
     userState.lastPage = 'screen-login';
     saveUserState();
+    
+    localStorage.removeItem('islami_session');
     
     document.getElementById("screen-login").classList.remove("hidden");
     document.getElementById("bottom-nav-bar").classList.add("hidden");
@@ -1391,6 +1432,20 @@ async function renderLeaderboard() {
     `;
     
     try {
+        let weekText = '';
+        let weekStart = '';
+        let weekEnd = '';
+        if (typeof window.firebaseDB !== 'undefined' && window.firebaseDB.getWeekKey) {
+            const weekKey = window.firebaseDB.getWeekKey();
+            const parts = weekKey.split('_W');
+            weekText = `${parts[0]} - ${parseInt(parts[1])}. Hafta`;
+            
+            const start = window.firebaseDB.getWeekStart();
+            const end = window.firebaseDB.getWeekEnd();
+            weekStart = start.toLocaleDateString('tr-TR');
+            weekEnd = end.toLocaleDateString('tr-TR');
+        }
+        
         let data = [];
         if (typeof window.firebaseDB !== 'undefined') {
             data = await window.firebaseDB.getLeaderboard(100);
@@ -1398,12 +1453,22 @@ async function renderLeaderboard() {
             data = getLocalLeaderboardData();
         }
         
+        let userRewards = { gold: 0, silver: 0, bronze: 0 };
+        if (userState.email && typeof window.firebaseDB !== 'undefined') {
+            const stats = await window.firebaseDB.getTotalRewards(userState.email);
+            userRewards = stats || { gold: 0, silver: 0, bronze: 0 };
+        }
+        
         if (!data || data.length === 0) {
             container.innerHTML = `
                 <div class="profile-card" style="text-align:center; padding:30px;">
                     <p style="font-size:2rem; margin-bottom:10px;">🏆</p>
-                    <p>Henüz liderlik verisi yok.</p>
+                    <p>Bu hafta henüz liderlik verisi yok.</p>
+                    <p style="font-size:0.8rem; color:var(--text-muted);">📅 ${weekText}</p>
                     <p style="font-size:0.8rem; color:var(--text-muted);">İlk puanı sen kazan!</p>
+                    <div style="margin-top:16px; padding:10px; background:var(--border); border-radius:8px;">
+                        <span style="font-size:0.9rem;">🏅 Rozetlerin: ${getBadgeHTML(userRewards)}</span>
+                    </div>
                 </div>
             `;
             return;
@@ -1412,6 +1477,7 @@ async function renderLeaderboard() {
         const myEmail = userState.email;
         let myRank = -1;
         let myScore = 0;
+        let myRewards = userRewards;
         
         data.forEach((item, index) => {
             if (item.email === myEmail) {
@@ -1420,12 +1486,38 @@ async function renderLeaderboard() {
             }
         });
         
+        let topHtml = '';
+        if (data.length >= 3) {
+            const medals = ['🥇', '🥈', '🥉'];
+            const labels = ['Altın Rozet +3 Can', 'Gümüş Rozet +2 Can', 'Bronz Rozet +1 Can'];
+            topHtml = `
+                <div style="display:flex; justify-content:space-around; margin:12px 0; padding:10px; background:var(--accent-glow); border-radius:12px;">
+                    ${data.slice(0, 3).map((item, idx) => `
+                        <div style="text-align:center;">
+                            <div style="font-size:1.8rem;">${medals[idx]}</div>
+                            <div style="font-size:0.7rem; font-weight:700;">${item.nickname || 'İsimsiz'}</div>
+                            <div style="font-size:0.6rem; color:var(--text-muted);">${item.score || 0} puan</div>
+                            <div style="font-size:0.5rem; color:var(--accent);">${labels[idx]}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
         let html = `
             <div style="margin-top:16px;">
-                <div style="display:flex; justify-content:space-between; padding:10px 16px; background:var(--accent-glow); border-radius:12px; margin-bottom:16px;">
-                    <span style="font-weight:700;">🏆 Sıralama</span>
-                    <span style="font-weight:700;">👤 Kullanıcı</span>
-                    <span style="font-weight:700;">⭐ Puan</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; background:var(--accent-glow); border-radius:12px; margin-bottom:8px;">
+                    <span style="font-weight:700;">🏆 Liderlik Tablosu</span>
+                    <span style="font-size:0.7rem; color:var(--text-muted);">📅 ${weekText}</span>
+                </div>
+                <div style="font-size:0.7rem; color:var(--text-muted); text-align:center; margin-bottom:8px;">
+                    ${weekStart} - ${weekEnd}
+                </div>
+                ${topHtml}
+                <div style="display:flex; justify-content:space-between; padding:6px 16px; background:var(--border); border-radius:6px; margin-bottom:6px; font-size:0.75rem; font-weight:700;">
+                    <span>Sıralama</span>
+                    <span>Kullanıcı</span>
+                    <span>Puan</span>
                 </div>
         `;
         
@@ -1435,7 +1527,7 @@ async function renderLeaderboard() {
             const isMe = item.email === myEmail;
             
             html += `
-                <div class="leaderboard-item" style="${isMe ? 'background:var(--accent-glow); border-radius:8px; margin:2px 0;' : ''}">
+                <div class="leaderboard-item" style="${isMe ? 'background:var(--accent-glow); border-radius:6px; margin:2px 0; font-size:0.85rem;' : 'font-size:0.85rem;'}">
                     <span class="rank">${medal}</span>
                     <span class="name" style="${isMe ? 'font-weight:800;' : ''}">${item.nickname || 'İsimsiz'} ${isMe ? '👈' : ''}</span>
                     <span class="score">${item.score || 0}</span>
@@ -1443,13 +1535,14 @@ async function renderLeaderboard() {
             `;
         });
         
-        if (myRank === -1 && userState.leaderboardScore > 0) {
-            html += `
-                <div style="margin-top:16px; padding:12px; background:var(--accent-glow); border-radius:12px; text-align:center;">
-                    <p style="margin:0; font-weight:700;">👤 Sen: ${userState.nickname || 'İsimsiz'} - ⭐ ${userState.leaderboardScore} puan</p>
-                </div>
-            `;
-        }
+        html += `
+            <div style="margin-top:12px; padding:10px; background:var(--border); border-radius:8px; text-align:center; font-size:0.85rem;">
+                🏅 Rozetlerin: ${getBadgeHTML(userRewards)}
+            </div>
+            <div style="margin-top:8px; padding:8px; background:var(--border); border-radius:8px; text-align:center;">
+                <span style="font-size:0.7rem; color:var(--text-muted);">🔄 Her Pazartesi 00:00'da sıfırlanır ve ödüller dağıtılır</span>
+            </div>
+        `;
         
         html += '</div>';
         container.innerHTML = html;
@@ -1463,6 +1556,15 @@ async function renderLeaderboard() {
             </div>
         `;
     }
+}
+
+// Rozet gösterimi
+function getBadgeHTML(rewards) {
+    let html = '';
+    if (rewards.gold > 0) html += `🥇 ${rewards.gold} `;
+    if (rewards.silver > 0) html += `🥈 ${rewards.silver} `;
+    if (rewards.bronze > 0) html += `🥉 ${rewards.bronze} `;
+    return html || '🏆 0';
 }
 
 // ========== SORU BİLDİR ==========
@@ -1628,6 +1730,43 @@ function closeRewardClaimModalOutside(e) {
     if (e.target.id === 'reward-claim-modal') closeRewardClaimModal();
 }
 
+// ========== ÖDÜL FONKSİYONLARI ==========
+async function checkAndClaimRewards() {
+    if (!userState.email) return;
+    
+    try {
+        if (typeof window.firebaseDB === 'undefined') return;
+        
+        const rewards = await window.firebaseDB.getUserRewards(userState.email);
+        const totalStats = await window.firebaseDB.getTotalRewards(userState.email);
+        
+        userState.rewards.gold = totalStats.gold || 0;
+        userState.rewards.silver = totalStats.silver || 0;
+        userState.rewards.bronze = totalStats.bronze || 0;
+        userState.rewards.totalHeartsEarned = totalStats.totalHearts || 0;
+        
+        if (rewards && rewards.length > 0) {
+            const claimed = localStorage.getItem('claimed_rewards_' + userState.email) || '[]';
+            const claimedList = JSON.parse(claimed);
+            
+            for (const reward of rewards) {
+                if (!claimedList.includes(reward.week)) {
+                    addHearts(reward.hearts || 0);
+                    showToast(`🎁 ${reward.badge} kazandın! +${reward.hearts} Can`);
+                    claimedList.push(reward.week);
+                }
+            }
+            
+            localStorage.setItem('claimed_rewards_' + userState.email, JSON.stringify(claimedList));
+        }
+        
+        saveUserState();
+        
+    } catch (error) {
+        console.error('❌ Ödül kontrol hatası:', error);
+    }
+}
+
 // ========== DOMCONTENTLOADED ==========
 document.addEventListener('DOMContentLoaded', function() {
     loadUserState();
@@ -1646,18 +1785,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if (rememberCheck) rememberCheck.checked = true;
     }
 
-    if (userState && userState.email) {
-        const restored = restoreUserSession();
-        if (!restored) {
-            hideAllScreens();
-            document.getElementById("screen-categories").classList.remove("hidden");
-            document.getElementById("bottom-nav-bar").classList.remove("hidden");
-            setActiveNav('home');
-            initCategoryButtons();
-            updateStreakDisplay();
-            showBannerAd();
-            updateHeartsAndHints();
+    if (userState && userState.isLoggedIn && userState.email) {
+        hideAllScreens();
+        document.getElementById("screen-categories").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.remove("hidden");
+        setActiveNav('home');
+        initCategoryButtons();
+        updateStreakDisplay();
+        showBannerAd();
+        updateHeartsAndHints();
+        
+        if (typeof checkAndClaimRewards === 'function') {
+            checkAndClaimRewards();
         }
+        
         checkDailyLaunchAd();
     } else {
         hideAllScreens();
