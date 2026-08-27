@@ -131,6 +131,45 @@
                     return 0;
                 }
             },
+            getCurrentWinners: async function() {
+                try {
+                    const weekKey = this.getWeekKey();
+                    const winnersRef = ref(database, `weekly_winners/${weekKey}`);
+                    const snapshot = await get(winnersRef);
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        return data.winners || [];
+                    }
+                    return [];
+                } catch (error) {
+                    console.error('❌ Kazananlar okuma hatası:', error);
+                    return [];
+                }
+            },
+            getWeekKey: function() {
+                const now = new Date();
+                const year = now.getFullYear();
+                const startOfYear = new Date(year, 0, 1);
+                const diff = now - startOfYear;
+                const days = Math.floor(diff / (24 * 60 * 60 * 1000));
+                const week = Math.ceil((days + startOfYear.getDay() + 1) / 7);
+                return `${year}_W${String(week).padStart(2, '0')}`;
+            },
+            getWeekStart: function() {
+                const now = new Date();
+                const day = now.getDay();
+                const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+                const monday = new Date(now.setDate(diff));
+                monday.setHours(0, 0, 0, 0);
+                return monday;
+            },
+            getWeekEnd: function() {
+                const start = this.getWeekStart();
+                const end = new Date(start);
+                end.setDate(end.getDate() + 6);
+                end.setHours(23, 59, 59, 999);
+                return end;
+            },
             sendMessage: async function(data) {
                 try {
                     const docRef = await addDoc(collection(firestore, "messages"), {
@@ -312,6 +351,11 @@
             </div>
             <div class="category-grid" id="category-grid"></div>
             <button class="btn-primary" style="margin-top:20px; background:var(--accent);" onclick="navigateToTab('favorites')">⭐ Favori Sorularım</button>
+
+            <!-- ===== HAFTANIN KAZANANLARI BUTONU ===== -->
+            <button class="btn-primary" style="margin-top:16px; background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="openWeeklyWinners()">
+                🏆 Haftanın Kazananlarını Öğren
+            </button>
 
             <!-- ===== SORU ALTI BANNER REKLAM (Ana Sayfa) ===== -->
             <div class="banner-ad-horizontal" id="banner-ad-home" style="margin-top:16px; display:none;">
@@ -548,6 +592,22 @@
                 <h2 class="title">🏆 Liderlik Tablosu</h2>
             </div>
             <div id="leaderboard-container"></div>
+        </div>
+
+        <!-- ===== HAFTANIN KAZANANLARI ===== -->
+        <div id="screen-weekly-winners" class="hidden center screen">
+            <div class="header-row">
+                <button class="back-btn" onclick="closeWeeklyWinners()">
+                    <svg width="40" height="40" viewBox="0 0 100 100">
+                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                    </svg>
+                </button>
+                <h2 class="title">🏆 Haftanın Kazananları</h2>
+            </div>
+            <div id="weekly-winners-container" style="margin-top:20px;">
+                <div class="spinner">⏳ Yükleniyor...</div>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-top:20px;">🔄 Her Pazartesi 00:00'da güncellenir</p>
         </div>
 
         <!-- ===== AYARLAR ===== -->
