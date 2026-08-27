@@ -69,7 +69,6 @@ function restoreUserSession() {
                 updateStreakDisplay();
                 showBannerAd();
                 
-                // Ödülleri kontrol et
                 if (typeof checkAndClaimRewards === 'function') {
                     checkAndClaimRewards();
                 }
@@ -1420,6 +1419,15 @@ function giveShareReward() {
     playSound('success');
 }
 
+// ========== ROZET GÖSTERİMİ ==========
+function getBadgeHTML(rewards) {
+    let html = '';
+    if (rewards && rewards.gold > 0) html += `🥇 ${rewards.gold} `;
+    if (rewards && rewards.silver > 0) html += `🥈 ${rewards.silver} `;
+    if (rewards && rewards.bronze > 0) html += `🥉 ${rewards.bronze} `;
+    return html || '🏆 0';
+}
+
 // ========== LİDERLİK ==========
 async function renderLeaderboard() {
     const container = document.getElementById('leaderboard-container');
@@ -1436,27 +1444,43 @@ async function renderLeaderboard() {
         let weekStart = '';
         let weekEnd = '';
         if (typeof window.firebaseDB !== 'undefined' && window.firebaseDB.getWeekKey) {
-            const weekKey = window.firebaseDB.getWeekKey();
-            const parts = weekKey.split('_W');
-            weekText = `${parts[0]} - ${parseInt(parts[1])}. Hafta`;
-            
-            const start = window.firebaseDB.getWeekStart();
-            const end = window.firebaseDB.getWeekEnd();
-            weekStart = start.toLocaleDateString('tr-TR');
-            weekEnd = end.toLocaleDateString('tr-TR');
+            try {
+                const weekKey = window.firebaseDB.getWeekKey();
+                const parts = weekKey.split('_W');
+                weekText = `${parts[0]} - ${parseInt(parts[1])}. Hafta`;
+                
+                if (window.firebaseDB.getWeekStart && window.firebaseDB.getWeekEnd) {
+                    const start = window.firebaseDB.getWeekStart();
+                    const end = window.firebaseDB.getWeekEnd();
+                    weekStart = start.toLocaleDateString('tr-TR');
+                    weekEnd = end.toLocaleDateString('tr-TR');
+                }
+            } catch (e) {
+                console.warn('Hafta bilgisi alınamadı:', e);
+            }
         }
         
         let data = [];
-        if (typeof window.firebaseDB !== 'undefined') {
-            data = await window.firebaseDB.getLeaderboard(100);
+        if (typeof window.firebaseDB !== 'undefined' && window.firebaseDB.getLeaderboard) {
+            try {
+                data = await window.firebaseDB.getLeaderboard(100);
+            } catch (e) {
+                console.warn('Firebase liderlik okuma hatası:', e);
+                data = getLocalLeaderboardData();
+            }
         } else {
             data = getLocalLeaderboardData();
         }
         
+        // Kullanıcı ödüllerini kontrol et
         let userRewards = { gold: 0, silver: 0, bronze: 0 };
-        if (userState.email && typeof window.firebaseDB !== 'undefined') {
-            const stats = await window.firebaseDB.getTotalRewards(userState.email);
-            userRewards = stats || { gold: 0, silver: 0, bronze: 0 };
+        if (userState.email && typeof window.firebaseDB !== 'undefined' && window.firebaseDB.getTotalRewards) {
+            try {
+                const stats = await window.firebaseDB.getTotalRewards(userState.email);
+                userRewards = stats || { gold: 0, silver: 0, bronze: 0 };
+            } catch (e) {
+                console.warn('Ödül bilgisi alınamadı:', e);
+            }
         }
         
         if (!data || data.length === 0) {
@@ -1464,7 +1488,7 @@ async function renderLeaderboard() {
                 <div class="profile-card" style="text-align:center; padding:30px;">
                     <p style="font-size:2rem; margin-bottom:10px;">🏆</p>
                     <p>Bu hafta henüz liderlik verisi yok.</p>
-                    <p style="font-size:0.8rem; color:var(--text-muted);">📅 ${weekText}</p>
+                    <p style="font-size:0.8rem; color:var(--text-muted);">📅 ${weekText || 'Hafta bilgisi yok'}</p>
                     <p style="font-size:0.8rem; color:var(--text-muted);">İlk puanı sen kazan!</p>
                     <div style="margin-top:16px; padding:10px; background:var(--border); border-radius:8px;">
                         <span style="font-size:0.9rem;">🏅 Rozetlerin: ${getBadgeHTML(userRewards)}</span>
@@ -1477,7 +1501,6 @@ async function renderLeaderboard() {
         const myEmail = userState.email;
         let myRank = -1;
         let myScore = 0;
-        let myRewards = userRewards;
         
         data.forEach((item, index) => {
             if (item.email === myEmail) {
@@ -1508,11 +1531,12 @@ async function renderLeaderboard() {
             <div style="margin-top:16px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 16px; background:var(--accent-glow); border-radius:12px; margin-bottom:8px;">
                     <span style="font-weight:700;">🏆 Liderlik Tablosu</span>
-                    <span style="font-size:0.7rem; color:var(--text-muted);">📅 ${weekText}</span>
+                    <span style="font-size:0.7rem; color:var(--text-muted);">📅 ${weekText || 'Bu Hafta'}</span>
                 </div>
+                ${weekStart && weekEnd ? `
                 <div style="font-size:0.7rem; color:var(--text-muted); text-align:center; margin-bottom:8px;">
                     ${weekStart} - ${weekEnd}
-                </div>
+                </div>` : ''}
                 ${topHtml}
                 <div style="display:flex; justify-content:space-between; padding:6px 16px; background:var(--border); border-radius:6px; margin-bottom:6px; font-size:0.75rem; font-weight:700;">
                     <span>Sıralama</span>
@@ -1552,19 +1576,11 @@ async function renderLeaderboard() {
         container.innerHTML = `
             <div class="profile-card" style="text-align:center; padding:20px;">
                 <p>⚠️ Liderlik tablosu yüklenirken hata oluştu.</p>
+                <p style="font-size:0.8rem; color:var(--text-muted);">Hata: ${error.message || 'Bilinmeyen hata'}</p>
                 <button class="btn-primary muted" onclick="renderLeaderboard()" style="margin-top:10px;">🔄 Tekrar Dene</button>
             </div>
         `;
     }
-}
-
-// Rozet gösterimi
-function getBadgeHTML(rewards) {
-    let html = '';
-    if (rewards.gold > 0) html += `🥇 ${rewards.gold} `;
-    if (rewards.silver > 0) html += `🥈 ${rewards.silver} `;
-    if (rewards.bronze > 0) html += `🥉 ${rewards.bronze} `;
-    return html || '🏆 0';
 }
 
 // ========== SORU BİLDİR ==========
