@@ -7,7 +7,8 @@ function hideAllScreens() {
         "screen-settings", "screen-privacy", "screen-terms", "screen-about",
         "screen-test-result", "screen-contact", "screen-rewards", "screen-favorites",
         "screen-register", "screen-bilgic", "screen-user-guide", "screen-leaderboard",
-        "screen-fiqh-submenu", "screen-mecelle", "screen-mecelle-card"
+        "screen-fiqh-submenu", "screen-mecelle", "screen-mecelle-card",
+        "screen-weekly-winners"
     ];
     screens.forEach(id => {
         const el = document.getElementById(id);
@@ -21,7 +22,7 @@ function restoreUserSession() {
     
     if (userState && userState.isLoggedIn && userState.email) {
         const lastPage = userState.lastPage || 'screen-categories';
-        const validScreens = ['screen-categories', 'screen-units', 'screen-game', 'screen-bilgic', 'screen-rewards', 'screen-favorites', 'screen-results', 'screen-settings', 'screen-leaderboard', 'screen-mecelle', 'screen-mecelle-card', 'screen-fiqh-submenu'];
+        const validScreens = ['screen-categories', 'screen-units', 'screen-game', 'screen-bilgic', 'screen-rewards', 'screen-favorites', 'screen-results', 'screen-settings', 'screen-leaderboard', 'screen-mecelle', 'screen-mecelle-card', 'screen-fiqh-submenu', 'screen-weekly-winners'];
         if (validScreens.includes(lastPage)) {
             hideAllScreens();
             const screenElement = document.getElementById(lastPage);
@@ -40,7 +41,8 @@ function restoreUserSession() {
                     'screen-leaderboard': 'leaderboard',
                     'screen-mecelle': 'home',
                     'screen-mecelle-card': 'home',
-                    'screen-fiqh-submenu': 'home'
+                    'screen-fiqh-submenu': 'home',
+                    'screen-weekly-winners': 'home'
                 };
                 setActiveNav(navMap[lastPage] || 'home');
                 
@@ -64,6 +66,9 @@ function restoreUserSession() {
                 }
                 if (lastPage === 'screen-mecelle') {
                     renderMecelleGroups();
+                }
+                if (lastPage === 'screen-weekly-winners') {
+                    renderWeeklyWinners();
                 }
                 updateHeartsAndHints();
                 updateStreakDisplay();
@@ -1797,6 +1802,150 @@ async function checkAndClaimRewards() {
         
     } catch (error) {
         console.error('❌ Ödül kontrol hatası:', error);
+    }
+}
+
+// ========== HAFTANIN KAZANANLARI ==========
+function openWeeklyWinners() {
+    // Geçiş reklamı göster
+    showAdSimulation(() => {
+        renderWeeklyWinners();
+    });
+}
+
+function closeWeeklyWinners() {
+    hideAllScreens();
+    document.getElementById("screen-categories").classList.remove("hidden");
+    document.getElementById("bottom-nav-bar").classList.remove("hidden");
+    setActiveNav('home');
+}
+
+async function renderWeeklyWinners() {
+    const container = document.getElementById('weekly-winners-container');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div style="text-align:center; padding:30px;">
+            <div class="spinner">⏳ Kazananlar yükleniyor...</div>
+        </div>
+    `;
+    
+    try {
+        let winners = [];
+        if (typeof window.firebaseDB !== 'undefined' && window.firebaseDB.getCurrentWinners) {
+            winners = await window.firebaseDB.getCurrentWinners();
+        } else {
+            // Yedek: liderlik tablosundan al
+            const data = await window.firebaseDB.getLeaderboard(3);
+            winners = data.map((user, index) => ({
+                ...user,
+                rank: index + 1,
+                badge: index === 0 ? '🥇 Altın Rozet' : index === 1 ? '🥈 Gümüş Rozet' : '🥉 Bronz Rozet',
+                hearts: index === 0 ? 3 : index === 1 ? 2 : 1
+            }));
+        }
+        
+        if (!winners || winners.length === 0) {
+            container.innerHTML = `
+                <div class="profile-card" style="text-align:center; padding:40px;">
+                    <p style="font-size:3rem; margin-bottom:10px;">🏆</p>
+                    <p style="font-size:1.2rem; font-weight:700;">Bu hafta henüz kazanan yok!</p>
+                    <p style="font-size:0.9rem; color:var(--text-muted);">İlk puanı sen kazan, zirveye çık!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Kazananları sırala
+        winners.sort((a, b) => (a.rank || 999) - (b.rank || 999));
+        
+        // 1. 2. 3. ayır
+        const first = winners.find(w => w.rank === 1);
+        const second = winners.find(w => w.rank === 2);
+        const third = winners.find(w => w.rank === 3);
+        
+        let html = `
+            <div style="display:flex; justify-content:center; align-items:flex-end; gap:20px; margin:20px 0; min-height:280px;">
+        `;
+        
+        // 2. (sol)
+        if (second) {
+            html += `
+                <div style="text-align:center; order:1;">
+                    <div style="font-size:2.5rem;">🥈</div>
+                    <div style="width:70px; height:70px; border-radius:50%; background: linear-gradient(135deg, #c0c0c0, #e8e8e8); margin:8px auto; display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:800; color:#fff; box-shadow: 0 4px 15px rgba(192,192,192,0.4);">
+                        ${second.nickname ? second.nickname.charAt(0).toUpperCase() : '?'}
+                    </div>
+                    <div style="font-weight:700; font-size:0.9rem;">${second.nickname || 'İsimsiz'}</div>
+                    <div style="font-size:0.7rem; color:var(--text-muted);">⭐ ${second.score || 0} puan</div>
+                    <div style="font-size:0.6rem; color:#c0c0c0; font-weight:600;">Gümüş Rozet +2 Can</div>
+                </div>
+            `;
+        }
+        
+        // 1. (orta - büyük)
+        if (first) {
+            html += `
+                <div style="text-align:center; order:2; transform:scale(1.15);">
+                    <div style="font-size:3rem;">👑</div>
+                    <div style="width:90px; height:90px; border-radius:50%; background: linear-gradient(135deg, #ffd700, #ffed4a); margin:8px auto; display:flex; align-items:center; justify-content:center; font-size:2.2rem; font-weight:800; color:#fff; box-shadow: 0 0 30px rgba(255,215,0,0.5); border: 3px solid #ffd700;">
+                        ${first.nickname ? first.nickname.charAt(0).toUpperCase() : '?'}
+                    </div>
+                    <div style="font-weight:800; font-size:1.1rem; color:#ffd700;">${first.nickname || 'İsimsiz'}</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);">⭐ ${first.score || 0} puan</div>
+                    <div style="font-size:0.65rem; color:#ffd700; font-weight:700;">Altın Rozet +3 Can</div>
+                </div>
+            `;
+        }
+        
+        // 3. (sağ)
+        if (third) {
+            html += `
+                <div style="text-align:center; order:3;">
+                    <div style="font-size:2.5rem;">🥉</div>
+                    <div style="width:70px; height:70px; border-radius:50%; background: linear-gradient(135deg, #cd7f32, #e8a87c); margin:8px auto; display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:800; color:#fff; box-shadow: 0 4px 15px rgba(205,127,50,0.4);">
+                        ${third.nickname ? third.nickname.charAt(0).toUpperCase() : '?'}
+                    </div>
+                    <div style="font-weight:700; font-size:0.9rem;">${third.nickname || 'İsimsiz'}</div>
+                    <div style="font-size:0.7rem; color:var(--text-muted);">⭐ ${third.score || 0} puan</div>
+                    <div style="font-size:0.6rem; color:#cd7f32; font-weight:600;">Bronz Rozet +1 Can</div>
+                </div>
+            `;
+        }
+        
+        html += `</div>`;
+        
+        // Hafta bilgisi
+        let weekText = '';
+        if (typeof window.firebaseDB !== 'undefined' && window.firebaseDB.getWeekKey) {
+            const weekKey = window.firebaseDB.getWeekKey();
+            const parts = weekKey.split('_W');
+            weekText = `${parts[0]} - ${parseInt(parts[1])}. Hafta`;
+        }
+        
+        html += `
+            <div style="margin-top:16px; padding:12px; background:var(--border); border-radius:8px; text-align:center;">
+                <span style="font-size:0.8rem; color:var(--text-muted);">📅 ${weekText} kazananları</span>
+            </div>
+            <button class="btn-primary muted" onclick="closeWeeklyWinners()" style="margin-top:16px;">⬅️ Geri Dön</button>
+        `;
+        
+        container.innerHTML = html;
+        
+        // Sayfayı göster
+        hideAllScreens();
+        document.getElementById("screen-weekly-winners").classList.remove("hidden");
+        document.getElementById("bottom-nav-bar").classList.add("hidden");
+        
+    } catch (error) {
+        console.error('❌ Kazananlar yüklenirken hata:', error);
+        container.innerHTML = `
+            <div class="profile-card" style="text-align:center; padding:20px;">
+                <p>⚠️ Kazananlar yüklenirken hata oluştu.</p>
+                <p style="font-size:0.8rem; color:var(--text-muted);">Hata: ${error.message || 'Bilinmeyen hata'}</p>
+                <button class="btn-primary muted" onclick="renderWeeklyWinners()" style="margin-top:10px;">🔄 Tekrar Dene</button>
+            </div>
+        `;
     }
 }
 
