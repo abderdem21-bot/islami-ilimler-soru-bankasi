@@ -1,6 +1,7 @@
 // ========== FIREBASE YAPILANDIRMASI ==========
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, get, update, push, query, orderByChild, limitToLast, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query as firestoreQuery, orderBy as firestoreOrderBy, limit as firestoreLimit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBNAgdFlkdkNLEO-fG_QNjU-xKpL1X4HJw",
@@ -15,6 +16,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const firestore = getFirestore(app);
 
 // ========== HAFTA NUMARASI ==========
 function getWeekNumber() {
@@ -32,7 +34,6 @@ function getCurrentWeekKey() {
     return `${year}_W${String(week).padStart(2, '0')}`;
 }
 
-// Hafta başlangıcını (Pazartesi 00:00) hesapla
 function getWeekStartDate() {
     const now = new Date();
     const day = now.getDay();
@@ -42,7 +43,6 @@ function getWeekStartDate() {
     return monday;
 }
 
-// Hafta bitişini (Pazar 23:59) hesapla
 function getWeekEndDate() {
     const start = getWeekStartDate();
     const end = new Date(start);
@@ -53,7 +53,6 @@ function getWeekEndDate() {
 
 // ========== LİDERLİK TABLOSU ==========
 
-// Kullanıcı puanını kaydet (haftalık)
 async function addScoreToFirebase(email, nickname, points = 1) {
   try {
     const weekKey = getCurrentWeekKey();
@@ -85,7 +84,6 @@ async function addScoreToFirebase(email, nickname, points = 1) {
   }
 }
 
-// Liderlik tablosunu oku (haftalık)
 async function getLeaderboardFromFirebase(limit = 100) {
   try {
     const weekKey = getCurrentWeekKey();
@@ -113,7 +111,6 @@ async function getLeaderboardFromFirebase(limit = 100) {
 
 // ========== HAFTA SONU ÖDÜL DAĞITIMI ==========
 
-// Haftanın kazananlarını belirle ve ödülleri dağıt
 async function distributeWeeklyRewards() {
   try {
     const weekKey = getCurrentWeekKey();
@@ -134,17 +131,13 @@ async function distributeWeeklyRewards() {
     }));
     users.sort((a, b) => b.score - a.score);
     
-    // İlk 3'ü seç
     const winners = users.slice(0, 3);
-    
-    // Ödülleri tanımla
     const rewards = [
       { rank: 1, badge: '🥇 Altın Rozet', hearts: 3 },
       { rank: 2, badge: '🥈 Gümüş Rozet', hearts: 2 },
       { rank: 3, badge: '🥉 Bronz Rozet', hearts: 1 }
     ];
     
-    // Her kazanan için ödülü kaydet
     for (let i = 0; i < winners.length; i++) {
       const winner = winners[i];
       const reward = rewards[i];
@@ -160,7 +153,6 @@ async function distributeWeeklyRewards() {
       console.log(`🎁 ${winner.nickname} -> ${reward.badge} + ${reward.hearts} Can`);
     }
     
-    // Haftanın kazananlarını ayrı bir node'da sakla
     const winnersRef = ref(database, `weekly_winners/${weekKey}`);
     await set(winnersRef, {
       winners: winners.map((w, idx) => ({
@@ -181,7 +173,6 @@ async function distributeWeeklyRewards() {
   }
 }
 
-// Kullanıcının ödüllerini getir
 async function getUserRewards(email) {
   try {
     const sanitizedEmail = email.replace(/[.#$\/\[\]]/g, '_');
@@ -203,7 +194,6 @@ async function getUserRewards(email) {
   }
 }
 
-// Toplam ödül sayısını getir
 async function getTotalRewards(email) {
   try {
     const rewards = await getUserRewards(email);
@@ -219,21 +209,18 @@ async function getTotalRewards(email) {
   }
 }
 
-// ========== HAFTALIK RESET KONTROLÜ ==========
 function checkWeeklyReset() {
     const now = new Date();
-    const day = now.getDay(); // 0=Pazar, 1=Pazartesi
+    const day = now.getDay();
     const hours = now.getHours();
     const minutes = now.getMinutes();
     
-    // Pazartesi 00:00'da reset
     if (day === 1 && hours === 0 && minutes === 0) {
         return true;
     }
     return false;
 }
 
-// Eski haftaların verilerini temizle (4 haftadan eski)
 async function cleanOldLeaderboardData() {
   try {
     const leaderboardRef = ref(database, 'leaderboard');
@@ -265,6 +252,38 @@ async function cleanOldLeaderboardData() {
   }
 }
 
+// ========== FIRESTORE MESAJ FONKSİYONLARI ==========
+
+async function sendMessageToFirestore(data) {
+    try {
+        const docRef = await addDoc(collection(firestore, "messages"), {
+            ...data,
+            timestamp: serverTimestamp(),
+            status: 'pending'
+        });
+        console.log('✅ Mesaj kaydedildi! ID:', docRef.id);
+        return docRef.id;
+    } catch (error) {
+        console.error('❌ Mesaj kaydedilemedi:', error);
+        throw error;
+    }
+}
+
+async function reportQuestionToFirestore(questionData) {
+    try {
+        const docRef = await addDoc(collection(firestore, "reports"), {
+            ...questionData,
+            timestamp: serverTimestamp(),
+            status: 'pending'
+        });
+        console.log('✅ Soru bildirimi kaydedildi! ID:', docRef.id);
+        return docRef.id;
+    } catch (error) {
+        console.error('❌ Soru bildirimi kaydedilemedi:', error);
+        throw error;
+    }
+}
+
 // ========== EXPORT ==========
 window.firebaseDB = {
   addScore: addScoreToFirebase,
@@ -276,9 +295,12 @@ window.firebaseDB = {
   getUserRewards: getUserRewards,
   getTotalRewards: getTotalRewards,
   checkWeeklyReset: checkWeeklyReset,
-  cleanOldData: cleanOldLeaderboardData
+  cleanOldData: cleanOldLeaderboardData,
+  sendMessage: sendMessageToFirestore,
+  reportQuestion: reportQuestionToFirestore
 };
 
 console.log('✅ Firebase bağlantısı başarılı!');
 console.log(`📊 Bu hafta: ${getCurrentWeekKey()}`);
 console.log('🎁 Haftalık ödül sistemi aktif!');
+console.log('📧 Mesaj sistemi Firestore ile aktif!');
