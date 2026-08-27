@@ -1080,7 +1080,7 @@ function playSound(type) {
             console.log('🔊 Tıklama sesi çalındı');
         } 
         else if (type === 'success') {
-            // Doğru: İki kısa neşeli bip
+            // ✅ DOĞRU: İki kısa neşeli bip
             oscillator.frequency.value = 880;
             oscillator.type = 'sine';
             gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
@@ -1103,27 +1103,26 @@ function playSound(type) {
             console.log('🔊 Doğru sesi çalındı');
         }
         else if (type === 'wrong') {
-            // ❌ YANLIŞ: Daha belirgin ve net bir ses
-            oscillator.frequency.value = 500;
+            // ❌ YANLIŞ: Hata/Buzzer sesi
+            oscillator.frequency.value = 200;
             oscillator.type = 'square';
-            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+            gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
             oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.2);
+            oscillator.stop(audioCtx.currentTime + 0.3);
             
-            // İkinci vuruş
             setTimeout(() => {
                 const osc2 = audioCtx.createOscillator();
                 const gain2 = audioCtx.createGain();
                 osc2.connect(gain2);
                 gain2.connect(audioCtx.destination);
-                osc2.frequency.value = 400;
+                osc2.frequency.value = 150;
                 osc2.type = 'square';
-                gain2.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                gain2.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
                 osc2.start(audioCtx.currentTime);
-                osc2.stop(audioCtx.currentTime + 0.15);
-            }, 200);
+                osc2.stop(audioCtx.currentTime + 0.25);
+            }, 250);
             console.log('🔊 Yanlış sesi çalındı');
         }
     } catch (error) {
