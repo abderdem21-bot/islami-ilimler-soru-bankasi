@@ -1,6 +1,51 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <!-- ===== SES İZNİ VE AUDIO CONTEXT UYANDIRMA ===== -->
+    <script>
+        (function() {
+            let audioCtx = null;
+            let isAudioReady = false;
+
+            function initAudio() {
+                try {
+                    if (!audioCtx) {
+                        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    isAudioReady = true;
+                    console.log('🎵 Ses sistemi hazır!');
+                } catch (e) {
+                    console.warn('Ses başlatılamadı:', e);
+                }
+            }
+
+            document.addEventListener('click', function() {
+                if (!isAudioReady) {
+                    initAudio();
+                }
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initAudio, 1000);
+            });
+
+            window.getAudioContext = function() {
+                if (!audioCtx) {
+                    initAudio();
+                }
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                return audioCtx;
+            };
+
+            console.log('🔊 Ses sistemi hazırlanıyor...');
+        })();
+    </script>
+
     <!-- ===== GOOGLE ADSENSE & GPT KODLARI ===== -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5165596538310622" crossorigin="anonymous"></script>
     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
