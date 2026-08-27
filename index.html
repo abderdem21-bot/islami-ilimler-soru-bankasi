@@ -54,6 +54,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, get, set, update, push, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         
         const firebaseConfig = {
             apiKey: "AIzaSyBNAgdFlkdkNLEO-fG_QNjU-xKpL1X4HJw",
@@ -68,9 +69,11 @@
         
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+        const firestore = getFirestore(app);
         
         window.firebaseDB = {
             database: database,
+            firestore: firestore,
             ref: ref,
             get: get,
             set: set,
@@ -79,6 +82,9 @@
             query: query,
             orderByChild: orderByChild,
             limitToLast: limitToLast,
+            collection: collection,
+            addDoc: addDoc,
+            serverTimestamp: serverTimestamp,
             getLeaderboard: async function(limit = 100) {
                 try {
                     const leaderboardRef = ref(database, 'leaderboard');
@@ -123,6 +129,32 @@
                 } catch (error) {
                     console.error('❌ Puan ekleme hatası:', error);
                     return 0;
+                }
+            },
+            sendMessage: async function(data) {
+                try {
+                    const docRef = await addDoc(collection(firestore, "messages"), {
+                        ...data,
+                        timestamp: serverTimestamp(),
+                        status: 'pending'
+                    });
+                    return docRef.id;
+                } catch (error) {
+                    console.error('❌ Mesaj kaydedilemedi:', error);
+                    throw error;
+                }
+            },
+            reportQuestion: async function(data) {
+                try {
+                    const docRef = await addDoc(collection(firestore, "reports"), {
+                        ...data,
+                        timestamp: serverTimestamp(),
+                        status: 'pending'
+                    });
+                    return docRef.id;
+                } catch (error) {
+                    console.error('❌ Soru bildirimi kaydedilemedi:', error);
+                    throw error;
                 }
             }
         };
