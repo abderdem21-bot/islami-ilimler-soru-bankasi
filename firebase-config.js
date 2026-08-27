@@ -1,7 +1,7 @@
 // ========== FIREBASE YAPILANDIRMASI ==========
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, get, update, push, query, orderByChild, limitToLast, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query as firestoreQuery, orderBy as firestoreOrderBy, limit as firestoreLimit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query as firestoreQuery, orderBy as firestoreOrderBy, limit as firestoreLimit, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBNAgdFlkdkNLEO-fG_QNjU-xKpL1X4HJw",
@@ -297,7 +297,17 @@ window.firebaseDB = {
   checkWeeklyReset: checkWeeklyReset,
   cleanOldData: cleanOldLeaderboardData,
   sendMessage: sendMessageToFirestore,
-  reportQuestion: reportQuestionToFirestore
+  reportQuestion: reportQuestionToFirestore,
+  firestore: firestore,
+  collection: collection,
+  addDoc: addDoc,
+  serverTimestamp: serverTimestamp,
+  getDocs: getDocs,
+  query: firestoreQuery,
+  orderBy: firestoreOrderBy,
+  limit: firestoreLimit,
+  doc: doc,
+  updateDoc: updateDoc
 };
 
 console.log('✅ Firebase bağlantısı başarılı!');
