@@ -1103,13 +1103,27 @@ function playSound(type) {
             console.log('🔊 Doğru sesi çalındı');
         }
         else if (type === 'wrong') {
-            // Yanlış: Tek uzun hüzünlü bip
-            oscillator.frequency.value = 350;
-            oscillator.type = 'sawtooth';
-            gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+            // ❌ YANLIŞ: Daha belirgin ve net bir ses
+            oscillator.frequency.value = 500;
+            oscillator.type = 'square';
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
             oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.35);
+            oscillator.stop(audioCtx.currentTime + 0.2);
+            
+            // İkinci vuruş
+            setTimeout(() => {
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                osc2.frequency.value = 400;
+                osc2.type = 'square';
+                gain2.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                osc2.start(audioCtx.currentTime);
+                osc2.stop(audioCtx.currentTime + 0.15);
+            }, 200);
             console.log('🔊 Yanlış sesi çalındı');
         }
     } catch (error) {
