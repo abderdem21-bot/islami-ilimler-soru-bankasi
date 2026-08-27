@@ -350,12 +350,17 @@ function nextQuestion() {
         userState.unitCompletionCount = (userState.unitCompletionCount || 0) + 1;
         saveUserState();
 
+        // ✅ ÜNİTE BİTİRME BONUSU: +5 PUAN
+        const bonusPoints = 5;
+        updateLeaderboard(bonusPoints);
+        showToast(`🎉 ${currentCategory} Ünite ${currentUnit} tamamlandı! +${bonusPoints} bonus puan kazandın!`);
+
         hideAllScreens();
         document.getElementById("screen-victory").classList.remove("hidden");
         document.getElementById("bottom-nav-bar").classList.remove("hidden");
         document.getElementById("victory-text").innerHTML = `
             🎉 Tebrikler! ${currentCategory} - Ünite ${currentUnit} tamamlandı!<br>
-            <span class="subtitle-text">Bir sonraki üniteye geçmek için reklam izleyin.</span>
+            <span class="subtitle-text">+${bonusPoints} bonus puan kazandın!</span>
         `;
         const btn = document.querySelector("#screen-victory .btn-primary");
         if (btn) {
@@ -1127,5 +1132,49 @@ function playSound(type) {
         }
     } catch (error) {
         console.warn('Ses çalınamadı:', error);
+    }
+}
+
+// ===== SORU BİLDİR =====
+function reportQuestion() {
+    const q = currentQuestions[currentQuestionIndex];
+    if (!q) return;
+    showCustomModal("🚨 Soru Bildir", `
+        <p>Bu soruyu veya cevabını bildirmek istediğinize emin misiniz?</p>
+        <p><strong>${q.q}</strong></p>
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:16px;">
+            <button class="btn-primary" style="flex:1; background:var(--accent);" onclick="closeCustomModal(); confirmReportQuestion()">Evet, Bildir</button>
+            <button class="btn-primary muted" style="flex:1;" onclick="closeCustomModal()">Vazgeç</button>
+        </div>
+    `);
+    playSound('click');
+}
+
+async function confirmReportQuestion() {
+    try {
+        const q = currentQuestions[currentQuestionIndex];
+        
+        if (typeof window.firebaseDB !== 'undefined' && window.firebaseDB.reportQuestion) {
+            await window.firebaseDB.reportQuestion({
+                type: 'question_report',
+                email: userState.email || 'misafir',
+                nickname: userState.nickname || 'İsimsiz',
+                question: q.q,
+                options: q.options,
+                correctAnswer: q.options[q.answer],
+                category: q.category || 'Bilinmiyor',
+                reportedAt: new Date().toISOString()
+            });
+            showToast('✅ Soru bildiriminiz iletildi. Teşekkür ederiz!');
+        } else {
+            // Yedek: mailto ile gönder
+            const subject = encodeURIComponent("Soru Bildirimi");
+            const body = encodeURIComponent(`Bildirilen Soru: ${q.q}\n\nKullanıcı: ${userState.nickname || 'İsimsiz'}\nE-posta: ${userState.email || 'Belirtilmemiş'}`);
+            window.location.href = `mailto:sorumasasi@gmail.com?subject=${subject}&body=${body}`;
+            showToast('📧 Soru bildirimi gönderildi.');
+        }
+    } catch (error) {
+        console.error('Soru bildirimi hatası:', error);
+        showCustomModal("Hata", "Soru bildirimi gönderilemedi. Lütfen daha sonra tekrar deneyin.");
     }
 }
