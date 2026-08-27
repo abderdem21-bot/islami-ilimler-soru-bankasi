@@ -109,6 +109,33 @@ async function getLeaderboardFromFirebase(limit = 100) {
   }
 }
 
+// ========== HAFTANIN KAZANANLARI ==========
+
+async function getCurrentWinners() {
+  try {
+    const weekKey = getCurrentWeekKey();
+    const winnersRef = ref(database, `weekly_winners/${weekKey}`);
+    const snapshot = await get(winnersRef);
+    
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      return data.winners || [];
+    }
+    
+    // Eğer bu haftanın kazananları yoksa, liderlik tablosundan ilk 3'ü al
+    const leaderboard = await getLeaderboardFromFirebase(3);
+    return leaderboard.map((user, index) => ({
+      ...user,
+      rank: index + 1,
+      badge: index === 0 ? '🥇 Altın Rozet' : index === 1 ? '🥈 Gümüş Rozet' : '🥉 Bronz Rozet',
+      hearts: index === 0 ? 3 : index === 1 ? 2 : 1
+    }));
+  } catch (error) {
+    console.error('❌ Kazananlar okuma hatası:', error);
+    return [];
+  }
+}
+
 // ========== HAFTA SONU ÖDÜL DAĞITIMI ==========
 
 async function distributeWeeklyRewards() {
@@ -286,18 +313,28 @@ async function reportQuestionToFirestore(questionData) {
 
 // ========== EXPORT ==========
 window.firebaseDB = {
+  // Liderlik
   addScore: addScoreToFirebase,
   getLeaderboard: getLeaderboardFromFirebase,
   getWeekKey: getCurrentWeekKey,
   getWeekStart: getWeekStartDate,
   getWeekEnd: getWeekEndDate,
+  
+  // Ödül
   distributeRewards: distributeWeeklyRewards,
   getUserRewards: getUserRewards,
   getTotalRewards: getTotalRewards,
   checkWeeklyReset: checkWeeklyReset,
   cleanOldData: cleanOldLeaderboardData,
+  
+  // Haftanın Kazananları
+  getCurrentWinners: getCurrentWinners,
+  
+  // Firestore Mesaj
   sendMessage: sendMessageToFirestore,
   reportQuestion: reportQuestionToFirestore,
+  
+  // Firestore Yardımcılar
   firestore: firestore,
   collection: collection,
   addDoc: addDoc,
@@ -314,3 +351,4 @@ console.log('✅ Firebase bağlantısı başarılı!');
 console.log(`📊 Bu hafta: ${getCurrentWeekKey()}`);
 console.log('🎁 Haftalık ödül sistemi aktif!');
 console.log('📧 Mesaj sistemi Firestore ile aktif!');
+console.log('🏆 Haftanın kazananları sistemi aktif!');
