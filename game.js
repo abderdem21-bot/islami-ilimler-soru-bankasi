@@ -1035,7 +1035,7 @@ function updateLeaderboard(scoreIncrement) {
     }
 }
 
-// ===== SES / TİTREŞİM KONTROLÜ =====
+// ===== SES / TİTREŞİM KONTROLÜ (GARANTİLİ) =====
 function playSound(type) {
     const mode = userState.soundMode || 'sound';
     
@@ -1048,74 +1048,71 @@ function playSound(type) {
             if (type === 'click') navigator.vibrate(15);
             else if (type === 'success') navigator.vibrate([15, 50, 15]);
             else if (type === 'wrong') navigator.vibrate([30, 50, 30, 50, 30]);
-            return; // Titreşim modunda ses çıkarma
+            return;
         }
 
-        // ===== SESLİ MOD (mode === 'sound') =====
-        // Web Audio API ile ses oluştur
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // ===== SESLİ MOD =====
+        // AudioContext'i al veya oluştur
+        let audioCtx = null;
+        if (typeof window.getAudioContext === 'function') {
+            audioCtx = window.getAudioContext();
+        }
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        // Ses oluştur
         const oscillator = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
         oscillator.connect(gainNode);
         gainNode.connect(audioCtx.destination);
 
         if (type === 'click') {
-            // Tıklama sesi - kısa ve yumuşak
             oscillator.frequency.value = 800;
             oscillator.type = 'sine';
-            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.06);
             oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.08);
+            oscillator.stop(audioCtx.currentTime + 0.06);
+            console.log('🔊 Tıklama sesi çalındı');
         } 
         else if (type === 'success') {
-            // ✅ DOĞRU CEVAP: Neşeli, yükselen iki ton
-            oscillator.frequency.value = 1000;
+            // Doğru: İki kısa neşeli bip
+            oscillator.frequency.value = 880;
             oscillator.type = 'sine';
-            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
             oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.15);
+            oscillator.stop(audioCtx.currentTime + 0.1);
             
-            // İkinci ton (daha yüksek)
             setTimeout(() => {
                 const osc2 = audioCtx.createOscillator();
                 const gain2 = audioCtx.createGain();
                 osc2.connect(gain2);
                 gain2.connect(audioCtx.destination);
-                osc2.frequency.value = 1200;
+                osc2.frequency.value = 1100;
                 osc2.type = 'sine';
-                gain2.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+                gain2.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
                 osc2.start(audioCtx.currentTime);
-                osc2.stop(audioCtx.currentTime + 0.12);
-            }, 120);
+                osc2.stop(audioCtx.currentTime + 0.1);
+            }, 150);
+            console.log('🔊 Doğru sesi çalındı');
         }
         else if (type === 'wrong') {
-            // ❌ YANLIŞ CEVAP: Üzgün, alçalan düşük frekans
-            oscillator.frequency.value = 400;
-            oscillator.type = 'sawtooth'; // Hüzünlü tını
-            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            // Yanlış: Tek uzun hüzünlü bip
+            oscillator.frequency.value = 350;
+            oscillator.type = 'sawtooth';
+            gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
             oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.3);
-            
-            // İkinci düşük ton (vuruş efekti)
-            setTimeout(() => {
-                const osc2 = audioCtx.createOscillator();
-                const gain2 = audioCtx.createGain();
-                osc2.connect(gain2);
-                gain2.connect(audioCtx.destination);
-                osc2.frequency.value = 250;
-                osc2.type = 'sawtooth';
-                gain2.gain.setValueAtTime(0.06, audioCtx.currentTime);
-                gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
-                osc2.start(audioCtx.currentTime);
-                osc2.stop(audioCtx.currentTime + 0.25);
-            }, 150);
+            oscillator.stop(audioCtx.currentTime + 0.35);
+            console.log('🔊 Yanlış sesi çalındı');
         }
-    } catch(e) { 
-        // Ses çalışmazsa sessiz geç - kullanıcıyı rahatsız etme
-        console.log('Ses çalınamadı:', e);
+    } catch (error) {
+        console.warn('Ses çalınamadı:', error);
     }
 }
