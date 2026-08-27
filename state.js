@@ -30,6 +30,7 @@ let userState = {
   password: '',
   uid: null,
   isAdmin: false,
+  isLoggedIn: false, // ✅ YENİ: Oturum durumu
   adRewardCounts: {
     hardQuestion: 0,
     hint: 0,
@@ -64,7 +65,14 @@ let userState = {
   lastStreakDate: null,
   leaderboardScore: 0,
   soundMode: 'sound',
-  lastPage: 'screen-categories'
+  lastPage: 'screen-categories',
+  // ✅ YENİ: Ödül bilgileri
+  rewards: {
+    gold: 0,
+    silver: 0,
+    bronze: 0,
+    totalHeartsEarned: 0
+  }
 };
 
 function saveUserState() {
@@ -72,6 +80,12 @@ function saveUserState() {
   if (userState.lastPage) {
     localStorage.setItem('last_page', userState.lastPage);
   }
+  // ✅ Oturum durumunu ayrıca sakla
+  localStorage.setItem('islami_session', JSON.stringify({
+    isLoggedIn: userState.isLoggedIn,
+    email: userState.email,
+    timestamp: Date.now()
+  }));
 }
 
 function loadUserState() {
@@ -106,6 +120,8 @@ function loadUserState() {
       if (userState.uid === undefined) userState.uid = null;
       if (userState.isAdmin === undefined) userState.isAdmin = false;
       if (userState.lastPage === undefined) userState.lastPage = 'screen-categories';
+      if (userState.isLoggedIn === undefined) userState.isLoggedIn = false; // ✅ YENİ
+      if (!userState.rewards) userState.rewards = { gold: 0, silver: 0, bronze: 0, totalHeartsEarned: 0 }; // ✅ YENİ
       
       const lastPageFromStorage = localStorage.getItem('last_page');
       if (lastPageFromStorage) {
@@ -115,6 +131,24 @@ function loadUserState() {
       hearts = userState.hearts;
     } catch (e) { console.warn('User state parse error', e); }
   }
+  
+  // ✅ Oturum kontrolü
+  const session = localStorage.getItem('islami_session');
+  if (session) {
+    try {
+      const sessionData = JSON.parse(session);
+      // 7 günden eski oturumları geçersiz say
+      if (Date.now() - sessionData.timestamp < 7 * 24 * 60 * 60 * 1000) {
+        if (sessionData.isLoggedIn && sessionData.email) {
+          userState.isLoggedIn = true;
+          userState.email = sessionData.email;
+        }
+      } else {
+        localStorage.removeItem('islami_session');
+      }
+    } catch (e) {}
+  }
+  
   resetHeartsIfNeeded();
   resetStatsAdIfNeeded();
   checkStreak();
@@ -183,7 +217,6 @@ function updateLeaderboard(scoreIncrement) {
   userState.leaderboardScore = (userState.leaderboardScore || 0) + scoreIncrement;
   saveUserState();
   
-  // ✅ Firebase'e de kaydet
   if (userState.email && typeof window.firebaseDB !== 'undefined') {
     window.firebaseDB.addScore(userState.email, userState.nickname || 'İsimsiz', scoreIncrement)
       .then(newScore => {
@@ -193,6 +226,16 @@ function updateLeaderboard(scoreIncrement) {
         console.warn('⚠️ Firebase güncelleme hatası:', err);
       });
   }
+}
+
+// ========== OTURUM KONTROLÜ ==========
+function isUserLoggedIn() {
+  return userState.isLoggedIn && userState.email;
+}
+
+function setUserLoggedIn(status) {
+  userState.isLoggedIn = status;
+  saveUserState();
 }
 
 // ========== LİDERLİK TABLOSUNU YENİLE ==========
@@ -220,7 +263,53 @@ function getLocalLeaderboardData() {
 }
 
 function getLeaderboardData() {
-  // Bu fonksiyon artık async olarak çalışacak
-  // ui.js'deki renderLeaderboard() fonksiyonu bunu kullanacak
   return refreshLeaderboard();
+}
+
+// ========== ÖDÜL FONKSİYONLARI ==========
+async function checkAndClaimRewards() {
+  if (!userState.email) return;
+  
+  try {
+    if (typeof window.firebaseDB === 'undefined') return;
+    
+    // Kullanıcının kazanılmamış ödüllerini kontrol et
+    const rewards = await window.firebaseDB.getUserRewards(userState.email);
+    const totalStats = await window.firebaseDB.getTotalRewards(userState.email);
+    
+    userState.rewards.gold = totalStats.gold || 0;
+    userState.rewards.silver = totalStats.silver || 0;
+    userState.rewards.bronze = totalStats.bronze || 0;
+    userState.rewards.totalHeartsEarned = totalStats.totalHearts || 0;
+    
+    // Yeni ödüller varsa can ekle
+    if (rewards && rewards.length > 0) {
+      const claimed = localStorage.getItem('claimed_rewards_' + userState.email) || '[]';
+      const claimedList = JSON.parse(claimed);
+      
+      for (const reward of rewards) {
+        if (!claimedList.includes(reward.week)) {
+          addHearts(reward.hearts || 0);
+          showToast(`🎁 ${reward.badge} kazandın! +${reward.hearts} Can`);
+          claimedList.push(reward.week);
+        }
+      }
+      
+      localStorage.setItem('claimed_rewards_' + userState.email, JSON.stringify(claimedList));
+    }
+    
+    saveUserState();
+    
+  } catch (error) {
+    console.error('❌ Ödül kontrol hatası:', error);
+  }
+}
+
+// Rozet gösterimi
+function getBadgeHTML(rewards) {
+  let html = '';
+  if (rewards.gold > 0) html += `🥇 ${rewards.gold} `;
+  if (rewards.silver > 0) html += `🥈 ${rewards.silver} `;
+  if (rewards.bronze > 0) html += `🥉 ${rewards.bronze} `;
+  return html || '🏆 0';
 }
