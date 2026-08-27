@@ -1288,6 +1288,28 @@ body.dark-mode #hearts-hints-display .badge-item {
     margin-bottom: 10px !important;
 }
 
+/* ===== HAFTANIN KAZANANLARI STİLLERİ ===== */
+#screen-weekly-winners .spinner {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.weekly-winner-gold {
+    background: linear-gradient(135deg, #ffd700, #ffed4a) !important;
+    border: 3px solid #ffd700 !important;
+    box-shadow: 0 0 30px rgba(255,215,0,0.5) !important;
+}
+.weekly-winner-silver {
+    background: linear-gradient(135deg, #c0c0c0, #e8e8e8) !important;
+    border: 3px solid #c0c0c0 !important;
+    box-shadow: 0 4px 15px rgba(192,192,192,0.4) !important;
+}
+.weekly-winner-bronze {
+    background: linear-gradient(135deg, #cd7f32, #e8a87c) !important;
+    border: 3px solid #cd7f32 !important;
+    box-shadow: 0 4px 15px rgba(205,127,50,0.4) !important;
+}
+
 @media (max-height:700px) {
     .container { height:98vh; margin:4px; padding:16px 16px 24px 16px; }
     .hero-banner { padding:20px 16px; margin-bottom:16px; }
