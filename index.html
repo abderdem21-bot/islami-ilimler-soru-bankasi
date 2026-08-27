@@ -352,11 +352,6 @@
             <div class="category-grid" id="category-grid"></div>
             <button class="btn-primary" style="margin-top:20px; background:var(--accent);" onclick="navigateToTab('favorites')">⭐ Favori Sorularım</button>
 
-            <!-- ===== HAFTANIN KAZANANLARI BUTONU ===== -->
-            <button class="btn-primary" style="margin-top:16px; background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="openWeeklyWinners()">
-                🏆 Haftanın Kazananlarını Öğren
-            </button>
-
             <!-- ===== SORU ALTI BANNER REKLAM (Ana Sayfa) ===== -->
             <div class="banner-ad-horizontal" id="banner-ad-home" style="margin-top:16px; display:none;">
                 <ins class="adsbygoogle"
@@ -583,16 +578,21 @@
 
         <!-- ===== LİDERLİK TABLOSU ===== -->
         <div id="screen-leaderboard" class="hidden screen">
-            <div class="header-row">
-                <button class="back-btn" onclick="navigateToTab('home')">
-                    <svg width="40" height="40" viewBox="0 0 100 100">
-                        <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-                    </svg>
-                </button>
-                <h2 class="title">🏆 Liderlik Tablosu</h2>
-            </div>
-            <div id="leaderboard-container"></div>
-        </div>
+    <div class="header-row">
+        <button class="back-btn" onclick="navigateToTab('home')">
+            <svg width="40" height="40" viewBox="0 0 100 100">
+                <path d="M60 20 L30 50 L60 80" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+            </svg>
+        </button>
+        <h2 class="title">🏆 Liderlik Tablosu</h2>
+    </div>
+    <div id="leaderboard-container"></div>
+
+    <!-- ===== HAFTANIN KAZANANLARI BUTONU ===== -->
+    <button class="btn-primary" style="margin-top:20px; background: linear-gradient(135deg, #f59e0b, #d97706); width:100%;" onclick="openWeeklyWinners()">
+        🏆 Haftanın Kazananlarını Öğren
+    </button>
+</div>
 
         <!-- ===== HAFTANIN KAZANANLARI ===== -->
         <div id="screen-weekly-winners" class="hidden center screen">
