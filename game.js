@@ -1154,8 +1154,10 @@ async function confirmReportQuestion() {
     try {
         const q = currentQuestions[currentQuestionIndex];
         
+        console.log('📤 Soru bildirimi gönderiliyor...', q);
+        
         if (typeof window.firebaseDB !== 'undefined' && window.firebaseDB.reportQuestion) {
-            await window.firebaseDB.reportQuestion({
+            const result = await window.firebaseDB.reportQuestion({
                 type: 'question_report',
                 email: userState.email || 'misafir',
                 nickname: userState.nickname || 'İsimsiz',
@@ -1165,8 +1167,11 @@ async function confirmReportQuestion() {
                 category: q.category || 'Bilinmiyor',
                 reportedAt: new Date().toISOString()
             });
+            console.log('✅ Soru bildirimi kaydedildi! ID:', result);
             showToast('✅ Soru bildiriminiz iletildi. Teşekkür ederiz!');
+            closeCustomModal();
         } else {
+            console.error('❌ Firebase reportQuestion fonksiyonu bulunamadı!');
             // Yedek: mailto ile gönder
             const subject = encodeURIComponent("Soru Bildirimi");
             const body = encodeURIComponent(`Bildirilen Soru: ${q.q}\n\nKullanıcı: ${userState.nickname || 'İsimsiz'}\nE-posta: ${userState.email || 'Belirtilmemiş'}`);
@@ -1174,7 +1179,7 @@ async function confirmReportQuestion() {
             showToast('📧 Soru bildirimi gönderildi.');
         }
     } catch (error) {
-        console.error('Soru bildirimi hatası:', error);
-        showCustomModal("Hata", "Soru bildirimi gönderilemedi. Lütfen daha sonra tekrar deneyin.");
+        console.error('❌ Soru bildirimi hatası:', error);
+        showCustomModal("Hata", "Soru bildirimi gönderilemedi. Lütfen daha sonra tekrar deneyin.\nHata: " + error.message);
     }
 }
