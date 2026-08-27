@@ -448,7 +448,8 @@ function sendResetLink() {
     closeForgotPasswordModal();
 }
 
-function sendContactMessage() {
+// ===== BİZE ULAŞIN =====
+async function sendContactMessage() {
     const msg = document.getElementById("contact-message").value.trim();
     if (!msg) {
         showCustomModal("Uyarı", "Lütfen bir mesaj yazın.");
@@ -458,13 +459,29 @@ function sendContactMessage() {
         showCustomModal("Uyarı", "Mesaj 500 karakteri geçemez.");
         return;
     }
-    const email = userState.email || 'kullanici@example.com';
-    const subject = encodeURIComponent("İletişim Formu Mesajı");
-    const body = encodeURIComponent(`Gönderen: ${email}\n\nMesaj:\n${msg}`);
-    window.location.href = `mailto:sorunvedestek@gmail.com?subject=${subject}&body=${body}`;
-    showToast("📧 Mesajınız gönderildi (e-posta istemciniz açılacak).");
-    document.getElementById("contact-message").value = "";
-    document.getElementById("contact-char-count").innerText = "0";
+
+    if (typeof window.firebaseDB === 'undefined' || !window.firebaseDB.sendMessage) {
+        showCustomModal("Hata", "Mesaj sistemi şu anda kullanılamıyor.");
+        return;
+    }
+
+    try {
+        await window.firebaseDB.sendMessage({
+            type: 'contact',
+            email: userState.email || 'misafir',
+            nickname: userState.nickname || 'İsimsiz',
+            message: msg,
+            userAgent: navigator.userAgent,
+            url: window.location.href
+        });
+
+        showToast('✅ Mesajınız başarıyla iletildi! En kısa sürede dönüş yapacağız.');
+        document.getElementById("contact-message").value = "";
+        document.getElementById("contact-char-count").innerText = "0";
+    } catch (error) {
+        showCustomModal("Hata", "Mesaj gönderilemedi. Lütfen daha sonra tekrar deneyin.");
+        console.error('Mesaj gönderme hatası:', error);
+    }
 }
 
 // ========== NAVIGATION ==========
